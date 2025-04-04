@@ -77,3 +77,7 @@ D:\DTU\DoAnTotNghiep\RestaurantTableSystem\RestaurantTableSystem\obj\Debug\Resta
 D:\DTU\DoAnTotNghiep\RestaurantTableSystem\RestaurantTableSystem\obj\Debug\Restaura.F1EA94FD.Up2Date
 D:\DTU\DoAnTotNghiep\RestaurantTableSystem\RestaurantTableSystem\obj\Debug\RestaurantTableSystem.dll
 D:\DTU\DoAnTotNghiep\RestaurantTableSystem\RestaurantTableSystem\obj\Debug\RestaurantTableSystem.pdb
+D:\DTU\DoAnTotNghiep\RestaurantTableSystem\RestaurantTableSystem\bin\EntityFramework.dll
+D:\DTU\DoAnTotNghiep\RestaurantTableSystem\RestaurantTableSystem\bin\EntityFramework.SqlServer.dll
+D:\DTU\DoAnTotNghiep\RestaurantTableSystem\RestaurantTableSystem\bin\EntityFramework.xml
+D:\DTU\DoAnTotNghiep\RestaurantTableSystem\RestaurantTableSystem\bin\EntityFramework.SqlServer.xml
