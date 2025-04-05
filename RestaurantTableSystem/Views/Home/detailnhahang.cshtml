@@ -22,21 +22,15 @@
 </head>
 <header class="bg-white shadow-md">
     <div class="container mx-auto px-4 py-6 flex justify-between items-center">
-        <h1 class="heading text-3xl font-bold text-gray-800">Smart-Booking</h1>
-        <nav class="flex items-center space-x-8">
-            <div class="relative">
-                <input type="text" placeholder="Tìm kiếm nhà hàng..." class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
-                <button class="absolute right-2 top-2 text-gray-700 hover:text-amber-600 transition">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
+        <a href="@Url.Action("Index", "Home")" class="heading text-3xl font-bold text-gray-800">Smart-Booking</a>
+        <nav>
             <ul class="flex space-x-8">
-                <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Trang chủ</a></li>
-                <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Đặt bàn</a></li>
+                <li><a href="@Url.Action("Index", "Home")" class="text-gray-700 hover:text-amber-600 transition">Trang chủ</a></li>
+                <li><a href="@Url.Action("DatBan", "Home")" class="text-gray-700 hover:text-amber-600 transition">Đặt bàn</a></li>
+                <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Thực đơn</a></li>
                 <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Liên hệ</a></li>
             </ul>
         </nav>
-
     </div>
 </header>
 
