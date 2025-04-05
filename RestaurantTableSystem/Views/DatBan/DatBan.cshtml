@@ -1,0 +1,205 @@
+﻿@{
+    ViewBag.Title = "DatBan";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết nhà hàng</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .heading {
+            font-family: 'Playfair Display', serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-6 flex justify-between items-center">
+            <a href="@Url.Action("Index", "Home")" class="heading text-3xl font-bold text-gray-800">Smart-Booking</a>
+            <nav>
+                <ul class="flex space-x-8">
+                    <li><a href="@Url.Action("Index", "Home")" class="text-gray-700 hover:text-amber-600 transition">Trang chủ</a></li>
+                    <li><a href="@Url.Action("DatBan", "Home")" class="text-gray-700 hover:text-amber-600 transition">Đặt bàn</a></li>
+                    <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Thực đơn</a></li>
+                    <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Liên hệ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Restaurant Detail -->
+    <main class="container mx-auto px-4 py-12">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <!-- Restaurant Image -->
+            <div class="h-96 bg-gray-200">
+                <img id="restaurantImage" src="" alt="" class="w-full h-full object-cover">
+            </div>
+
+            <!-- Restaurant Info -->
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h1 id="restaurantTitle" class="heading text-3xl font-bold mb-2"></h1>
+                        <div class="flex items-center">
+                            <div id="restaurantRating" class="flex text-amber-400 mr-2"></div>
+                            <span id="restaurantReviewCount" class="text-gray-600"></span>
+                        </div>
+                    </div>
+                    <a href="index.html" class="text-amber-600 hover:text-amber-700 flex items-center">
+                        <button onclick="window.location.href='/Views/Home/DatBan.cshtml'" class="btn btn-success">
+                            Quay Lai
+                        </button>
+
+
+                    </a>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-12">
+                    <!-- Left Column - Restaurant Details -->
+                    <div>
+                        <h2 class="text-2xl font-bold mb-4">Giới thiệu</h2>
+                        <p id="restaurantDescription" class="text-gray-700 mb-6"></p>
+
+                        <div class="mb-6">
+                            <h3 class="text-xl font-bold mb-2">Địa chỉ</h3>
+                            <p id="restaurantAddress" class="text-gray-700"></p>
+                        </div>
+
+                        <div class="mb-6">
+                            <h3 class="text-xl font-bold mb-2">Giờ mở cửa</h3>
+                            <p id="restaurantHours" class="text-gray-700"></p>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Thực đơn nổi bật</h3>
+                            <ul id="restaurantMenu" class="space-y-3"></ul>
+                        </div>
+                    </div>
+
+                    <!-- Right Column - Booking Form -->
+                    <div>
+                        <h2 class="text-2xl font-bold mb-4">Đặt bàn</h2>
+                        <form id="bookingForm" class="space-y-4">
+                            <div>
+                                <label class="block text-gray-700 mb-1">Họ và tên</label>
+                                <input type="text" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-1">Số điện thoại</label>
+                                <input type="tel" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-gray-700 mb-1">Ngày</label>
+                                    <input type="date" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-1">Giờ</label>
+                                    <select class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                                        <option value="">Chọn giờ</option>
+                                        <option>11:00</option>
+                                        <option>11:30</option>
+                                        <option>12:00</option>
+                                        <option>12:30</option>
+                                        <option>13:00</option>
+                                        <option>17:00</option>
+                                        <option>17:30</option>
+                                        <option>18:00</option>
+                                        <option>18:30</option>
+                                        <option>19:00</option>
+                                        <option>19:30</option>
+                                        <option>20:00</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-1">Số người</label>
+                                <select class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                                    <option value="">Chọn số người</option>
+                                    <option>1 người</option>
+                                    <option>2 người</option>
+                                    <option>3-4 người</option>
+                                    <option>5-6 người</option>
+                                    <option>Nhóm lớn</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-1">Yêu cầu đặc biệt</label>
+                                <textarea class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" rows="2"></textarea>
+                            </div>
+                            <button type="button" onclick="saveBookingInfo()" class="bg-amber-600 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-amber-700 transition">Xác Nhận Đặt Bàn</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="heading text-2xl font-bold mb-4">Smart Booking</h3>
+                    <p class="mb-4">Đặt bàn nhà hàng dễ dàng và nhanh chóng</p>
+                    <p>Email: booking@smartbooking.com</p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-medium mb-4">Hỗ trợ</h4>
+                    <p class="mb-2">Hotline: 1900 1234</p>
+                    <p>Giờ làm việc: 8:00 - 22:00</p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-medium mb-4">Theo dõi chúng tôi</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-2xl hover:text-amber-400 transition"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-2xl hover:text-amber-400 transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-2xl hover:text-amber-400 transition"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p>&copy; 2023 Smart Booking. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    function saveBookingInfo() {
+        // Lấy thông tin từ các trường nhập liệu
+        var name = document.querySelector('input[type="text"]').value;
+        var phone = document.querySelector('input[type="tel"]').value;
+        var date = document.querySelector('input[type="date"]').value;
+        var time = document.querySelector('select').value;
+        var people = document.querySelectorAll('select')[1].value;
+        var specialRequest = document.querySelector('textarea').value;
+
+        // Kiểm tra xem tất cả các trường đã được nhập hay chưa
+        if (!name || !phone || !date || !time || !people) {
+            alert("Vui lòng điền đầy đủ thông tin!");
+            return; // Dừng lại nếu có trường chưa được điền
+        }
+
+        // Lưu thông tin vào Session
+        sessionStorage.setItem('name', name);
+        sessionStorage.setItem('phone', phone);
+        sessionStorage.setItem('date', date);
+        sessionStorage.setItem('time', time);
+        sessionStorage.setItem('people', people);
+        sessionStorage.setItem('specialRequest', specialRequest);
+
+        // Chuyển hướng đến trang thanh toán
+        window.location.href = '@Url.Action("ThanhToan", "DatBan")';
+    }
+    </script>
+</body>
+</html>
