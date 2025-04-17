@@ -1,0 +1,184 @@
+﻿﻿@{
+    ViewBag.Title = "ThanhToan";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Thêm CSS cho phần thông tin đặt bàn */
+        #bookingInfo {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            text-align: center;
+        }
+
+            #bookingInfo p {
+                font-size: 20px;
+                line-height: 1.5;
+                color: #374151;
+                margin: 8px 0;
+            }
+
+            #bookingInfo strong {
+                color: #f59e0b;
+                font-size: 20px;
+            }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .note {
+            background-color: #fff3cd;
+            border-left: 6px solid #ffeeba;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .payment-option {
+            cursor: pointer;
+        }
+
+        .selected {
+            border: 2px solid #f59e0b;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-6 flex justify-between items-center">
+            <a href="@Url.Action("Index", "Home")" class="heading text-3xl font-bold text-gray-800">Smart-Booking</a>
+            <nav>
+                <ul class="flex space-x-8">
+                    <li><a href="@Url.Action("Index", "Home")" class="text-gray-700 hover:text-amber-600 transition">Trang chủ</a></li>
+                    <li><a href="@Url.Action("DatBan", "DatBan")" class="text-gray-700 hover:text-amber-600 transition">Đặt bàn</a></li>
+                    <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Thực đơn</a></li>
+                    <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Liên hệ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Payment Detail -->
+    <main class="container mx-auto px-4 py-12">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="p-8 text-center">
+                <h1 class="heading text-3xl font-bold mb-6">Thanh toán</h1>
+                <p class="text-lg mb-6">Cảm ơn bạn đã đặt bàn tại nhà hàng của chúng tôi. Vui lòng thanh toán để hoàn tất đặt bàn.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-0 p-8">
+                <!-- Booking Information -->
+                <div id="bookingInfo" class="text-gray-700 space-y-2"></div>
+                <!-- Payment and QR Codes -->
+                <div class="bg-gray-100 p-6 rounded-lg shadow-md mx-auto w-3/4 text-center">
+                    <h2 class="text-2xl font-bold mb-4">Thanh toán đặt cọc</h2>
+                    <p class="text-gray-700 mb-6">Số tiền đặt cọc: 200.000 đ</p>
+                    <h2 class="text-2xl font-bold mb-4">Chọn phương thức thanh toán</h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="text-center payment-option selected" id="momoOption">
+                            <input type="radio" id="momo" name="paymentMethod" value="MoMo" class="hidden">
+                            <label for="momo" class="text-xl font-bold mb-2">MoMo</label>
+                            <img src="@Url.Content("~/Content/Images/momo.jpg")" alt="MoMo QR Code" class="mx-auto mb-4" id="momoQR">
+
+
+
+                        </div>
+                        <div class="text-center payment-option" id="vnpayOption">
+                            <input type="radio" id="vnpay" name="paymentMethod" value="VNPay" class="hidden">
+                            <label for="vnpay" class="text-xl font-bold mb-2">VNPay</label>
+                            <img src="@Url.Content("~/Content/Images/vnpay.jpg")" alt="VNPay QR Code" class="mx-auto mb-4 hidden" id="vnpayQR">
+                        </div>
+                    </div>
+                    <div class="note">
+                        <p>Lưu ý: Đây là khoản đặt cọc để đảm bảo việc giữ chỗ. Số tiền còn lại sẽ được thanh toán tại nhà hàng.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-8 text-center">
+                <button id="confirmPayment" class="bg-amber-600 text-white py-2 px-4 rounded-lg hover:bg-amber-700 transition font-medium">
+                    Xác nhận thanh toán
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        //lấy thông tin đăt bàn từ trang đặt bàn
+        document.addEventListener("DOMContentLoaded", function () {
+            // Lấy thông tin từ Session
+            var name = sessionStorage.getItem('name');
+            var phone = sessionStorage.getItem('phone');
+            var date = sessionStorage.getItem('date');
+            var time = sessionStorage.getItem('time');
+            var people = sessionStorage.getItem('people');
+            var specialRequest = sessionStorage.getItem('specialRequest');
+
+            // Hiển thị thông tin đặt bàn
+            var bookingInfo = document.getElementById('bookingInfo');
+            bookingInfo.innerHTML = `
+            <p><strong>Họ và tên:</strong> ${name}</p>
+            <p><strong>Số điện thoại:</strong> ${phone}</p>
+            <p><strong>Ngày:</strong> ${date}</p>
+            <p><strong>Giờ:</strong> ${time}</p>
+            <p><strong>Số người:</strong> ${people}</p>
+            <p><strong>Yêu cầu đặc biệt:</strong> ${specialRequest}</p>
+        `;
+        });
+        // Handle payment confirmation
+        document.getElementById('confirmPayment').addEventListener('click', function () {
+            const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+            if (!selectedPaymentMethod) {
+                alert('Vui lòng chọn phương thức thanh toán.');
+                return;
+            }
+            const bookingCode = 'SB' + Math.floor(Math.random() * 1000000);
+            alert(`Đặt bàn thành công! Mã đặt bàn của bạn là: ${bookingCode}\nCảm ơn bạn đã đặt bàn tại nhà hàng của chúng tôi!`);
+            window.location.href = '@Url.Action("Index", "Home")';
+        });
+        // Mã QR
+        document.addEventListener("DOMContentLoaded", function () {
+            // Ẩn cả hai mã QR khi load trang
+            document.getElementById('momoQR').classList.add('hidden');
+            document.getElementById('vnpayQR').classList.add('hidden');
+
+            // Lắng nghe sự kiện click cho các tùy chọn thanh toán
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.addEventListener('click', function () {
+                    // Xóa lớp "selected" khỏi tất cả tùy chọn
+                    document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+
+                    // Ẩn tất cả mã QR
+                    document.getElementById('momoQR').classList.add('hidden');
+                    document.getElementById('vnpayQR').classList.add('hidden');
+
+                    // Hiện mã QR tương ứng khi được chọn
+                    if (this.id === 'momoOption') {
+                        document.getElementById('momo').checked = true;
+                        document.getElementById('momoQR').classList.remove('hidden');
+                    } else if (this.id === 'vnpayOption') {
+                        document.getElementById('vnpay').checked = true;
+                        document.getElementById('vnpayQR').classList.remove('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+    
+</body>
+</html>

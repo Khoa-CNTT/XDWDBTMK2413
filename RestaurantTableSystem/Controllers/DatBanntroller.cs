@@ -6,16 +6,24 @@ using System.Web.Mvc;
 
 namespace RestaurantTableSystem.Controllers
 {
-    public class HomeController : Controller
+    public class DatBanController : Controller
     {
         public ActionResult Index()
         {
             return View();
+
         }
-        public ActionResult detailnhahang()
+
+        public ActionResult ThanhToan()
         {
             return View();
         }
+
+        public ActionResult DatBan()
+        {
+            return View();
+        }
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

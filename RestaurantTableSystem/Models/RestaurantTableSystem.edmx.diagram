@@ -12,7 +12,7 @@
         <EntityTypeShape EntityType="RestaurantTableSystemModel.Payment" Width="1.5" PointX="7.5" PointY="16.5" IsExpanded="true" />
         <EntityTypeShape EntityType="RestaurantTableSystemModel.Restaurant" Width="1.5" PointX="3" PointY="13.875" IsExpanded="true" />
         <EntityTypeShape EntityType="RestaurantTableSystemModel.Review" Width="1.5" PointX="8.25" PointY="12.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="RestaurantTableSystemModel.sysdiagram" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RestaurantTableSystemModel.sysdiagram" Width="4.75" PointX="0.75" PointY="1.875" IsExpanded="true" />
         <EntityTypeShape EntityType="RestaurantTableSystemModel.Table" Width="1.5" PointX="10.5" PointY="15.625" IsExpanded="true" />
         <EntityTypeShape EntityType="RestaurantTableSystemModel.User" Width="1.5" PointX="0.75" PointY="9.125" IsExpanded="true" />
         <AssociationConnector Association="RestaurantTableSystemModel.FK__Bookings__restau__5BE2A6F2" ManuallyRouted="false" />
