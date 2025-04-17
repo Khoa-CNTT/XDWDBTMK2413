@@ -1,4 +1,4 @@
-﻿﻿@{
+﻿@{
     ViewBag.Title = "DatBan";
 }
 <!DOCTYPE html>
@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết nhà hàng</title>
+    <title>Đặt bàn nhà hàng</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
@@ -36,57 +36,38 @@
         </div>
     </header>
 
-    <!-- Restaurant Detail -->
+    <!-- Main Content -->
     <main class="container mx-auto px-4 py-12">
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-            <!-- Restaurant Image -->
-            <div class="h-96 bg-gray-200">
-                <img id="restaurantImage" src="" alt="" class="w-full h-full object-cover">
-            </div>
-
-            <!-- Restaurant Info -->
             <div class="p-8">
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <h1 id="restaurantTitle" class="heading text-3xl font-bold mb-2"></h1>
-                        <div class="flex items-center">
-                            <div id="restaurantRating" class="flex text-amber-400 mr-2"></div>
-                            <span id="restaurantReviewCount" class="text-gray-600"></span>
-                        </div>
-                    </div>
-                    <a href="index.html" class="text-amber-600 hover:text-amber-700 flex items-center">
-                        <button onclick="window.location.href='/Views/Home/DatBan.cshtml'" class="btn btn-success">
-                            Quay Lai
-                        </button>
-
-
-                    </a>
-                </div>
-
                 <div class="grid md:grid-cols-2 gap-12">
-                    <!-- Left Column - Restaurant Details -->
-                    <div>
-                        <h2 class="text-2xl font-bold mb-4">Giới thiệu</h2>
-                        <p id="restaurantDescription" class="text-gray-700 mb-6"></p>
-
-                        <div class="mb-6">
-                            <h3 class="text-xl font-bold mb-2">Địa chỉ</h3>
-                            <p id="restaurantAddress" class="text-gray-700"></p>
+                    <!-- Left Column - Restaurant Info -->
+                    <section class="md:col-span-1">
+                        <div class="bg-white border border-gray-200 rounded-xl shadow-md p-8">
+                            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8 heading">Thông Tin Nhà Hàng</h2>
+                            <div class="space-y-6">
+                                @foreach (var restaurant in Model)
+                                {
+                                    <div class="border border-gray-100 rounded-lg p-6 hover:shadow-md transition duration-300">
+                                        <h3 class="text-xl font-semibold text-gray-800 mb-2">@restaurant.name</h3>
+                                        <p class="text-gray-600 mb-1"><strong>📍 Địa chỉ:</strong> @restaurant.address</p>
+                                        <p class="text-gray-600 mb-1"><strong>🍽️ Số bàn tối đa:</strong> @restaurant.max_tables</p>
+                                        <p class="text-gray-600 mb-1"><strong>⏰ Giờ mở cửa:</strong> @restaurant.opening_hours</p>
+                                        <p class="text-gray-500 text-sm mt-2 italic">Ngày tạo: @restaurant.created_at.ToShortDateString()</p>
+                                        <div class="mt-4 text-center">
+                                            <a href="/Restaurant/Details/@restaurant.restaurant_id"
+                                               class="inline-block bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-2 rounded-lg transition">
+                                                Đặt bàn
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
                         </div>
-
-                        <div class="mb-6">
-                            <h3 class="text-xl font-bold mb-2">Giờ mở cửa</h3>
-                            <p id="restaurantHours" class="text-gray-700"></p>
-                        </div>
-
-                        <div>
-                            <h3 class="text-xl font-bold mb-2">Thực đơn nổi bật</h3>
-                            <ul id="restaurantMenu" class="space-y-3"></ul>
-                        </div>
-                    </div>
+                    </section>
 
                     <!-- Right Column - Booking Form -->
-                    <div>
+                    <section class="md:col-span-1">
                         <h2 class="text-2xl font-bold mb-4">Đặt bàn</h2>
                         <form id="bookingForm" class="space-y-4">
                             <div>
@@ -138,7 +119,7 @@
                             </div>
                             <button type="button" onclick="saveBookingInfo()" class="bg-amber-600 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-amber-700 transition">Xác Nhận Đặt Bàn</button>
                         </form>
-                    </div>
+                    </section>
                 </div>
             </div>
         </div>
@@ -174,32 +155,28 @@
     </footer>
 
     <script>
-    function saveBookingInfo() {
-        // Lấy thông tin từ các trường nhập liệu
-        var name = document.querySelector('input[type="text"]').value;
-        var phone = document.querySelector('input[type="tel"]').value;
-        var date = document.querySelector('input[type="date"]').value;
-        var time = document.querySelector('select').value;
-        var people = document.querySelectorAll('select')[1].value;
-        var specialRequest = document.querySelector('textarea').value;
+        function saveBookingInfo() {
+            var name = document.querySelector('input[type="text"]').value;
+            var phone = document.querySelector('input[type="tel"]').value;
+            var date = document.querySelector('input[type="date"]').value;
+            var time = document.querySelector('select').value;
+            var people = document.querySelectorAll('select')[1].value;
+            var specialRequest = document.querySelector('textarea').value;
 
-        // Kiểm tra xem tất cả các trường đã được nhập hay chưa
-        if (!name || !phone || !date || !time || !people) {
-            alert("Vui lòng điền đầy đủ thông tin!");
-            return; // Dừng lại nếu có trường chưa được điền
+            if (!name || !phone || !date || !time || !people) {
+                alert("Vui lòng điền đầy đủ thông tin!");
+                return;
+            }
+
+            sessionStorage.setItem('name', name);
+            sessionStorage.setItem('phone', phone);
+            sessionStorage.setItem('date', date);
+            sessionStorage.setItem('time', time);
+            sessionStorage.setItem('people', people);
+            sessionStorage.setItem('specialRequest', specialRequest);
+
+            window.location.href = '@Url.Action("ThanhToan", "DatBan")';
         }
-
-        // Lưu thông tin vào Session
-        sessionStorage.setItem('name', name);
-        sessionStorage.setItem('phone', phone);
-        sessionStorage.setItem('date', date);
-        sessionStorage.setItem('time', time);
-        sessionStorage.setItem('people', people);
-        sessionStorage.setItem('specialRequest', specialRequest);
-
-        // Chuyển hướng đến trang thanh toán
-        window.location.href = '@Url.Action("ThanhToan", "DatBan")';
-    }
     </script>
 </body>
 </html>

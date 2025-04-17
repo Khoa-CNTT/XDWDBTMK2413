@@ -57,47 +57,22 @@
     <!-- Famous Restaurants -->
     <section class="py-16 bg-gray-100">
         <div class="container mx-auto px-4">
-            <h2 class="heading text-4xl font-bold text-center mb-12 text-gray-800">Nhà hàng nổi tiếng</h2>
-
-            <!-- Bộ lọc danh mục -->
-            <div class="text-center mb-8">
-                <button class="filter-btn bg-amber-600 text-white px-4 py-2 rounded-lg mx-2 min-w-[120px]" data-category="all">Tất cả</button>
-                <button class="filter-btn bg-gray-300 px-4 py-2 rounded-lg mx-2 min-w-[120px]" data-category="hanquoc">Hàn Quốc</button>
-                <button class="filter-btn bg-gray-300 px-4 py-2 rounded-lg mx-2 min-w-[120px]" data-category="phap">Pháp</button>
-                <button class="filter-btn bg-gray-300 px-4 py-2 rounded-lg mx-2 min-w-[120px]" data-category="y">Ý</button>
-            </div>
-
-
+            <h1 class="text-3xl font-bold mb-8 text-center">Danh sách nhà hàng</h1>
             <div class="grid md:grid-cols-3 gap-8">
-                <!-- Nhà hàng 1 -->
-                <div class="restaurant bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition" data-category="hanquoc">
-                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5" alt="Nhà hàng 1" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="heading text-xl font-bold mb-2">GoGi House Nguyễn Văn Linh</h3>
-                        <p class="text-gray-600">Ẩm thực Hàn Quốc đích thực với không gian sang trọng</p>
-                        <button onclick="window.open('@Url.Action("detailnhahang", "Home")', '_blank')" class="btn btn-warning"><a href="#" class="text-amber-600 font-medium hover:text-amber-700 transition">Xem chi tiết →</a></button>
+                @foreach (var restaurant in Model)
+                {
+                    <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
+                        <h2 class="text-xl font-semibold mb-2">@restaurant.name</h2>
+                        <p class="text-gray-600"><strong>Địa chỉ:</strong> @restaurant.address</p>
+                        <p class="text-gray-600"><strong>Giờ mở cửa:</strong> @restaurant.opening_hours</p>
+                        <div class="mt-4 text-center">
+                            <a href="@Url.Action("detailnhahang", "Home", new { id = restaurant.restaurant_id })"
+                               class="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 transition">
+                                Xem chi tiết
+                            </a>
+                        </div>
                     </div>
-                </div>
-
-                <!-- Nhà hàng 2 -->
-                <div class="restaurant bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition" data-category="phap">
-                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4" alt="Nhà hàng 2" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="heading text-xl font-bold mb-2">La Maison 1888</h3>
-                        <p class="text-gray-600">Ẩm thực Pháp cao cấp với đầu bếp Michelin</p>
-                        <button onclick="window.open('@Url.Action("detailnhahang", "Home")', '_blank')" class="btn btn-warning"><a href="#" class="text-amber-600 font-medium hover:text-amber-700 transition">Xem chi tiết →</a></button>
-                    </div>
-                </div>
-
-                <!-- Nhà hàng 3 -->
-                <div class="restaurant bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition" data-category="y">
-                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5" alt="Nhà hàng 3" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="heading text-xl font-bold mb-2">The Pizza Company</h3>
-                        <p class="text-gray-600">Pizza Ý chuẩn vị với nguyên liệu nhập khẩu</p>
-                        <button onclick="window.open('@Url.Action("detailnhahang", "Home")', '_blank')" class="btn btn-warning"><a href="#" class="text-amber-600 font-medium hover:text-amber-700 transition">Xem chi tiết →</a></button>
-                    </div>
-                </div>
+                }
             </div>
         </div>
     </section>

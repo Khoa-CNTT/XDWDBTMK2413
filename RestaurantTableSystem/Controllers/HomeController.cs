@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RestaurantTableSystem.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,12 +11,17 @@ namespace RestaurantTableSystem.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            var restaurant = db.Restaurants.ToList(); // Lấy toàn bộ restaurant
+            return View(restaurant);
         }
+        private RestaurantTableSystemEntities db = new RestaurantTableSystemEntities();
+        // GET: Admin/RestaurantCategory
         public ActionResult detailnhahang()
         {
-            return View();
+            var restaurant = db.Restaurants.ToList(); // Lấy toàn bộ restaurant
+            return View(restaurant);
         }
+        
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
