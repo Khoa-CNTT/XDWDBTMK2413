@@ -1,4 +1,5 @@
 ﻿using RestaurantTableSystem.Models;
+using RestaurantTableSystem.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,10 +25,23 @@ namespace RestaurantTableSystem.Controllers
        
         private RestaurantTableSystemEntities db = new RestaurantTableSystemEntities();
         // GET: Admin/RestaurantCategory
-        public ActionResult DatBan()
+        public ActionResult DatBan(int id)
         {
-            var restaurant = db.Restaurants.ToList(); // Lấy toàn bộ restaurant
-            return View(restaurant);
+            var restaurant = db.Restaurants.FirstOrDefault(r => r.restaurant_id == id);
+            if (restaurant == null)
+            {
+                return HttpNotFound();
+            }
+
+            
+
+            var viewModel = new RestaurantDetailViewModel
+            {
+                Restaurant = restaurant,
+                
+            };
+
+            return View(viewModel);
         }
 
         public ActionResult About()

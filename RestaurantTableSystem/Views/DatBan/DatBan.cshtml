@@ -1,4 +1,10 @@
-﻿@{
+﻿@model RestaurantTableSystem.Models.ViewModels.RestaurantDetailViewModel
+@{
+    var restaurant = Model.Restaurant;
+   
+    ViewBag.Title = restaurant.name;
+}
+@{
     ViewBag.Title = "DatBan";
 }
 <!DOCTYPE html>
@@ -46,22 +52,22 @@
                         <div class="bg-white border border-gray-200 rounded-xl shadow-md p-8">
                             <h2 class="text-3xl font-bold text-center text-gray-800 mb-8 heading">Thông Tin Nhà Hàng</h2>
                             <div class="space-y-6">
-                                @foreach (var restaurant in Model)
-                                {
-                                    <div class="border border-gray-100 rounded-lg p-6 hover:shadow-md transition duration-300">
-                                        <h3 class="text-xl font-semibold text-gray-800 mb-2">@restaurant.name</h3>
-                                        <p class="text-gray-600 mb-1"><strong>📍 Địa chỉ:</strong> @restaurant.address</p>
-                                        <p class="text-gray-600 mb-1"><strong>🍽️ Số bàn tối đa:</strong> @restaurant.max_tables</p>
-                                        <p class="text-gray-600 mb-1"><strong>⏰ Giờ mở cửa:</strong> @restaurant.opening_hours</p>
-                                        <p class="text-gray-500 text-sm mt-2 italic">Ngày tạo: @restaurant.created_at.ToShortDateString()</p>
-                                        <div class="mt-4 text-center">
-                                            <a href="/Restaurant/Details/@restaurant.restaurant_id"
-                                               class="inline-block bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-2 rounded-lg transition">
-                                                Đặt bàn
-                                            </a>
-                                        </div>
+
+                                
+                                <div class="border border-gray-100 rounded-lg p-6 hover:shadow-md transition duration-300">
+                                    <h3 class="text-xl font-semibold text-gray-800 mb-2">@restaurant.name</h3>
+                                    <p class="text-gray-600 mb-1"><strong>📍 Địa chỉ:</strong> @restaurant.address</p>
+                                    <p class="text-gray-600 mb-1"><strong>🍽️ Số bàn tối đa:</strong> @restaurant.max_tables</p>
+                                    <p class="text-gray-600 mb-1"><strong>⏰ Giờ mở cửa:</strong> @restaurant.opening_hours</p>
+                                    
+                                    <div class="mt-4 text-center">
+                                        <a href="/Restaurant/Details/@restaurant.restaurant_id"
+                                           class="inline-block bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-2 rounded-lg transition">
+                                            Đặt bàn
+                                        </a>
                                     </div>
-                                }
+                                </div>
+                                
                             </div>
                         </div>
                     </section>

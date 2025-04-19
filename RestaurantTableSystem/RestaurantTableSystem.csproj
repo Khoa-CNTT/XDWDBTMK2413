@@ -184,6 +184,7 @@
     <Compile Include="Models\User.cs">
       <DependentUpon>RestaurantTableSystem.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\RestaurantDetailViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -2239,6 +2240,7 @@
     <Content Include="Views\DatBan\DatBan.cshtml" />
     <Content Include="Views\DatBan\ThanhToan.cshtml" />
     <Content Include="Views\DetailNhaHang\Index.cshtml" />
+    <Content Include="Views\DetailNhaHang\Menu.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,12 +1,11 @@
-﻿
-@model RestaurantTableSystem.Models.Restaurant
+﻿@model RestaurantTableSystem.Models.ViewModels.RestaurantDetailViewModel
 @{
-    var restaurant = Model;
+    var restaurant = Model.Restaurant;
+    var menuItems = Model.MenuItems;
     ViewBag.Title = restaurant.name;
 }
-
-@{
-    ViewBag.Title = "Index";
+ 
+@{   ViewBag.Title = "Index";
     
 }
 
@@ -51,29 +50,71 @@
     <section class="py-12">
         <div class="container mx-auto px-4">
             <h1 class="text-3xl font-bold mb-8 text-center heading">Chi Tiết Nhà Hàng</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-                
+                <!-- Thông tin nhà hàng -->
                 <div class="bg-white border border-gray-200 rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition">
                     <div class="p-6">
                         <h2 class="text-xl font-semibold text-gray-800 mb-2">@restaurant.name</h2>
                         <p class="text-gray-600 mb-1"><strong>Địa chỉ:</strong> @restaurant.address</p>
                         <p class="text-gray-600 mb-1"><strong>Số bàn tối đa:</strong> @restaurant.max_tables</p>
                         <p class="text-gray-600 mb-1"><strong>Giờ mở cửa:</strong> @restaurant.opening_hours</p>
-                        
+                        <p class="text-gray-600 mb-1"><strong>Mô Tả:</strong> @restaurant.description</p>
                     </div>
-
                     <div class="px-6 pb-6 text-center">
+                        <a href="@Url.Action("Menu", "DetailNhaHang", new { restaurantId = restaurant.restaurant_id })"
+                           class="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 transition">
+                            Xem Chi Tiết Menu
+                        </a>
                         <a href="@Url.Action("DatBan", "DatBan", new { id = restaurant.restaurant_id })"
                            class="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 transition">
                             Đặt Bàn
                         </a>
+
                     </div>
                 </div>
-                
+
+                <!-- Menu nhà hàng -->
+                <div class="bg-white border border-gray-200 rounded-2xl shadow-md p-6 overflow-y-auto max-h-[500px]">
+                    <h2 class="text-2xl font-semibold mb-4 heading">Thực Đơn</h2>
+
+                    @if (menuItems != null && menuItems.Any())
+                    {
+                        var groupedMenu = menuItems.GroupBy(m => m.category);
+                        foreach (var group in groupedMenu)
+                        {
+                            <div class="mb-6">
+                                <h3 class="text-xl font-bold text-amber-600 mb-2">
+                                    @Html.DisplayFor(modelItem => group.Key)
+                                </h3>
+                                <ul class="space-y-2">
+                                    @foreach (var item in group)
+                                    {
+                                        <li class="border-b pb-2">
+                                            <div class="flex justify-between text-gray-800">
+                                                <span class="font-medium">@item.name</span>
+                                                <span class="text-amber-500">@item.price.ToString("C")</span>
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(item.description))
+                                            {
+                                                <p class="text-sm text-gray-500">@item.description</p>
+                                            }
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-gray-500">Chưa có món nào được thêm.</p>
+                    }
+                </div>
+
             </div>
         </div>
     </section>
+
     <footer class="bg-gray-800 text-white py-12">
         <div class="container mx-auto px-4">
             <div class="grid md:grid-cols-3 gap-8">
@@ -97,7 +138,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-                <p>&copy; 2023 Smart Booking. All rights reserved.</p>
+                <p>&copy; 2025 Smart Booking. All rights reserved.</p>
             </div>
         </div>
     </footer>
