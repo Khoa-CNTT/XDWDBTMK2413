@@ -2240,7 +2240,6 @@
     <Content Include="Views\DatBan\DatBan.cshtml" />
     <Content Include="Views\DatBan\ThanhToan.cshtml" />
     <Content Include="Views\DetailNhaHang\Index.cshtml" />
-    <Content Include="Views\DetailNhaHang\Menu.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

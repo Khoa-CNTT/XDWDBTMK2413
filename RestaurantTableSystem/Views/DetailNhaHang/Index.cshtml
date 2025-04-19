@@ -62,10 +62,10 @@
                         <p class="text-gray-600 mb-1"><strong>Mô Tả:</strong> @restaurant.description</p>
                     </div>
                     <div class="px-6 pb-6 text-center">
-                        <a href="@Url.Action("Menu", "DetailNhaHang", new { restaurantId = restaurant.restaurant_id })"
-                           class="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 transition">
+                        <button onclick="openMenuModal()" class="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 transition">
                             Xem Chi Tiết Menu
-                        </a>
+                        </button>
+
                         <a href="@Url.Action("DatBan", "DatBan", new { id = restaurant.restaurant_id })"
                            class="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 transition">
                             Đặt Bàn
@@ -142,7 +142,59 @@
             </div>
         </div>
     </footer>
+    <div id="menuModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
+        <div class="bg-white rounded-xl max-w-3xl w-full p-6 overflow-y-auto max-h-[80vh] relative">
+            <button onclick="closeMenuModal()" class="absolute top-4 right-4 text-gray-600 hover:text-red-500">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 class="text-2xl font-semibold mb-4 heading text-center">Thực Đơn</h2>
+            @if (menuItems != null && menuItems.Any())
+            {
+                var groupedMenu = menuItems.GroupBy(m => m.category);
+                foreach (var group in groupedMenu)
+                {
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold text-amber-600 mb-2">
+                            @group.Key
+                        </h3>
+                        <ul class="space-y-2">
+                            @foreach (var item in group)
+                            {
+                                <li class="border-b pb-2">
+                                    <div class="flex justify-between text-gray-800">
+                                        <span class="font-medium">@item.name</span>
+                                        <span class="text-amber-500">@item.price.ToString("C")</span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(item.description))
+                                    {
+                                        <p class="text-sm text-gray-500">@item.description</p>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-gray-500 text-center">Chưa có món nào được thêm.</p>
+            }
+        </div>
+    </div>
+    <script>
+        function openMenuModal() {
+            document.getElementById("menuModal").classList.remove("hidden");
+            document.getElementById("menuModal").classList.add("flex");
+        }
+
+        function closeMenuModal() {
+            document.getElementById("menuModal").classList.add("hidden");
+            document.getElementById("menuModal").classList.remove("flex");
+        }
+    </script>
+
 </body>
+
 </html>
 
 
