@@ -134,6 +134,7 @@
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\RestaurantCategoryController.cs" />
     <Compile Include="Controllers\DatBanntroller.cs" />
+    <Compile Include="Controllers\DetailNhaHangController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -2237,7 +2238,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\DatBan\DatBan.cshtml" />
     <Content Include="Views\DatBan\ThanhToan.cshtml" />
-    <Content Include="Views\Home\detailnhahang.cshtml" />
+    <Content Include="Views\DetailNhaHang\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

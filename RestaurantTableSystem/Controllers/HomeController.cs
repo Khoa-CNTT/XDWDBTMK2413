@@ -14,13 +14,9 @@ namespace RestaurantTableSystem.Controllers
             var restaurant = db.Restaurants.ToList(); // Lấy toàn bộ restaurant
             return View(restaurant);
         }
+
         private RestaurantTableSystemEntities db = new RestaurantTableSystemEntities();
         // GET: Admin/RestaurantCategory
-        public ActionResult detailnhahang()
-        {
-            var restaurant = db.Restaurants.ToList(); // Lấy toàn bộ restaurant
-            return View(restaurant);
-        }
         
         public ActionResult About()
         {
