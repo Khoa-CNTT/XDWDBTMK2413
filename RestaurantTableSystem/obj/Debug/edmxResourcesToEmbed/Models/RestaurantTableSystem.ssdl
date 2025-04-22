@@ -38,6 +38,7 @@
     <Property Name="price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
     <Property Name="category" Type="varchar" MaxLength="20" />
     <Property Name="is_available" Type="bit" />
+    <Property Name="Image" Type="varbinary(max)" />
   </EntityType>
   <EntityType Name="Orders">
     <Key>
@@ -115,7 +116,7 @@
     <Property Name="user_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="email" Type="varchar" MaxLength="255" Nullable="false" />
     <Property Name="password_hash" Type="varchar" MaxLength="255" Nullable="false" />
-    <Property Name="full_name" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="full_name" Type="nvarchar" MaxLength="100" />
     <Property Name="phone" Type="varchar" MaxLength="20" />
     <Property Name="role" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="created_at" Type="datetime" />

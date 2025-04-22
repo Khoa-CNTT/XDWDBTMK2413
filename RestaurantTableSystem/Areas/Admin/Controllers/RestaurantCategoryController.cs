@@ -22,5 +22,6 @@ namespace RestaurantTableSystem.Areas.Admin.Controllers
             var menuItem = db.MenuItems.ToList();
             return View(menuItem);
         }
+        
     }
 }

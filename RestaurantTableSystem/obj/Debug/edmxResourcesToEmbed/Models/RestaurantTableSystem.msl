@@ -25,6 +25,7 @@
     <EntitySetMapping Name="MenuItems">
       <EntityTypeMapping TypeName="RestaurantTableSystemModel.MenuItem">
         <MappingFragment StoreEntitySet="MenuItems">
+          <ScalarProperty Name="Image" ColumnName="Image" />
           <ScalarProperty Name="menu_item_id" ColumnName="menu_item_id" />
           <ScalarProperty Name="restaurant_id" ColumnName="restaurant_id" />
           <ScalarProperty Name="name" ColumnName="name" />

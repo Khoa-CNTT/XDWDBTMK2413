@@ -38,6 +38,7 @@
     <Property Name="is_available" Type="Boolean" />
     <NavigationProperty Name="Restaurant" Relationship="Self.FK__MenuItems__resta__45F365D3" FromRole="MenuItems" ToRole="Restaurants" />
     <NavigationProperty Name="Orders" Relationship="Self.FK__Orders__menu_ite__656C112C" FromRole="MenuItems" ToRole="Orders" />
+    <Property Name="Image" Type="Binary" MaxLength="Max" FixedLength="false" />
   </EntityType>
   <EntityType Name="Order">
     <Key>
@@ -127,7 +128,7 @@
     <Property Name="user_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="password_hash" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="full_name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="full_name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="phone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
     <Property Name="role" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="created_at" Type="DateTime" Precision="3" />

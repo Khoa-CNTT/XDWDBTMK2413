@@ -6,6 +6,8 @@
 }
 
 
+
+
 @section naviheader{
     <!-- Left navbar links -->
     <ul class="navbar-nav">
@@ -26,7 +28,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Quản lý danh mục sản phẩm</h1>
+                <h1>Quản lý menu restaurant</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -60,7 +62,7 @@
                         <th>Tên món</th>
                         <th>Image</th>
                         <th>Mô tả</th>
-                        <th>Giá </th>
+                        <th>giá </th>
 
 
                         @*<th>Hiển thị</th>*@
@@ -77,10 +79,10 @@
                             <td>@menuItem.Image</td>
                             <td>@menuItem.description</td>
                             <td>@menuItem.price</td>
-                            
+
                             <td>
-                                @*<a href="/admin/productcategory/edit/@item.Id" class="btn btn-sm btn-primary">Sửa</a>
-                                    <a href="#" data-id="@item.Id" class="btn btn-sm btn-danger btnDelete">Xóa</a>*@
+                                @*<a href="@Url.Action("Detail", "RestaurantCategory", new { id = restaurant.restaurant_id })" class="btn btn-sm btn-primary">Chi Tiết</a>*@
+
                             </td>
 
                         </tr>
@@ -100,6 +102,7 @@
     <!-- /.card -->
 
 </section>
+
 
 
 
