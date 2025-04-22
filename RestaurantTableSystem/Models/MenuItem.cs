@@ -27,6 +27,7 @@ namespace RestaurantTableSystem.Models
         public decimal price { get; set; }
         public string category { get; set; }
         public Nullable<bool> is_available { get; set; }
+        public byte[] Image { get; set; }
     
         public virtual Restaurant Restaurant { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="RestaurantTableSystemModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="RestaurantTableSystemModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Bookings">
           <Key>
             <PropertyRef Name="booking_id" />
@@ -43,6 +43,7 @@
           <Property Name="price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="category" Type="varchar" MaxLength="20" />
           <Property Name="is_available" Type="bit" />
+          <Property Name="Image" Type="varbinary(max)" />
         </EntityType>
         <EntityType Name="Orders">
           <Key>
@@ -120,7 +121,7 @@
           <Property Name="user_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="email" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="password_hash" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="full_name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="full_name" Type="nvarchar" MaxLength="100" />
           <Property Name="phone" Type="varchar" MaxLength="20" />
           <Property Name="role" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="created_at" Type="datetime" />
@@ -364,8 +365,7 @@
             <End Role="Tables" EntitySet="Tables" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="RestaurantTableSystemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -407,6 +407,7 @@
           <Property Name="is_available" Type="Boolean" />
           <NavigationProperty Name="Restaurant" Relationship="Self.FK__MenuItems__resta__45F365D3" FromRole="MenuItems" ToRole="Restaurants" />
           <NavigationProperty Name="Orders" Relationship="Self.FK__Orders__menu_ite__656C112C" FromRole="MenuItems" ToRole="Orders" />
+          <Property Name="Image" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <EntityType Name="Order">
           <Key>
@@ -496,7 +497,7 @@
           <Property Name="user_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="password_hash" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="full_name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="full_name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="phone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="role" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="created_at" Type="DateTime" Precision="3" />
@@ -745,6 +746,7 @@
           <EntitySetMapping Name="MenuItems">
             <EntityTypeMapping TypeName="RestaurantTableSystemModel.MenuItem">
               <MappingFragment StoreEntitySet="MenuItems">
+                <ScalarProperty Name="Image" ColumnName="Image" />
                 <ScalarProperty Name="menu_item_id" ColumnName="menu_item_id" />
                 <ScalarProperty Name="restaurant_id" ColumnName="restaurant_id" />
                 <ScalarProperty Name="name" ColumnName="name" />
