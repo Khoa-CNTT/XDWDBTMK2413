@@ -1,0 +1,65 @@
+﻿body {
+    background: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    margin-top: 60px;
+    max-width: 500px;
+}
+
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 16px;
+    border: none;
+    background: #ffffff;
+}
+
+.card-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-container {
+    padding: 20px;
+}
+
+.input-group-text {
+    background-color: #f1f1f1;
+    border: 1px solid #ced4da;
+}
+
+.form-control {
+    border-radius: 8px;
+}
+
+.btn-primary {
+    border-radius: 8px;
+    background-color: #007bff;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+.text-danger {
+    font-size: 0.9rem;
+}
+
+#togglePassword {
+    user-select: none;
+}
+/* Hiển thị biểu tượng 👁️ trong ô password */
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: #666;
+    user-select: none;
+}

@@ -133,6 +133,7 @@
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\RestaurantCategoryController.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\DatBanntroller.cs" />
     <Compile Include="Controllers\DetailNhaHangController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -188,6 +189,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Account\register-form.css" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -2241,6 +2243,8 @@
     <Content Include="Views\DatBan\DatBan.cshtml" />
     <Content Include="Views\DatBan\ThanhToan.cshtml" />
     <Content Include="Views\DetailNhaHang\Index.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

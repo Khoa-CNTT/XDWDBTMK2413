@@ -1,0 +1,87 @@
+﻿@model RestaurantTableSystem.Models.User
+
+@{
+    ViewBag.Title = "Đăng ký";
+}
+
+<link rel="stylesheet" href="~/Content/Account/register-form.css" />
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4">@ViewBag.Title</h2>
+
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
+
+        <div class="form-container">
+            <div class="form-group mb-3">
+                @Html.LabelFor(m => m.full_name, "Họ Tên")
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">👤</span>
+                    </div>
+                    @Html.TextBoxFor(m => m.full_name, new { @class = "form-control", placeholder = "Họ và tên" })
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                @Html.LabelFor(m => m.email, "Email")
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">✉️</span>
+                    </div>
+                    @Html.TextBoxFor(m => m.email, new { @class = "form-control", placeholder = "Email" })
+                </div>
+                @Html.ValidationMessageFor(m => m.email, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                @Html.LabelFor(m => m.password_hash, "Mật khẩu")
+                <div class="input-group" id="show_hide_password">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">🔒</span>
+                    </div>
+                    @Html.PasswordFor(m => m.password_hash, new { @class = "form-control", placeholder = "Mật khẩu", id = "password" })
+                    <div class="input-group-append">
+                        <span class="input-group-text" style="cursor:pointer" id="togglePassword">👁️</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mb-4">
+                @Html.LabelFor(m => m.phone, "Phone")
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">📞</span>
+                    </div>
+                    @Html.TextBoxFor(m => m.phone, new { @class = "form-control", placeholder = "Số điện thoại" })
+                </div>
+            </div>
+
+            <div class="text-center">
+                <input type="submit" class="btn btn-primary btn-lg px-5" value="Đăng ký" />
+            </div>
+
+        </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        document.getElementById("togglePassword").addEventListener("click", function () {
+            const passwordInput = document.getElementById("password");
+            const isPassword = passwordInput.getAttribute("type") === "password";
+            passwordInput.setAttribute("type", isPassword ? "text" : "password");
+
+            // Optional: đổi icon chữ 👁️ sang 👁️‍🗨️
+            this.textContent = isPassword ? "🙈" : "👁️";
+        });
+    </script>
+}
