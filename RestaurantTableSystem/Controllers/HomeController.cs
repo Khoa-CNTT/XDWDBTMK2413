@@ -11,14 +11,14 @@ namespace RestaurantTableSystem.Controllers
     {
         public ActionResult Index()
         {
-            var restaurant = db.Restaurants.ToList(); // Lấy toàn bộ restaurant
-            return View(restaurant);
+            var list = db.Restaurants.ToList(); // hoặc lấy theo điều kiện
+            return View(list);
         }
 
         private RestaurantTableSystemEntities db = new RestaurantTableSystemEntities();
         // GET: Admin/RestaurantCategory
-        
-        public ActionResult About()
+
+        public ActionResult Ab
         {
             ViewBag.Message = "Your application description page.";
 

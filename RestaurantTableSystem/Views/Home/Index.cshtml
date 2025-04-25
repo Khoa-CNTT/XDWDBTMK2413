@@ -1,4 +1,5 @@
-﻿﻿@{
+﻿@model IEnumerable<RestaurantTableSystem.Models.Restaurant>
+@{
     ViewBag.Title = "Home Page";
 }
 
@@ -65,31 +66,39 @@
         </div>
     </section>
 
-    <!-- Famous Restaurants -->
+    @*Famous Restaurants*@
     <section class="py-16 bg-gray-100">
         <div class="container mx-auto px-4">
             <h1 class="text-3xl font-bold mb-8 text-center">Danh sách nhà hàng</h1>
             <div class="grid md:grid-cols-3 gap-8">
-                @foreach (var restaurant in Model)
+                @if (Model != null)
                 {
-                    <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
-                        <h2 class="text-xl font-semibold mb-2">@restaurant.name</h2>
-                        <p class="text-gray-600"><strong>Địa chỉ:</strong> @restaurant.address</p>
-                        <p class="text-gray-600"><strong>Giờ mở cửa:</strong> @restaurant.opening_hours</p>
-                        <div class="mt-4 text-center">
-                            <a href="@Url.Action("Index", "DetailNhaHang", new { id = restaurant.restaurant_id })"
-                               class="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 transition">
-                                Xem chi tiết
-                            </a>
+                    foreach (var restaurant in Model)
+                    {
+                        <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
+                            <h2 class="text-xl font-semibold mb-2">@restaurant.name</h2>
+                            <p class="text-gray-600"><strong>Địa chỉ:</strong> @restaurant.address</p>
+                            <p class="text-gray-600"><strong>Giờ mở cửa:</strong> @restaurant.opening_hours</p>
+                            <div class="mt-4 text-center">
+                                <a href="@Url.Action("Index", "DetailNhaHang", new { id = restaurant.restaurant_id })"
+                                   class="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 transition">
+                                    Xem chi tiết
+                                </a>
+                            </div>
                         </div>
-                    </div>
+                    }
                 }
+                else
+                {
+                    <p class="text-center text-gray-500">Không có dữ liệu nhà hàng.</p>
+                }
+
             </div>
         </div>
     </section>
-    <!-- Script của bộ lọc các nhà hàng  -->
+    Script của bộ lọc các nhà hàng
     <script>
-    document.querySelectorAll('.filter-btn').forEach(button => {
+        document.querySelectorAll('.filter-btn').forEach(button => {
             button.addEventListener('click', () => {
                 document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('bg-amber-600', 'text-white'));
                 button.classList.add('bg-amber-600', 'text-white');
