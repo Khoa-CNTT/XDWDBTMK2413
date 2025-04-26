@@ -18,7 +18,7 @@ namespace RestaurantTableSystem.Controllers
         private RestaurantTableSystemEntities db = new RestaurantTableSystemEntities();
         // GET: Admin/RestaurantCategory
 
-        public ActionResult Ab
+        public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
 

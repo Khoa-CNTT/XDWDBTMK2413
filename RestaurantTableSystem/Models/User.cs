@@ -18,8 +18,8 @@ namespace RestaurantTableSystem.Models
         public User()
         {
             this.Bookings = new HashSet<Booking>();
-            this.Restaurants = new HashSet<Restaurant>();
             this.Reviews = new HashSet<Review>();
+            this.Restaurants = new HashSet<Restaurant>();
         }
     
         public int user_id { get; set; }
@@ -34,8 +34,8 @@ namespace RestaurantTableSystem.Models
         public virtual ICollection<Booking> Bookings { get; set; }
         public virtual LoyaltyPoint LoyaltyPoint { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Restaurant> Restaurants { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Review> Reviews { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Restaurant> Restaurants { get; set; }
     }
 }

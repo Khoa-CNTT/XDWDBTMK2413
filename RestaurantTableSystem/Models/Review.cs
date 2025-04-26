@@ -21,7 +21,7 @@ namespace RestaurantTableSystem.Models
         public string comment { get; set; }
         public Nullable<System.DateTime> created_at { get; set; }
     
-        public virtual Restaurant Restaurant { get; set; }
         public virtual User User { get; set; }
+        public virtual Restaurant Restaurant { get; set; }
     }
 }

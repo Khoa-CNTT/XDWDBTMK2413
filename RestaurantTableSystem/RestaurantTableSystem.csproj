@@ -176,9 +176,6 @@
     <Compile Include="Models\Review.cs">
       <DependentUpon>RestaurantTableSystem.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\sysdiagram.cs">
-      <DependentUpon>RestaurantTableSystem.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Table.cs">
       <DependentUpon>RestaurantTableSystem.tt</DependentUpon>
     </Compile>

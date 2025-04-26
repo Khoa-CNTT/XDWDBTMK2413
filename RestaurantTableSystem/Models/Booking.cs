@@ -30,7 +30,6 @@ namespace RestaurantTableSystem.Models
         public string status { get; set; }
         public string special_request { get; set; }
     
-        public virtual Restaurant Restaurant { get; set; }
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Order> Orders { get; set; }
@@ -38,5 +37,6 @@ namespace RestaurantTableSystem.Models
         public virtual ICollection<Payment> Payments { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Table> Tables { get; set; }
+        public virtual Restaurant Restaurant { get; set; }
     }
 }

@@ -11,11 +11,11 @@
     <Property Name="number_of_guests" Type="Int32" Nullable="false" />
     <Property Name="status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
     <Property Name="special_request" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-    <NavigationProperty Name="Restaurant" Relationship="Self.FK__Bookings__restau__5BE2A6F2" FromRole="Bookings" ToRole="Restaurants" />
     <NavigationProperty Name="User" Relationship="Self.FK__Bookings__user_i__5AEE82B9" FromRole="Bookings" ToRole="Users" />
     <NavigationProperty Name="Orders" Relationship="Self.FK__Orders__booking___6477ECF3" FromRole="Bookings" ToRole="Orders" />
     <NavigationProperty Name="Payments" Relationship="Self.FK__Payments__bookin__68487DD7" FromRole="Bookings" ToRole="Payments" />
     <NavigationProperty Name="Tables" Relationship="Self.BookingTable" FromRole="Bookings" ToRole="Tables" />
+    <NavigationProperty Name="Restaurant" Relationship="RestaurantTableSystemModel.FK__Bookings__restau__4BAC3F29" FromRole="Booking" ToRole="Restaurant" />
   </EntityType>
   <EntityType Name="LoyaltyPoint">
     <Key>
@@ -36,9 +36,9 @@
     <Property Name="price" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
     <Property Name="category" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
     <Property Name="is_available" Type="Boolean" />
-    <NavigationProperty Name="Restaurant" Relationship="Self.FK__MenuItems__resta__45F365D3" FromRole="MenuItems" ToRole="Restaurants" />
     <NavigationProperty Name="Orders" Relationship="Self.FK__Orders__menu_ite__656C112C" FromRole="MenuItems" ToRole="Orders" />
     <Property Name="Image" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <NavigationProperty Name="Restaurant" Relationship="RestaurantTableSystemModel.FK__MenuItems__resta__45F365D3" FromRole="MenuItem" ToRole="Restaurant" />
   </EntityType>
   <EntityType Name="Order">
     <Key>
@@ -64,27 +64,6 @@
     <Property Name="transaction_id" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="Booking" Relationship="Self.FK__Payments__bookin__68487DD7" FromRole="Payments" ToRole="Bookings" />
   </EntityType>
-  <EntityType Name="Restaurant">
-    <Key>
-      <PropertyRef Name="restaurant_id" />
-    </Key>
-    <Property Name="restaurant_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="user_id" Type="Int32" />
-    <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="address" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="latitude" Type="Decimal" Precision="10" Scale="8" Nullable="false" />
-    <Property Name="longitude" Type="Decimal" Precision="11" Scale="8" Nullable="false" />
-    <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-    <Property Name="max_tables" Type="Int32" Nullable="false" />
-    <Property Name="opening_hours" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="is_approved" Type="Boolean" />
-    <Property Name="created_at" Type="DateTime" Precision="3" />
-    <NavigationProperty Name="Bookings" Relationship="Self.FK__Bookings__restau__5BE2A6F2" FromRole="Restaurants" ToRole="Bookings" />
-    <NavigationProperty Name="MenuItems" Relationship="Self.FK__MenuItems__resta__45F365D3" FromRole="Restaurants" ToRole="MenuItems" />
-    <NavigationProperty Name="User" Relationship="Self.FK__Restauran__user___3C69FB99" FromRole="Restaurants" ToRole="Users" />
-    <NavigationProperty Name="Reviews" Relationship="Self.FK__Reviews__restaur__76969D2E" FromRole="Restaurants" ToRole="Reviews" />
-    <NavigationProperty Name="Tables" Relationship="Self.FK__Tables__restaura__412EB0B6" FromRole="Restaurants" ToRole="Tables" />
-  </EntityType>
   <EntityType Name="Review">
     <Key>
       <PropertyRef Name="review_id" />
@@ -95,18 +74,8 @@
     <Property Name="rating" Type="Byte" Nullable="false" />
     <Property Name="comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="created_at" Type="DateTime" Precision="3" />
-    <NavigationProperty Name="Restaurant" Relationship="Self.FK__Reviews__restaur__76969D2E" FromRole="Reviews" ToRole="Restaurants" />
     <NavigationProperty Name="User" Relationship="Self.FK__Reviews__user_id__75A278F5" FromRole="Reviews" ToRole="Users" />
-  </EntityType>
-  <EntityType Name="sysdiagram">
-    <Key>
-      <PropertyRef Name="diagram_id" />
-    </Key>
-    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="principal_id" Type="Int32" Nullable="false" />
-    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="version" Type="Int32" />
-    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <NavigationProperty Name="Restaurant" Relationship="RestaurantTableSystemModel.FK__Reviews__restaur__5EBF139D" FromRole="Review" ToRole="Restaurant" />
   </EntityType>
   <EntityType Name="Table">
     <Key>
@@ -118,8 +87,8 @@
     <Property Name="capacity" Type="Int32" Nullable="false" />
     <Property Name="type" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="is_available" Type="Boolean" />
-    <NavigationProperty Name="Restaurant" Relationship="Self.FK__Tables__restaura__412EB0B6" FromRole="Tables" ToRole="Restaurants" />
     <NavigationProperty Name="Bookings" Relationship="Self.BookingTable" FromRole="Tables" ToRole="Bookings" />
+    <NavigationProperty Name="Restaurant" Relationship="RestaurantTableSystemModel.FK__Tables__restaura__412EB0B6" FromRole="Table" ToRole="Restaurant" />
   </EntityType>
   <EntityType Name="User">
     <Key>
@@ -128,27 +97,15 @@
     <Property Name="user_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="password_hash" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="full_name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="full_name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="phone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
     <Property Name="role" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="created_at" Type="DateTime" Precision="3" />
     <NavigationProperty Name="Bookings" Relationship="Self.FK__Bookings__user_i__5AEE82B9" FromRole="Users" ToRole="Bookings" />
     <NavigationProperty Name="LoyaltyPoint" Relationship="Self.FK__LoyaltyPo__user___7B5B524B" FromRole="Users" ToRole="LoyaltyPoints" />
-    <NavigationProperty Name="Restaurants" Relationship="Self.FK__Restauran__user___3C69FB99" FromRole="Users" ToRole="Restaurants" />
     <NavigationProperty Name="Reviews" Relationship="Self.FK__Reviews__user_id__75A278F5" FromRole="Users" ToRole="Reviews" />
+    <NavigationProperty Name="Restaurants" Relationship="RestaurantTableSystemModel.FK__Restauran__user___3C69FB99" FromRole="User" ToRole="Restaurant" />
   </EntityType>
-  <Association Name="FK__Bookings__restau__5BE2A6F2">
-    <End Role="Restaurants" Type="Self.Restaurant" Multiplicity="0..1" />
-    <End Role="Bookings" Type="Self.Booking" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Restaurants">
-        <PropertyRef Name="restaurant_id" />
-      </Principal>
-      <Dependent Role="Bookings">
-        <PropertyRef Name="restaurant_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK__Bookings__user_i__5AEE82B9">
     <End Role="Users" Type="Self.User" Multiplicity="0..1" />
     <End Role="Bookings" Type="Self.Booking" Multiplicity="*" />
@@ -203,20 +160,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__MenuItems__resta__45F365D3">
-    <End Role="Restaurants" Type="Self.Restaurant" Multiplicity="0..1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Role="MenuItems" Type="Self.MenuItem" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Restaurants">
-        <PropertyRef Name="restaurant_id" />
-      </Principal>
-      <Dependent Role="MenuItems">
-        <PropertyRef Name="restaurant_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK__Orders__menu_ite__656C112C">
     <End Role="MenuItems" Type="Self.MenuItem" Multiplicity="0..1">
       <OnDelete Action="Cascade" />
@@ -228,46 +171,6 @@
       </Principal>
       <Dependent Role="Orders">
         <PropertyRef Name="menu_item_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK__Restauran__user___3C69FB99">
-    <End Role="Users" Type="Self.User" Multiplicity="0..1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Role="Restaurants" Type="Self.Restaurant" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Users">
-        <PropertyRef Name="user_id" />
-      </Principal>
-      <Dependent Role="Restaurants">
-        <PropertyRef Name="user_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK__Reviews__restaur__76969D2E">
-    <End Role="Restaurants" Type="Self.Restaurant" Multiplicity="0..1" />
-    <End Role="Reviews" Type="Self.Review" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Restaurants">
-        <PropertyRef Name="restaurant_id" />
-      </Principal>
-      <Dependent Role="Reviews">
-        <PropertyRef Name="restaurant_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK__Tables__restaura__412EB0B6">
-    <End Role="Restaurants" Type="Self.Restaurant" Multiplicity="0..1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Role="Tables" Type="Self.Table" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Restaurants">
-        <PropertyRef Name="restaurant_id" />
-      </Principal>
-      <Dependent Role="Tables">
-        <PropertyRef Name="restaurant_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -293,15 +196,9 @@
     <EntitySet Name="MenuItems" EntityType="Self.MenuItem" />
     <EntitySet Name="Orders" EntityType="Self.Order" />
     <EntitySet Name="Payments" EntityType="Self.Payment" />
-    <EntitySet Name="Restaurants" EntityType="Self.Restaurant" />
     <EntitySet Name="Reviews" EntityType="Self.Review" />
-    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
     <EntitySet Name="Tables" EntityType="Self.Table" />
     <EntitySet Name="Users" EntityType="Self.User" />
-    <AssociationSet Name="FK__Bookings__restau__5BE2A6F2" Association="Self.FK__Bookings__restau__5BE2A6F2">
-      <End Role="Restaurants" EntitySet="Restaurants" />
-      <End Role="Bookings" EntitySet="Bookings" />
-    </AssociationSet>
     <AssociationSet Name="FK__Bookings__user_i__5AEE82B9" Association="Self.FK__Bookings__user_i__5AEE82B9">
       <End Role="Users" EntitySet="Users" />
       <End Role="Bookings" EntitySet="Bookings" />
@@ -318,25 +215,9 @@
       <End Role="Users" EntitySet="Users" />
       <End Role="LoyaltyPoints" EntitySet="LoyaltyPoints" />
     </AssociationSet>
-    <AssociationSet Name="FK__MenuItems__resta__45F365D3" Association="Self.FK__MenuItems__resta__45F365D3">
-      <End Role="Restaurants" EntitySet="Restaurants" />
-      <End Role="MenuItems" EntitySet="MenuItems" />
-    </AssociationSet>
     <AssociationSet Name="FK__Orders__menu_ite__656C112C" Association="Self.FK__Orders__menu_ite__656C112C">
       <End Role="MenuItems" EntitySet="MenuItems" />
       <End Role="Orders" EntitySet="Orders" />
-    </AssociationSet>
-    <AssociationSet Name="FK__Restauran__user___3C69FB99" Association="Self.FK__Restauran__user___3C69FB99">
-      <End Role="Users" EntitySet="Users" />
-      <End Role="Restaurants" EntitySet="Restaurants" />
-    </AssociationSet>
-    <AssociationSet Name="FK__Reviews__restaur__76969D2E" Association="Self.FK__Reviews__restaur__76969D2E">
-      <End Role="Restaurants" EntitySet="Restaurants" />
-      <End Role="Reviews" EntitySet="Reviews" />
-    </AssociationSet>
-    <AssociationSet Name="FK__Tables__restaura__412EB0B6" Association="Self.FK__Tables__restaura__412EB0B6">
-      <End Role="Restaurants" EntitySet="Restaurants" />
-      <End Role="Tables" EntitySet="Tables" />
     </AssociationSet>
     <AssociationSet Name="FK__Reviews__user_id__75A278F5" Association="Self.FK__Reviews__user_id__75A278F5">
       <End Role="Users" EntitySet="Users" />
@@ -346,5 +227,114 @@
       <End Role="Bookings" EntitySet="Bookings" />
       <End Role="Tables" EntitySet="Tables" />
     </AssociationSet>
+    <EntitySet Name="Restaurants" EntityType="RestaurantTableSystemModel.Restaurant" />
+    <AssociationSet Name="FK__Bookings__restau__4BAC3F29" Association="RestaurantTableSystemModel.FK__Bookings__restau__4BAC3F29">
+      <End Role="Restaurant" EntitySet="Restaurants" />
+      <End Role="Booking" EntitySet="Bookings" />
+    </AssociationSet>
+    <AssociationSet Name="FK__MenuItems__resta__45F365D3" Association="RestaurantTableSystemModel.FK__MenuItems__resta__45F365D3">
+      <End Role="Restaurant" EntitySet="Restaurants" />
+      <End Role="MenuItem" EntitySet="MenuItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Restauran__user___3C69FB99" Association="RestaurantTableSystemModel.FK__Restauran__user___3C69FB99">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Restaurant" EntitySet="Restaurants" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Reviews__restaur__5EBF139D" Association="RestaurantTableSystemModel.FK__Reviews__restaur__5EBF139D">
+      <End Role="Restaurant" EntitySet="Restaurants" />
+      <End Role="Review" EntitySet="Reviews" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Tables__restaura__412EB0B6" Association="RestaurantTableSystemModel.FK__Tables__restaura__412EB0B6">
+      <End Role="Restaurant" EntitySet="Restaurants" />
+      <End Role="Table" EntitySet="Tables" />
+    </AssociationSet>
   </EntityContainer>
+  <EntityType Name="Restaurant">
+    <Key>
+      <PropertyRef Name="restaurant_id" />
+    </Key>
+    <Property Name="restaurant_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="user_id" Type="Int32" />
+    <Property Name="name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="address" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="latitude" Type="Decimal" Nullable="false" Precision="10" Scale="8" />
+    <Property Name="longitude" Type="Decimal" Nullable="false" Precision="11" Scale="8" />
+    <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="max_tables" Type="Int32" Nullable="false" />
+    <Property Name="opening_hours" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="is_approved" Type="Boolean" />
+    <Property Name="created_at" Type="DateTime" Precision="3" />
+    <Property Name="Image" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Bookings" Relationship="RestaurantTableSystemModel.FK__Bookings__restau__4BAC3F29" FromRole="Restaurant" ToRole="Booking" />
+    <NavigationProperty Name="MenuItems" Relationship="RestaurantTableSystemModel.FK__MenuItems__resta__45F365D3" FromRole="Restaurant" ToRole="MenuItem" />
+    <NavigationProperty Name="User" Relationship="RestaurantTableSystemModel.FK__Restauran__user___3C69FB99" FromRole="Restaurant" ToRole="User" />
+    <NavigationProperty Name="Reviews" Relationship="RestaurantTableSystemModel.FK__Reviews__restaur__5EBF139D" FromRole="Restaurant" ToRole="Review" />
+    <NavigationProperty Name="Tables" Relationship="RestaurantTableSystemModel.FK__Tables__restaura__412EB0B6" FromRole="Restaurant" ToRole="Table" />
+  </EntityType>
+  <Association Name="FK__Bookings__restau__4BAC3F29">
+    <End Type="RestaurantTableSystemModel.Restaurant" Role="Restaurant" Multiplicity="0..1" />
+    <End Type="RestaurantTableSystemModel.Booking" Role="Booking" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Restaurant">
+        <PropertyRef Name="restaurant_id" />
+      </Principal>
+      <Dependent Role="Booking">
+        <PropertyRef Name="restaurant_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__MenuItems__resta__45F365D3">
+    <End Type="RestaurantTableSystemModel.Restaurant" Role="Restaurant" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="RestaurantTableSystemModel.MenuItem" Role="MenuItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Restaurant">
+        <PropertyRef Name="restaurant_id" />
+      </Principal>
+      <Dependent Role="MenuItem">
+        <PropertyRef Name="restaurant_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Restauran__user___3C69FB99">
+    <End Type="RestaurantTableSystemModel.User" Role="User" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="RestaurantTableSystemModel.Restaurant" Role="Restaurant" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="user_id" />
+      </Principal>
+      <Dependent Role="Restaurant">
+        <PropertyRef Name="user_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Reviews__restaur__5EBF139D">
+    <End Type="RestaurantTableSystemModel.Restaurant" Role="Restaurant" Multiplicity="0..1" />
+    <End Type="RestaurantTableSystemModel.Review" Role="Review" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Restaurant">
+        <PropertyRef Name="restaurant_id" />
+      </Principal>
+      <Dependent Role="Review">
+        <PropertyRef Name="restaurant_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Tables__restaura__412EB0B6">
+    <End Type="RestaurantTableSystemModel.Restaurant" Role="Restaurant" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="RestaurantTableSystemModel.Table" Role="Table" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Restaurant">
+        <PropertyRef Name="restaurant_id" />
+      </Principal>
+      <Dependent Role="Table">
+        <PropertyRef Name="restaurant_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

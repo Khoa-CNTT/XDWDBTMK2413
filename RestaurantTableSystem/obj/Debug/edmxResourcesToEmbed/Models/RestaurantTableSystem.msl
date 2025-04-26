@@ -59,23 +59,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Restaurants">
-      <EntityTypeMapping TypeName="RestaurantTableSystemModel.Restaurant">
-        <MappingFragment StoreEntitySet="Restaurants">
-          <ScalarProperty Name="restaurant_id" ColumnName="restaurant_id" />
-          <ScalarProperty Name="user_id" ColumnName="user_id" />
-          <ScalarProperty Name="name" ColumnName="name" />
-          <ScalarProperty Name="address" ColumnName="address" />
-          <ScalarProperty Name="latitude" ColumnName="latitude" />
-          <ScalarProperty Name="longitude" ColumnName="longitude" />
-          <ScalarProperty Name="description" ColumnName="description" />
-          <ScalarProperty Name="max_tables" ColumnName="max_tables" />
-          <ScalarProperty Name="opening_hours" ColumnName="opening_hours" />
-          <ScalarProperty Name="is_approved" ColumnName="is_approved" />
-          <ScalarProperty Name="created_at" ColumnName="created_at" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="Reviews">
       <EntityTypeMapping TypeName="RestaurantTableSystemModel.Review">
         <MappingFragment StoreEntitySet="Reviews">
@@ -85,17 +68,6 @@
           <ScalarProperty Name="rating" ColumnName="rating" />
           <ScalarProperty Name="comment" ColumnName="comment" />
           <ScalarProperty Name="created_at" ColumnName="created_at" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="sysdiagrams">
-      <EntityTypeMapping TypeName="RestaurantTableSystemModel.sysdiagram">
-        <MappingFragment StoreEntitySet="sysdiagrams">
-          <ScalarProperty Name="name" ColumnName="name" />
-          <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-          <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-          <ScalarProperty Name="version" ColumnName="version" />
-          <ScalarProperty Name="definition" ColumnName="definition" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -132,5 +104,23 @@
         <ScalarProperty Name="table_id" ColumnName="table_id" />
       </EndProperty>
     </AssociationSetMapping>
+    <EntitySetMapping Name="Restaurants">
+      <EntityTypeMapping TypeName="RestaurantTableSystemModel.Restaurant">
+        <MappingFragment StoreEntitySet="Restaurants">
+          <ScalarProperty Name="Image" ColumnName="Image" />
+          <ScalarProperty Name="created_at" ColumnName="created_at" />
+          <ScalarProperty Name="is_approved" ColumnName="is_approved" />
+          <ScalarProperty Name="opening_hours" ColumnName="opening_hours" />
+          <ScalarProperty Name="max_tables" ColumnName="max_tables" />
+          <ScalarProperty Name="description" ColumnName="description" />
+          <ScalarProperty Name="longitude" ColumnName="longitude" />
+          <ScalarProperty Name="latitude" ColumnName="latitude" />
+          <ScalarProperty Name="address" ColumnName="address" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="restaurant_id" ColumnName="restaurant_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>
