@@ -11,8 +11,8 @@ namespace RestaurantTableSystem.Controllers
     {
         public ActionResult Index()
         {
-            var list = db.Restaurants.ToList(); // hoặc lấy theo điều kiện
-            return View(list);
+            var restaurant = db.Restaurants.ToList(); // Lấy toàn bộ restaurant
+            return View(restaurant);
         }
 
         private RestaurantTableSystemEntities db = new RestaurantTableSystemEntities();
