@@ -148,6 +148,14 @@
     }
 
     const method = selectedPaymentMethod.value;
+    const bookingId = sessionStorage.getItem('bookingId');
+
+    if (!bookingId) {
+        alert('Không tìm thấy mã đặt bàn. Vui lòng đặt bàn lại.');
+        return;
+    }
+
+    console.log("Booking ID gửi đi:", bookingId); // Log để kiểm tra giá trị
 
     fetch('@Url.Action("LuuThanhToan", "ThanhToan")', {
         method: 'POST',
@@ -155,12 +163,13 @@
             'Content-Type': 'application/json',
             'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
         },
-        body: JSON.stringify({ paymentMethod: method })
+        body: JSON.stringify({ paymentMethod: method, bookingId: parseInt(bookingId) })
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(`Đặt bàn thành công! Mã đặt bàn của bạn là: ${data.bookingCode}`);
+            alert(`Thanh toán thành công! Mã đặt bàn của bạn là: ${data.bookingCode}`);
+            sessionStorage.removeItem('bookingId');
             window.location.href = '@Url.Action("Index", "Home")';
         } else {
             alert('Có lỗi xảy ra: ' + data.message);
