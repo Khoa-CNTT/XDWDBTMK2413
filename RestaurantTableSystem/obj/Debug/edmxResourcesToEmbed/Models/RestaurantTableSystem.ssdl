@@ -33,12 +33,12 @@
     </Key>
     <Property Name="menu_item_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="restaurant_id" Type="int" />
-    <Property Name="name" Type="nvarchar(max)" />
-    <Property Name="description" Type="nvarchar(max)" />
+    <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="description" Type="text" />
     <Property Name="price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
     <Property Name="category" Type="varchar" MaxLength="20" />
     <Property Name="is_available" Type="bit" />
-    <Property Name="Image" Type="nvarchar" MaxLength="100" />
+    <Property Name="Image" Type="nvarchar(max)" />
   </EntityType>
   <EntityType Name="Orders">
     <Key>
@@ -67,16 +67,16 @@
     </Key>
     <Property Name="restaurant_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="user_id" Type="int" />
-    <Property Name="name" Type="nvarchar(max)" />
-    <Property Name="address" Type="nvarchar(max)" />
+    <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="address" Type="varchar" MaxLength="255" Nullable="false" />
     <Property Name="latitude" Type="decimal" Precision="10" Scale="8" Nullable="false" />
     <Property Name="longitude" Type="decimal" Precision="11" Scale="8" Nullable="false" />
-    <Property Name="description" Type="nvarchar(max)" />
+    <Property Name="description" Type="text" />
     <Property Name="max_tables" Type="int" Nullable="false" />
     <Property Name="opening_hours" Type="nvarchar(max)" />
     <Property Name="is_approved" Type="bit" />
     <Property Name="created_at" Type="datetime" />
-    <Property Name="Image" Type="nvarchar" MaxLength="100" />
+    <Property Name="Image" Type="nvarchar(max)" />
   </EntityType>
   <EntityType Name="Reviews">
     <Key>
@@ -107,12 +107,12 @@
     <Property Name="user_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="email" Type="varchar" MaxLength="255" Nullable="false" />
     <Property Name="password_hash" Type="varchar" MaxLength="255" Nullable="false" />
-    <Property Name="full_name" Type="nvarchar" MaxLength="100" />
+    <Property Name="full_name" Type="varchar" MaxLength="100" Nullable="false" />
     <Property Name="phone" Type="varchar" MaxLength="20" />
     <Property Name="role" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="created_at" Type="datetime" />
   </EntityType>
-  <Association Name="FK__Bookings__restau__5BE2A6F2">
+  <Association Name="FK__Bookings__restau__4BAC3F29">
     <End Role="Restaurants" Type="Self.Restaurants" Multiplicity="0..1" />
     <End Role="Bookings" Type="Self.Bookings" Multiplicity="*" />
     <ReferentialConstraint>
@@ -124,7 +124,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Bookings__user_i__5AEE82B9">
+  <Association Name="FK__Bookings__user_i__4AB81AF0">
     <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
     <End Role="Bookings" Type="Self.Bookings" Multiplicity="*" />
     <ReferentialConstraint>
@@ -136,7 +136,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__BookingTa__booki__60A75C0F">
+  <Association Name="FK__BookingTa__booki__5070F446">
     <End Role="Bookings" Type="Self.Bookings" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -150,7 +150,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__BookingTa__table__619B8048">
+  <Association Name="FK__BookingTa__table__5165187F">
     <End Role="Tables" Type="Self.Tables" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -164,7 +164,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__LoyaltyPo__user___7B5B524B">
+  <Association Name="FK__LoyaltyPo__user___6383C8BA">
     <End Role="Users" Type="Self.Users" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -192,7 +192,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Orders__booking___6477ECF3">
+  <Association Name="FK__Orders__booking___5441852A">
     <End Role="Bookings" Type="Self.Bookings" Multiplicity="0..1">
       <OnDelete Action="Cascade" />
     </End>
@@ -206,7 +206,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Orders__menu_ite__656C112C">
+  <Association Name="FK__Orders__menu_ite__5535A963">
     <End Role="MenuItems" Type="Self.MenuItems" Multiplicity="0..1">
       <OnDelete Action="Cascade" />
     </End>
@@ -220,7 +220,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Payments__bookin__68487DD7">
+  <Association Name="FK__Payments__bookin__5812160E">
     <End Role="Bookings" Type="Self.Bookings" Multiplicity="0..1">
       <OnDelete Action="Cascade" />
     </End>
@@ -248,7 +248,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Reviews__restaur__76969D2E">
+  <Association Name="FK__Reviews__restaur__5EBF139D">
     <End Role="Restaurants" Type="Self.Restaurants" Multiplicity="0..1" />
     <End Role="Reviews" Type="Self.Reviews" Multiplicity="*" />
     <ReferentialConstraint>
@@ -260,7 +260,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Reviews__user_id__75A278F5">
+  <Association Name="FK__Reviews__user_id__5DCAEF64">
     <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
     <End Role="Reviews" Type="Self.Reviews" Multiplicity="*" />
     <ReferentialConstraint>
@@ -297,23 +297,23 @@
     <EntitySet Name="Reviews" EntityType="Self.Reviews" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tables" EntityType="Self.Tables" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
-    <AssociationSet Name="FK__Bookings__restau__5BE2A6F2" Association="Self.FK__Bookings__restau__5BE2A6F2">
+    <AssociationSet Name="FK__Bookings__restau__4BAC3F29" Association="Self.FK__Bookings__restau__4BAC3F29">
       <End Role="Restaurants" EntitySet="Restaurants" />
       <End Role="Bookings" EntitySet="Bookings" />
     </AssociationSet>
-    <AssociationSet Name="FK__Bookings__user_i__5AEE82B9" Association="Self.FK__Bookings__user_i__5AEE82B9">
+    <AssociationSet Name="FK__Bookings__user_i__4AB81AF0" Association="Self.FK__Bookings__user_i__4AB81AF0">
       <End Role="Users" EntitySet="Users" />
       <End Role="Bookings" EntitySet="Bookings" />
     </AssociationSet>
-    <AssociationSet Name="FK__BookingTa__booki__60A75C0F" Association="Self.FK__BookingTa__booki__60A75C0F">
+    <AssociationSet Name="FK__BookingTa__booki__5070F446" Association="Self.FK__BookingTa__booki__5070F446">
       <End Role="Bookings" EntitySet="Bookings" />
       <End Role="BookingTable" EntitySet="BookingTable" />
     </AssociationSet>
-    <AssociationSet Name="FK__BookingTa__table__619B8048" Association="Self.FK__BookingTa__table__619B8048">
+    <AssociationSet Name="FK__BookingTa__table__5165187F" Association="Self.FK__BookingTa__table__5165187F">
       <End Role="Tables" EntitySet="Tables" />
       <End Role="BookingTable" EntitySet="BookingTable" />
     </AssociationSet>
-    <AssociationSet Name="FK__LoyaltyPo__user___7B5B524B" Association="Self.FK__LoyaltyPo__user___7B5B524B">
+    <AssociationSet Name="FK__LoyaltyPo__user___6383C8BA" Association="Self.FK__LoyaltyPo__user___6383C8BA">
       <End Role="Users" EntitySet="Users" />
       <End Role="LoyaltyPoints" EntitySet="LoyaltyPoints" />
     </AssociationSet>
@@ -321,15 +321,15 @@
       <End Role="Restaurants" EntitySet="Restaurants" />
       <End Role="MenuItems" EntitySet="MenuItems" />
     </AssociationSet>
-    <AssociationSet Name="FK__Orders__booking___6477ECF3" Association="Self.FK__Orders__booking___6477ECF3">
+    <AssociationSet Name="FK__Orders__booking___5441852A" Association="Self.FK__Orders__booking___5441852A">
       <End Role="Bookings" EntitySet="Bookings" />
       <End Role="Orders" EntitySet="Orders" />
     </AssociationSet>
-    <AssociationSet Name="FK__Orders__menu_ite__656C112C" Association="Self.FK__Orders__menu_ite__656C112C">
+    <AssociationSet Name="FK__Orders__menu_ite__5535A963" Association="Self.FK__Orders__menu_ite__5535A963">
       <End Role="MenuItems" EntitySet="MenuItems" />
       <End Role="Orders" EntitySet="Orders" />
     </AssociationSet>
-    <AssociationSet Name="FK__Payments__bookin__68487DD7" Association="Self.FK__Payments__bookin__68487DD7">
+    <AssociationSet Name="FK__Payments__bookin__5812160E" Association="Self.FK__Payments__bookin__5812160E">
       <End Role="Bookings" EntitySet="Bookings" />
       <End Role="Payments" EntitySet="Payments" />
     </AssociationSet>
@@ -337,11 +337,11 @@
       <End Role="Users" EntitySet="Users" />
       <End Role="Restaurants" EntitySet="Restaurants" />
     </AssociationSet>
-    <AssociationSet Name="FK__Reviews__restaur__76969D2E" Association="Self.FK__Reviews__restaur__76969D2E">
+    <AssociationSet Name="FK__Reviews__restaur__5EBF139D" Association="Self.FK__Reviews__restaur__5EBF139D">
       <End Role="Restaurants" EntitySet="Restaurants" />
       <End Role="Reviews" EntitySet="Reviews" />
     </AssociationSet>
-    <AssociationSet Name="FK__Reviews__user_id__75A278F5" Association="Self.FK__Reviews__user_id__75A278F5">
+    <AssociationSet Name="FK__Reviews__user_id__5DCAEF64" Association="Self.FK__Reviews__user_id__5DCAEF64">
       <End Role="Users" EntitySet="Users" />
       <End Role="Reviews" EntitySet="Reviews" />
     </AssociationSet>

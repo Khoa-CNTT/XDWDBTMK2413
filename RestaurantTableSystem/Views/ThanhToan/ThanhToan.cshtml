@@ -1,4 +1,4 @@
-﻿﻿@{
+﻿@{
     ViewBag.Title = "ThanhToan";
 }
 <!DOCTYPE html>
@@ -140,16 +140,37 @@
         `;
         });
         // Handle payment confirmation
-        document.getElementById('confirmPayment').addEventListener('click', function () {
-            const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
-            if (!selectedPaymentMethod) {
-                alert('Vui lòng chọn phương thức thanh toán.');
-                return;
-            }
-            const bookingCode = 'SB' + Math.floor(Math.random() * 1000000);
-            alert(`Đặt bàn thành công! Mã đặt bàn của bạn là: ${bookingCode}\nCảm ơn bạn đã đặt bàn tại nhà hàng của chúng tôi!`);
+       document.getElementById('confirmPayment').addEventListener('click', function () {
+    const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+    if (!selectedPaymentMethod) {
+        alert('Vui lòng chọn phương thức thanh toán.');
+        return;
+    }
+
+    const method = selectedPaymentMethod.value;
+
+    fetch('@Url.Action("LuuThanhToan", "ThanhToan")', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+        },
+        body: JSON.stringify({ paymentMethod: method })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`Đặt bàn thành công! Mã đặt bàn của bạn là: ${data.bookingCode}`);
             window.location.href = '@Url.Action("Index", "Home")';
-        });
+        } else {
+            alert('Có lỗi xảy ra: ' + data.message);
+        }
+    })
+    .catch(error => {
+        alert('Đã xảy ra lỗi khi gửi yêu cầu thanh toán.');
+        console.error(error);
+    });
+});
         // Mã QR
         document.addEventListener("DOMContentLoaded", function () {
             // Ẩn cả hai mã QR khi load trang
@@ -179,6 +200,6 @@
             });
         });
     </script>
-    
+
 </body>
 </html>

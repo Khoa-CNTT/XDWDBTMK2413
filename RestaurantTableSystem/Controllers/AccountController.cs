@@ -69,6 +69,8 @@ namespace RestaurantTableSystem.Controllers
                 {
                     // Lưu session
                     Session["user"] = user;
+                    Session["user_id"] = user.user_id; // Thêm dòng này để lưu user_id
+
 
                     return RedirectToAction("Index", "Home");
                 }

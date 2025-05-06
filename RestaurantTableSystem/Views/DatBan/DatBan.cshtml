@@ -1,7 +1,7 @@
 ﻿@model RestaurantTableSystem.Models.ViewModels.RestaurantDetailViewModel
 @{
     var restaurant = Model.Restaurant;
-   
+
     ViewBag.Title = restaurant.name;
 }
 @{
@@ -53,23 +53,23 @@
                             <h2 class="text-3xl font-bold text-center text-gray-800 mb-8 heading">Thông Tin Nhà Hàng</h2>
                             <div class="space-y-6">
 
-                                
+
                                 <div class="border border-gray-100 rounded-lg p-6 hover:shadow-md transition duration-300">
                                     <h3 class="text-xl font-semibold text-gray-800 mb-2">@restaurant.name</h3>
                                     <p class="text-gray-600 mb-1"><strong>📍 Địa chỉ:</strong> @restaurant.address</p>
                                     <p class="text-gray-600 mb-1"><strong>🍽️ Số bàn tối đa:</strong> @restaurant.max_tables</p>
                                     <p class="text-gray-600 mb-1"><strong>⏰ Giờ mở cửa:</strong> @restaurant.opening_hours</p>
-                                    
+
                                     <div class="mt-4 text-center">
                                         @*<a href="/Restaurant/Details/@restaurant.restaurant_id"
-                                           class="inline-block bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-2 rounded-lg transition">
-                                            Đặt bàn
-                                        </a>
-                                    </div>*@
+                                                   class="inline-block bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-2 rounded-lg transition">
+                                                    Đặt bàn
+                                                </a>
+                                            </div>*@
+                                    </div>
+
                                 </div>
-                                
                             </div>
-                        </div>
                     </section>
 
                     <!-- Right Column - Booking Form -->
@@ -108,17 +108,15 @@
                                     </select>
                                 </div>
                             </div>
-                            <div>
-                                <label class="block text-gray-700 mb-1">Số người</label>
-                                <select class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
-                                    <option value="">Chọn số người</option>
-                                    <option>1 người</option>
-                                    <option>2 người</option>
-                                    <option>3-4 người</option>
-                                    <option>5-6 người</option>
-                                    <option>Nhóm lớn</option>
-                                </select>
-                            </div>
+                            <select required>
+                                <option value="">Chọn số người</option>
+                                <option value="1">1 người</option>
+                                <option value="2">2 người</option>
+                                <option value="4">3-4 người</option>
+                                <option value="6">5-6 người</option>
+                                <option value="10">Nhóm lớn</option>
+                            </select>
+
                             <div>
                                 <label class="block text-gray-700 mb-1">Yêu cầu đặc biệt</label>
                                 <textarea class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" rows="2"></textarea>
@@ -161,28 +159,51 @@
     </footer>
 
     <script>
-        function saveBookingInfo() {
-            var name = document.querySelector('input[type="text"]').value;
-            var phone = document.querySelector('input[type="tel"]').value;
-            var date = document.querySelector('input[type="date"]').value;
-            var time = document.querySelector('select').value;
-            var people = document.querySelectorAll('select')[1].value;
-            var specialRequest = document.querySelector('textarea').value;
+    function saveBookingInfo() {
+        var name = document.querySelector('input[type="text"]').value;
+        var phone = document.querySelector('input[type="tel"]').value;
+        var date = document.querySelector('input[type="date"]').value;
+        var time = document.querySelector('select').value;
+        var people = document.querySelectorAll('select')[1].value;
+        var specialRequest = document.querySelector('textarea').value;
 
-            if (!name || !phone || !date || !time || !people) {
-                alert("Vui lòng điền đầy đủ thông tin!");
-                return;
-            }
-
-            sessionStorage.setItem('name', name);
-            sessionStorage.setItem('phone', phone);
-            sessionStorage.setItem('date', date);
-            sessionStorage.setItem('time', time);
-            sessionStorage.setItem('people', people);
-            sessionStorage.setItem('specialRequest', specialRequest);
-
-            window.location.href = '@Url.Action("ThanhToan", "DatBan")';
+        if (!name || !phone || !date || !time || !people) {
+            alert("Vui lòng điền đầy đủ thông tin!");
+            return;
         }
+
+        var bookingDateTime = new Date(date + "T" + time);
+
+        var data = {
+            restaurant_id: @Model.Restaurant.restaurant_id,
+            booking_time: bookingDateTime.toISOString(),
+            number_of_guests: parseInt(people),
+            special_request: specialRequest
+        };
+
+        fetch('@Url.Action("LuuDatBan", "DatBan")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(response => {
+            if (response.success) {
+                sessionStorage.setItem("bookingId", response.bookingId);
+                window.location.href = '@Url.Action("ThanhToan", "ThanhToan")';
+            } else {
+                alert("Đặt bàn thất bại: " + response.message);
+            }
+        })
+        .catch(error => {
+            console.error("Lỗi khi đặt bàn:", error);
+            alert("Đã xảy ra lỗi. Vui lòng thử lại sau.");
+        });
+    }
     </script>
+
 </body>
 </html>
