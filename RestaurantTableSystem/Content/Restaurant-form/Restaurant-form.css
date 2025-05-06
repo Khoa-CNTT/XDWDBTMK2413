@@ -1,0 +1,29 @@
+﻿body {
+    background-color: #f8f9fa;
+    padding: 30px;
+}
+
+.form-container {
+    max-width: 700px;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    margin: auto;
+}
+
+#map {
+    height: 400px;
+    margin-top: 15px;
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+}
+
+.btn {
+    width: 100%;
+}
+
+h2 {
+    font-weight: bold;
+    color: #343a40;
+}

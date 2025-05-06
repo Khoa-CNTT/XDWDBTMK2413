@@ -1,0 +1,112 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Thêm Nhà Hàng</title>
+    <link rel="stylesheet" href="~/Content/restaurant-form/restaurant-form.css" />
+    <!-- Google Maps CSS (cần thiết cho bản đồ) -->
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2 class="mb-4 text-center">Thêm Nhà Hàng</h2>
+        <form>
+            <div class="mb-3">
+                <label for="name" class="form-label">Tên nhà hàng</label>
+                <input type="text" class="form-control" id="name" name="name" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="address" class="form-label">Địa chỉ</label>
+                <input type="text" class="form-control" id="address" name="address" required />
+                <button type="button" onclick="searchAddress()" class="btn btn-primary mt-2">Định vị trên bản đồ</button>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Mô tả</label>
+                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="maxTable" class="form-label">Số bàn tối đa</label>
+                <input type="number" class="form-control" id="maxTable" name="maxTable" min="1" />
+            </div>
+
+            <div class="mb-3">
+                <label for="openingHour" class="form-label">Giờ mở cửa</label>
+                <input type="time" class="form-control" id="openingHour" name="openingHour" />
+            </div>
+
+            <div id="map"></div>
+
+            <input type="hidden" id="latitude" name="latitude" />
+            <input type="hidden" id="longitude" name="longitude" />
+
+            <button type="submit" class="btn btn-success mt-4">Lưu thông tin</button>
+        </form>
+    </div>
+
+    <!-- Thêm Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap" async defer></script>
+    <script>
+        var map, marker;
+
+        function initMap() {
+            // Tọa độ khởi đầu (Đà Nẵng)
+            var daNang = { lat: 16.047079, lng: 108.206230 };
+
+            // Khởi tạo bản đồ
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: daNang,
+                zoom: 13,
+            });
+
+            // Khởi tạo marker (có thể kéo được)
+            marker = new google.maps.Marker({
+                position: daNang,
+                map: map,
+                draggable: true,
+            });
+
+            // Lắng nghe sự kiện khi marker được kéo
+            google.maps.event.addListener(marker, 'dragend', function () {
+                var position = marker.getPosition();
+                document.getElementById('latitude').value = position.lat();
+                document.getElementById('longitude').value = position.lng();
+            });
+        }
+
+        function searchAddress() {
+            var address = document.getElementById('address').value;
+            if (!address) return;
+
+            // Tạo đối tượng Geocoder
+            var geocoder = new google.maps.Geocoder();
+
+            // Tìm kiếm địa chỉ
+            geocoder.geocode({ 'address': address }, function (results, status) {
+                if (status === 'OK') {
+                    var latLng = results[0].geometry.location;
+                    map.setCenter(latLng);
+                    marker.setPosition(latLng);
+
+                    // Cập nhật giá trị latitude và longitude
+                    document.getElementById('latitude').value = latLng.lat();
+                    document.getElementById('longitude').value = latLng.lng();
+                } else {
+                    alert("Không tìm thấy địa chỉ!");
+                }
+            });
+        }
+    </script>
+</body>
+</html>
