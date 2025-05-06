@@ -20,6 +20,11 @@ namespace RestaurantTableSystem.Controllers
         {
             return View(new User());
         }
+        public ActionResult Logout()
+        {
+            Session.Clear(); // hoặc chỉ Session.Remove("user") và Session.Remove("UserId")
+            return RedirectToAction("Login", "Account");
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
