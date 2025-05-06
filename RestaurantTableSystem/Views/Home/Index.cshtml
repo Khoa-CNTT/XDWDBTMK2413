@@ -34,29 +34,36 @@
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
-                <ul class="flex space-x-8">
+                <ul class="flex space-x-8 items-center">
                     <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Trang chủ</a></li>
                     <li>
                         <a href="@Url.Action("Index", "Businesss")" class="text-gray-700 hover:text-amber-600 transition">
-                            ADD Nhà Hàng
+                            Đăng Kí Nhà Hàng
                         </a>
                     </li>
-                    <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Đặt bàn</a></li>
                     <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Liên hệ</a></li>
-                    <li>
-                        <a href="@Url.Action("Login", "Account")" class="text-gray-700 hover:text-amber-600 transition">
-                            Login
-                        </a>
-                    </li>
-                    <li>
-                        <a href="@Url.Action("Register", "Account")" class="text-gray-700 hover:text-amber-600 transition">
-                            Register
-                        </a>
-                    </li>
-
+                    @if (Session["user"] == null)
+                    {
+                        <li><a href="@Url.Action("Login", "Account")" class="text-gray-700 hover:text-amber-600 transition">Login</a></li>
+                        <li><a href="@Url.Action("Register", "Account")" class="text-gray-700 hover:text-amber-600 transition">Register</a></li>
+                    }
+                    else
+                    {
+                        var user = (RestaurantTableSystem.Models.User)Session["user"];
+                        <li class="relative">
+                            <button id="profileMenuToggle" class="flex items-center space-x-2 text-gray-700 hover:text-amber-600 transition focus:outline-none">
+                                <i class="fas fa-user-circle text-2xl"></i>
+                                <span>@user.full_name</span>
+                            </button>
+                            <ul id="dropdownMenu" class="hidden absolute bg-white border rounded-lg shadow-lg mt-2 py-2 right-0 w-40 z-50">
+                                <li><a href="@Url.Action("Logout", "Account")" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Đăng xuất</a></li>
+                                <li><a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a></li>
+                                <li><a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Bàn Đặt</a></li>
+                            </ul>
+                        </li>
+                    }
                 </ul>
             </nav>
-
         </div>
     </header>
 
@@ -71,7 +78,7 @@
         </div>
     </section>
 
-    @*Famous Restaurants*@
+    <!-- Danh sách nhà hàng -->
     <section class="py-16 bg-gray-100">
         <div class="container mx-auto px-4">
             <h1 class="text-3xl font-bold mb-8 text-center">Danh sách nhà hàng</h1>
@@ -81,7 +88,6 @@
                     foreach (var restaurant in Model)
                     {
                         <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
-                            <!-- Hiển thị ảnh -->
                             <div class="mb-4 text-center">
                                 <img src="@restaurant.Image" alt="Hình ảnh nhà hàng" class="w-full h-48 object-cover rounded-lg" />
                             </div>
@@ -104,25 +110,6 @@
             </div>
         </div>
     </section>
-
-    @*Script của bộ lọc các nhà hàng*@
-    <script>
-        document.querySelectorAll('.filter-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('bg-amber-600', 'text-white'));
-                button.classList.add('bg-amber-600', 'text-white');
-
-                let category = button.getAttribute('data-category');
-                document.querySelectorAll('.restaurant').forEach(restaurant => {
-                    if (category === 'all' || restaurant.getAttribute('data-category') === category) {
-                        restaurant.style.display = 'block';
-                    } else {
-                        restaurant.style.display = 'none';
-                    }
-                });
-            });
-        });</script>
-
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white py-12">
@@ -153,9 +140,23 @@
         </div>
     </footer>
 
-    <!-- Restaurant Detail Modal -->
+    <!-- Dropdown Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggle = document.getElementById("profileMenuToggle");
+            const menu = document.getElementById("dropdownMenu");
 
+            toggle?.addEventListener("click", function (e) {
+                e.stopPropagation();
+                menu?.classList.toggle("hidden");
+            });
 
-
+            document.addEventListener("click", function (e) {
+                if (!menu?.contains(e.target) && !toggle?.contains(e.target)) {
+                    menu?.classList.add("hidden");
+                }
+            });
+        });
+    </script>
 </body>
 </html>
