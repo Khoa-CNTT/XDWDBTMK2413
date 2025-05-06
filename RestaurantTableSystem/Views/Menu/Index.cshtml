@@ -1,8 +1,182 @@
-﻿
-@{
-    ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý món ăn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
 
-<h2>Index</h2>
+        .heading {
+            font-family: 'Playfair Display', serif;
+        }
 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        img {
+            display: block;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Danh sách món ăn -->
+    <section class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl font-bold mb-8 text-center">Danh sách món ăn</h1>
+
+            <!-- Thêm món ăn mới -->
+            <div class="py-8 text-center">
+                <button class="bg-amber-500 text-white px-6 py-3 rounded-lg hover:bg-amber-600" onclick="document.getElementById('addMenuItemModal').classList.remove('hidden');">
+                    <i class="fas fa-plus-circle"></i> Thêm món ăn mới
+                </button>
+            </div>
+
+            <!-- Modal Thêm món ăn -->
+            <div id="addMenuItemModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+                <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+                    <h2 class="text-2xl font-bold mb-4 text-center">Thêm món ăn mới</h2>
+                    @using (Html.BeginForm("Create", "Menu", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="restaurant_id" value="@ViewBag.RestaurantId" />
+                        <div class="mb-4">
+                            <label class="block mb-1">Tên món ăn</label>
+                            <input type="text" name="name" class="w-full border px-4 py-2 rounded" required />
+                        </div>
+                        <div class="mb-4">
+                            <label class="block mb-1">Danh mục</label>
+                            <select name="category" class="w-full border px-4 py-2 rounded" required>
+                                <option value="main">Món chính</option>
+                                <option value="appetizer">Món khai vị</option>
+                                <option value="dessert">Tráng miệng</option>
+                                <option value="drink">Đồ uống</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block mb-1">Giá</label>
+                            <input type="number" name="price" min="0" step="0.01" class="w-full border px-4 py-2 rounded" required />
+                        </div>
+                        <div class="mb-4">
+                            <label class="block mb-1">Mô tả</label>
+                            <input type="text" name="description" class="w-full border px-4 py-2 rounded" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="block mb-1">Có sẵn</label>
+                            <input type="checkbox" name="is_available" value="true" class="border px-4 py-2 rounded" checked />
+                        </div>
+                        <div class="mb-4">
+                            <label class="block mb-1">Hình ảnh</label>
+                            <input type="file" name="Image" accept="image/*" class="w-full border px-4 py-2 rounded" />
+                        </div>
+                        <div class="flex justify-between">
+                            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">Thêm</button>
+                            <button type="button" onclick="document.getElementById('addMenuItemModal').classList.add('hidden');" class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">Hủy</button>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Danh sách món ăn -->
+            <div id="menuList" class="container mx-auto px-4 py-8">
+                <table class="min-w-full bg-white border rounded-lg overflow-hidden shadow">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="py-2 px-4">STT</th>
+                            <th class="py-2 px-4">Tên</th>
+                            <th class="py-2 px-4">Danh mục</th>
+                            <th class="py-2 px-4">Giá</th>
+                            <th class="py-2 px-4">Mô tả</th>
+                            <th class="py-2 px-4">Có sẵn</th>
+                            <th class="py-2 px-4">Hình ảnh</th>
+                            <th class="py-2 px-4">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        Различные элементы меню
+                        @{
+                            var index = 1;
+                            foreach (var menuItem in Model)
+                            {
+                                <tr class="border-t">
+                                    <td class="py-2 px-4">@index</td>
+                                    <td class="py-2 px-4">@menuItem.name</td>
+                                    <td class="py-2 px-4">
+                                        @switch (menuItem.category)
+                                        {
+                                            case "main":
+                                                @: Món chính
+                                                break;
+                                            case "appetizer":
+                                                @: Món khai vị
+                                                break;
+                                            case "dessert":
+                                                @: Tráng miệng
+                                                break;
+                                            case "drink":
+                                                @: Đồ uống
+                                                break;
+                                            default:
+                                                @menuItem.category
+                                                break;
+                                        }
+                                    </td>
+                                    <td class="py-2 px-4">@menuItem.price.ToString("N0") VNĐ</td>
+                                    <td class="py-2 px-4">@menuItem.description</td>
+                                    <td class="py-2 px-4">@(menuItem.is_available == true ? "Có" : "Không")</td>
+                                    <td class="py-2 px-4">
+                                        @if (!string.IsNullOrEmpty(menuItem.Image))
+                                        {
+                                            <img src="@menuItem.Image" alt="@menuItem.name" style="width: 60px; height: 60px; object-fit: cover;" />
+                                        }
+                                        else
+                                        {
+                                            <span>Không có ảnh</span>
+                                        }
+                                    </td>
+                                    <td class="py-2 px-4">
+                                        <a href="@Url.Action("Edit", "Menu", new { id = menuItem.menu_item_id, restaurant_id = ViewBag.RestaurantId })" class="text-blue-500versa hover:text-blue-700"><i class="fas fa-edit"></i></a>
+                                        <a href="@Url.Action("Delete", "Menu", new { id = menuItem.menu_item_id, restaurant_id = ViewBag.RestaurantId })" class="text-red-500 hover:text-red-700 ml-2" onclick="return confirm('Bạn có chắc muốn xóa món ăn này?');"><i class="fas fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                                index++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Script -->
+    <script>
+        function searchMenu() {
+            const input = document.getElementById('search').value.toLowerCase();
+            const rows = document.querySelectorAll('#menuList tbody tr');
+
+            rows.forEach(row => {
+                const name = row.cells[1].textContent.toLowerCase();
+                const category = row.cells[2].textContent.toLowerCase();
+                if (name.includes(input) || category.includes(input)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
