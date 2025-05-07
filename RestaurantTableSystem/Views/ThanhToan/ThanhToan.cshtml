@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        /* Thêm CSS cho phần thông tin đặt bàn */
         #bookingInfo {
             background-color: #f9fafb;
             border: 1px solid #e5e7eb;
@@ -91,15 +90,12 @@
                     <h2 class="text-2xl font-bold mb-4">Chọn phương thức thanh toán</h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="text-center payment-option selected" id="momoOption">
-                            <input type="radio" id="momo" name="paymentMethod" value="MoMo" class="hidden">
+                            <input type="radio" id="momo" name="paymentMethod" value="momo" class="hidden" checked>
                             <label for="momo" class="text-xl font-bold mb-2">MoMo</label>
                             <img src="@Url.Content("~/Content/Images/momo.jpg")" alt="MoMo QR Code" class="mx-auto mb-4" id="momoQR">
-
-
-
                         </div>
                         <div class="text-center payment-option" id="vnpayOption">
-                            <input type="radio" id="vnpay" name="paymentMethod" value="VNPay" class="hidden">
+                            <input type="radio" id="vnpay" name="paymentMethod" value="vnpay" class="hidden">
                             <label for="vnpay" class="text-xl font-bold mb-2">VNPay</label>
                             <img src="@Url.Content("~/Content/Images/vnpay.jpg")" alt="VNPay QR Code" class="mx-auto mb-4 hidden" id="vnpayQR">
                         </div>
@@ -110,6 +106,7 @@
                 </div>
             </div>
             <div class="p-8 text-center">
+                @Html.AntiForgeryToken()
                 <button id="confirmPayment" class="bg-amber-600 text-white py-2 px-4 rounded-lg hover:bg-amber-700 transition font-medium">
                     Xác nhận thanh toán
                 </button>
@@ -118,86 +115,95 @@
     </main>
 
     <script>
-        //lấy thông tin đăt bàn từ trang đặt bàn
+        // Hiển thị thông tin đặt bàn từ sessionStorage
         document.addEventListener("DOMContentLoaded", function () {
-            // Lấy thông tin từ Session
-            var name = sessionStorage.getItem('name');
-            var phone = sessionStorage.getItem('phone');
-            var date = sessionStorage.getItem('date');
-            var time = sessionStorage.getItem('time');
-            var people = sessionStorage.getItem('people');
-            var specialRequest = sessionStorage.getItem('specialRequest');
+            var name = sessionStorage.getItem('name') || 'Không có';
+            var phone = sessionStorage.getItem('phone') || 'Không có';
+            var date = sessionStorage.getItem('date') || 'Không có';
+            var time = sessionStorage.getItem('time') || 'Không có';
+            var people = sessionStorage.getItem('people') || 'Không có';
+            var specialRequest = sessionStorage.getItem('specialRequest') || 'Không có';
+            var bookingId = sessionStorage.getItem('bookingId') || 'Không có';
 
-            // Hiển thị thông tin đặt bàn
+            console.log("Thông tin đặt bàn:", { name, phone, date, time, people, specialRequest, bookingId });
+
             var bookingInfo = document.getElementById('bookingInfo');
             bookingInfo.innerHTML = `
-            <p><strong>Họ và tên:</strong> ${name}</p>
-            <p><strong>Số điện thoại:</strong> ${phone}</p>
-            <p><strong>Ngày:</strong> ${date}</p>
-            <p><strong>Giờ:</strong> ${time}</p>
-            <p><strong>Số người:</strong> ${people}</p>
-            <p><strong>Yêu cầu đặc biệt:</strong> ${specialRequest}</p>
-        `;
+                <p><strong>Họ và tên:</strong> ${name}</p>
+                <p><strong>Số điện thoại:</strong> ${phone}</p>
+                <p><strong>Ngày:</strong> ${date}</p>
+                <p><strong>Giờ:</strong> ${time}</p>
+                <p><strong>Số người:</strong> ${people}</p>
+                <p><strong>Yêu cầu đặc biệt:</strong> ${specialRequest}</p>
+            `;
         });
-        // Handle payment confirmation
-       document.getElementById('confirmPayment').addEventListener('click', function () {
-    const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
-    if (!selectedPaymentMethod) {
-        alert('Vui lòng chọn phương thức thanh toán.');
-        return;
-    }
 
-    const method = selectedPaymentMethod.value;
-    const bookingId = sessionStorage.getItem('bookingId');
+        // Xử lý xác nhận thanh toán
+        document.getElementById('confirmPayment').addEventListener('click', function () {
+            console.log("Nút Xác nhận thanh toán được nhấn");
 
-    if (!bookingId) {
-        alert('Không tìm thấy mã đặt bàn. Vui lòng đặt bàn lại.');
-        return;
-    }
+            const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+            if (!selectedPaymentMethod) {
+                alert('Vui lòng chọn phương thức thanh toán.');
+                return;
+            }
 
-    console.log("Booking ID gửi đi:", bookingId); // Log để kiểm tra giá trị
+            const paymentMethod = selectedPaymentMethod.value;
+            const bookingId = sessionStorage.getItem('bookingId');
 
-    fetch('@Url.Action("LuuThanhToan", "ThanhToan")', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-        },
-        body: JSON.stringify({ paymentMethod: method, bookingId: parseInt(bookingId) })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert(`Thanh toán thành công! Mã đặt bàn của bạn là: ${data.bookingCode}`);
-            sessionStorage.removeItem('bookingId');
-            window.location.href = '@Url.Action("Index", "Home")';
-        } else {
-            alert('Có lỗi xảy ra: ' + data.message);
-        }
-    })
-    .catch(error => {
-        alert('Đã xảy ra lỗi khi gửi yêu cầu thanh toán.');
-        console.error(error);
-    });
-});
-        // Mã QR
+            if (!bookingId || isNaN(parseInt(bookingId))) {
+                alert('Không tìm thấy mã đặt bàn. Vui lòng đặt bàn lại.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('paymentMethod', paymentMethod);
+            formData.append('bookingId', parseInt(bookingId));
+            formData.append('__RequestVerificationToken', document.querySelector('input[name="__RequestVerificationToken"]').value);
+
+            console.log("Dữ liệu gửi đi:", { paymentMethod, bookingId });
+
+            fetch('@Url.Action("LuuThanhToan", "ThanhToan")', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                console.log("Phản hồi từ server:", response);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Dữ liệu phản hồi:", data);
+                if (data.success) {
+                    alert(`Thanh toán thành công! Mã đặt bàn của bạn là: ${data.bookingCode}`);
+                    sessionStorage.clear();
+                    window.location.href = '@Url.Action("Index", "Home")';
+                } else {
+                    alert('Có lỗi xảy ra: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Lỗi khi thanh toán:", error);
+                alert('Đã xảy ra lỗi khi gửi yêu cầu thanh toán: ' + error.message);
+            });
+        });
+
+        // Xử lý hiển thị mã QR
         document.addEventListener("DOMContentLoaded", function () {
-            // Ẩn cả hai mã QR khi load trang
             document.getElementById('momoQR').classList.add('hidden');
             document.getElementById('vnpayQR').classList.add('hidden');
+            document.getElementById('momoQR').classList.remove('hidden');
 
-            // Lắng nghe sự kiện click cho các tùy chọn thanh toán
             document.querySelectorAll('.payment-option').forEach(option => {
                 option.addEventListener('click', function () {
-                    // Xóa lớp "selected" khỏi tất cả tùy chọn
                     document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
                     this.classList.add('selected');
 
-                    // Ẩn tất cả mã QR
                     document.getElementById('momoQR').classList.add('hidden');
                     document.getElementById('vnpayQR').classList.add('hidden');
 
-                    // Hiện mã QR tương ứng khi được chọn
                     if (this.id === 'momoOption') {
                         document.getElementById('momo').checked = true;
                         document.getElementById('momoQR').classList.remove('hidden');
@@ -209,6 +215,5 @@
             });
         });
     </script>
-
 </body>
 </html>

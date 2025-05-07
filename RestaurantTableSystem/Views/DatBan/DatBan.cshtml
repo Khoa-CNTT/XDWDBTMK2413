@@ -1,10 +1,6 @@
 ﻿@model RestaurantTableSystem.Models.ViewModels.RestaurantDetailViewModel
 @{
     var restaurant = Model.Restaurant;
-
-    ViewBag.Title = restaurant.name;
-}
-@{
     ViewBag.Title = "DatBan";
 }
 <!DOCTYPE html>
@@ -34,7 +30,7 @@
             <nav>
                 <ul class="flex space-x-8">
                     <li><a href="@Url.Action("Index", "Home")" class="text-gray-700 hover:text-amber-600 transition">Trang chủ</a></li>
-                    <li><a href="@Url.Action("DatBan", "Home")" class="text-gray-700 hover:text-amber-600 transition">Đặt bàn</a></li>
+                    <li><a href="@Url.Action("DatBan", "DatBan")" class="text-gray-700 hover:text-amber-600 transition">Đặt bàn</a></li>
                     <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Thực đơn</a></li>
                     <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Liên hệ</a></li>
                 </ul>
@@ -52,46 +48,37 @@
                         <div class="bg-white border border-gray-200 rounded-xl shadow-md p-8">
                             <h2 class="text-3xl font-bold text-center text-gray-800 mb-8 heading">Thông Tin Nhà Hàng</h2>
                             <div class="space-y-6">
-
-
                                 <div class="border border-gray-100 rounded-lg p-6 hover:shadow-md transition duration-300">
                                     <h3 class="text-xl font-semibold text-gray-800 mb-2">@restaurant.name</h3>
                                     <p class="text-gray-600 mb-1"><strong>📍 Địa chỉ:</strong> @restaurant.address</p>
                                     <p class="text-gray-600 mb-1"><strong>🍽️ Số bàn tối đa:</strong> @restaurant.max_tables</p>
                                     <p class="text-gray-600 mb-1"><strong>⏰ Giờ mở cửa:</strong> @restaurant.opening_hours</p>
-
-                                    <div class="mt-4 text-center">
-                                        @*<a href="/Restaurant/Details/@restaurant.restaurant_id"
-                                                   class="inline-block bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-2 rounded-lg transition">
-                                                    Đặt bàn
-                                                </a>
-                                            </div>*@
-                                    </div>
-
                                 </div>
                             </div>
+                        </div>
                     </section>
 
                     <!-- Right Column - Booking Form -->
                     <section class="md:col-span-1">
                         <h2 class="text-2xl font-bold mb-4">Đặt bàn</h2>
                         <form id="bookingForm" class="space-y-4">
+                            @Html.AntiForgeryToken()
                             <div>
                                 <label class="block text-gray-700 mb-1">Họ và tên</label>
-                                <input type="text" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                                <input type="text" id="name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
                             </div>
                             <div>
                                 <label class="block text-gray-700 mb-1">Số điện thoại</label>
-                                <input type="tel" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                                <input type="tel" id="phone" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
                             </div>
                             <div class="grid md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-gray-700 mb-1">Ngày</label>
-                                    <input type="date" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                                    <input type="date" id="date" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 mb-1">Giờ</label>
-                                    <select class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                                    <select id="time" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
                                         <option value="">Chọn giờ</option>
                                         <option>11:00</option>
                                         <option>11:30</option>
@@ -108,18 +95,20 @@
                                     </select>
                                 </div>
                             </div>
-                            <select required>
-                                <option value="">Chọn số người</option>
-                                <option value="1">1 người</option>
-                                <option value="2">2 người</option>
-                                <option value="4">3-4 người</option>
-                                <option value="6">5-6 người</option>
-                                <option value="10">Nhóm lớn</option>
-                            </select>
-
+                            <div>
+                                <label class="block text-gray-700 mb-1">Số người</label>
+                                <select id="people" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" required>
+                                    <option value="">Chọn số người</option>
+                                    <option value="1">1 người</option>
+                                    <option value="2">2 người</option>
+                                    <option value="4">3-4 người</option>
+                                    <option value="6">5-6 người</option>
+                                    <option value="10">Nhóm lớn</option>
+                                </select>
+                            </div>
                             <div>
                                 <label class="block text-gray-700 mb-1">Yêu cầu đặc biệt</label>
-                                <textarea class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" rows="2"></textarea>
+                                <textarea id="specialRequest" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" rows="2"></textarea>
                             </div>
                             <button type="button" onclick="saveBookingInfo()" class="bg-amber-600 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-amber-700 transition">Xác Nhận Đặt Bàn</button>
                         </form>
@@ -153,57 +142,78 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-                <p>&copy; 2023 Smart Booking. All rights reserved.</p>
+                <p>© 2023 Smart Booking. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <script>
-    function saveBookingInfo() {
-        var name = document.querySelector('input[type="text"]').value;
-        var phone = document.querySelector('input[type="tel"]').value;
-        var date = document.querySelector('input[type="date"]').value;
-        var time = document.querySelector('select').value;
-        var people = document.querySelectorAll('select')[1].value;
-        var specialRequest = document.querySelector('textarea').value;
+        function saveBookingInfo() {
+            // Lấy giá trị từ form
+            var name = document.getElementById('name').value;
+            var phone = document.getElementById('phone').value;
+            var date = document.getElementById('date').value;
+            var time = document.getElementById('time').value;
+            var people = document.getElementById('people').value;
+            var specialRequest = document.getElementById('specialRequest').value;
 
-        if (!name || !phone || !date || !time || !people) {
-            alert("Vui lòng điền đầy đủ thông tin!");
-            return;
-        }
-
-        var bookingDateTime = new Date(date + "T" + time);
-
-        var data = {
-            restaurant_id: @Model.Restaurant.restaurant_id,
-            booking_time: bookingDateTime.toISOString(),
-            number_of_guests: parseInt(people),
-            special_request: specialRequest
-        };
-
-        fetch('@Url.Action("LuuDatBan", "DatBan")', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        .then(res => res.json())
-        .then(response => {
-            if (response.success) {
-                sessionStorage.setItem("bookingId", response.bookingId);
-                window.location.href = '@Url.Action("ThanhToan", "ThanhToan")';
-            } else {
-                alert("Đặt bàn thất bại: " + response.message);
+            // Kiểm tra dữ liệu đầu vào
+            if (!name || !phone || !date || !time || !people) {
+                alert("Vui lòng điền đầy đủ thông tin!");
+                return;
             }
-        })
-        .catch(error => {
-            console.error("Lỗi khi đặt bàn:", error);
-            alert("Đã xảy ra lỗi. Vui lòng thử lại sau.");
-        });
-    }
-    </script>
 
+            // Lưu thông tin vào sessionStorage
+            sessionStorage.setItem('name', name);
+            sessionStorage.setItem('phone', phone);
+            sessionStorage.setItem('date', date);
+            sessionStorage.setItem('time', time);
+            sessionStorage.setItem('people', people);
+            sessionStorage.setItem('specialRequest', specialRequest || 'Không có');
+
+            // Tạo đối tượng dữ liệu gửi đến server
+            var bookingDateTime = new Date(date + "T" + time);
+            var data = {
+                restaurant_id: @Model.Restaurant.restaurant_id,
+                booking_time: bookingDateTime.toISOString(),
+                number_of_guests: parseInt(people),
+                special_request: specialRequest
+            };
+
+            console.log("Dữ liệu gửi đi:", data); // Debug
+
+            // Gửi yêu cầu đến server
+            fetch('@Url.Action("LuuDatBan", "DatBan")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify(data)
+            })
+            .then(res => {
+                console.log("Phản hồi từ server:", res); // Debug
+                if (!res.ok) {
+                    throw new Error(`HTTP error! Status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(response => {
+    console.log("Dữ liệu phản hồi:", response);
+    if (response.success) {
+        sessionStorage.setItem("bookingId", response.bookingId);
+        console.log("Chuyển hướng đến trang thanh toán...");
+        window.location.href = '@Url.Action("ThanhToan", "ThanhToan")';
+    } else {
+        alert("Đặt bàn thất bại: " + response.message);
+    }
+})
+            .catch(error => {
+                console.error("Lỗi khi đặt bàn:", error);
+                alert("Đã xảy ra lỗi. Vui lòng thử lại sau: " + error.message);
+            });
+        }
+    </script>
 </body>
 </html>
