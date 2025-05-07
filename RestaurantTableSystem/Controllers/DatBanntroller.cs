@@ -2,44 +2,35 @@
 using RestaurantTableSystem.Models.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+
 
 namespace RestaurantTableSystem.Controllers
 {
     public class DatBanController : Controller
     {
+        private RestaurantTableSystemEntities db = new RestaurantTableSystemEntities();
+
         public ActionResult Index()
         {
             return View();
-
         }
 
-
-
-
-
-        private RestaurantTableSystemEntities db = new RestaurantTableSystemEntities();
-        // GET: Admin/RestaurantCategory
         public ActionResult DatBan(int? id)
         {
-            // Kiểm tra nếu id không có (null)
             if (id == null)
             {
-                // Chuyển hướng về trang chủ hoặc trang lỗi tùy bạn
                 return RedirectToAction("Index", "Home");
-                // Hoặc: return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            // Tìm nhà hàng theo id
             var restaurant = db.Restaurants.FirstOrDefault(r => r.restaurant_id == id);
             if (restaurant == null)
             {
                 return HttpNotFound();
             }
 
-            // Tạo view model để truyền qua View
             var viewModel = new RestaurantDetailViewModel
             {
                 Restaurant = restaurant,
@@ -49,9 +40,8 @@ namespace RestaurantTableSystem.Controllers
         }
 
 
-
-
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public JsonResult LuuDatBan(Booking booking)
         {
             if (booking == null || booking.restaurant_id == null)
@@ -59,23 +49,40 @@ namespace RestaurantTableSystem.Controllers
                 return Json(new { success = false, message = "Thông tin đặt bàn không hợp lệ." });
             }
 
+            var userId = Session["user_id"] as int? ?? 0;
+            if (userId == 0)
+            {
+                return Json(new { success = false, message = "Vui lòng đăng nhập để đặt bàn." });
+            }
+
+            // Kiểm tra restaurant
+            var restaurant = db.Restaurants.FirstOrDefault(r => r.restaurant_id == booking.restaurant_id);
+            if (restaurant == null)
+            {
+                return Json(new { success = false, message = "Nhà hàng không tồn tại." });
+            }
+
+            // Kiểm tra user
+            var user = db.Users.FirstOrDefault(u => u.user_id == userId);
+            if (user == null)
+            {
+                return Json(new { success = false, message = "Thông tin người dùng không hợp lệ." });
+            }
+
             try
             {
-                var userId = Session["user_id"] != null ? (int)Session["user_id"] : 0;
-                if (userId == 0)
+                if (booking.booking_time == DateTime.MinValue || booking.booking_time < DateTime.UtcNow)
                 {
-                    return Json(new { success = false, message = "Chưa đăng nhập." });
+                    return Json(new { success = false, message = "Vui lòng chọn thời gian đặt bàn hợp lệ (sau thời gian hiện tại)." });
                 }
 
-                // Kiểm tra bắt buộc
-                if (booking.booking_time == DateTime.MinValue)
-                    return Json(new { success = false, message = "Vui lòng chọn thời gian đặt bàn." });
-
-                if (booking.number_of_guests <= 0)
+                if (booking.number_of_guests <= 0 || booking.number_of_guests > 100)
+                {
                     return Json(new { success = false, message = "Số lượng khách không hợp lệ." });
+                }
 
                 booking.user_id = userId;
-                booking.status = "Đang xử lý  ";
+                booking.status = "Đang xử lý";
                 booking.special_request = string.IsNullOrEmpty(booking.special_request) ? "" : booking.special_request;
 
                 db.Bookings.Add(booking);
@@ -83,39 +90,51 @@ namespace RestaurantTableSystem.Controllers
 
                 return Json(new { success = true, bookingId = booking.booking_id });
             }
+            catch (DbEntityValidationException ex)
+            {
+                var errorMessage = ex.EntityValidationErrors
+                    .SelectMany(e => e.ValidationErrors)
+                    .Aggregate("", (current, validationError) => current + validationError.ErrorMessage + "\n");
+                System.Diagnostics.Debug.WriteLine($"Validation Error in LuuDatBan: {errorMessage}");
+                return Json(new { success = false, message = "Lỗi xác thực dữ liệu: " + errorMessage });
+            }
             catch (Exception ex)
             {
-                string errorMessage = "";
-                Exception currentEx = ex;
-
-                // Lặp đến tận lỗi gốc
-                while (currentEx.InnerException != null)
-                {
-                    currentEx = currentEx.InnerException;
-                }
-
-                errorMessage = currentEx.Message;
-
+                string errorMessage = ex.InnerException?.Message ?? ex.Message;
+                System.Diagnostics.Debug.WriteLine($"Lỗi trong LuuDatBan: {errorMessage}\nStackTrace: {ex.StackTrace}");
                 return Json(new { success = false, message = "Lỗi thực tế: " + errorMessage });
             }
-
         }
-
-
-
-
-        public ActionResult About()
+        public ActionResult DanhSachBanDaDat()
         {
-            ViewBag.Message = "Your application description page.";
+            var userId = Session["user_id"] != null ? (int)Session["user_id"] : 0;
+            if (userId == 0)
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
-            return View();
-        }
+            System.Diagnostics.Debug.WriteLine($"User ID từ Session: {userId}");
 
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
+            var bookings = (from b in db.Bookings
+                            join r in db.Restaurants on b.restaurant_id equals r.restaurant_id
+                            join u in db.Users on b.user_id equals u.user_id
+                            join p in db.Payments on b.booking_id equals p.booking_id into payments
+                            from p in payments.DefaultIfEmpty()
+                            where b.status == "Đã xác nhận" && b.user_id == userId
+                            select new BookingViewModel
+                            {
+                                BookingId = b.booking_id,
+                                RestaurantName = r.name,
+                                CustomerName = u.full_name ?? "Unknown",
+                                PhoneNumber = u.phone ?? "Unknown",
+                                BookingTime = b.booking_time,
+                                NumberOfGuests = b.number_of_guests,
+                                AmountPaid = p != null ? p.amount : (decimal?)null
+                            }).ToList();
 
-            return View();
+            System.Diagnostics.Debug.WriteLine($"Số lượng bookings trả về: {bookings.Count}");
+
+            return View(bookings);
         }
     }
 }

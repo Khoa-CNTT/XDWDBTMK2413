@@ -185,6 +185,7 @@
     <Compile Include="Models\User.cs">
       <DependentUpon>RestaurantTableSystem.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\BookingViewMode.cs" />
     <Compile Include="Models\ViewModels\RestaurantDetailViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -2247,10 +2248,12 @@
     <Content Include="Views\Businesss\Index.cshtml" />
     <Content Include="Views\Menu\Index.cshtml" />
     <Content Include="Views\ThanhToan\ThanhToan.cshtml" />
+    <Content Include="Views\DatBan\DanhSachBanDaDat.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Views\BookingViewModel\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
