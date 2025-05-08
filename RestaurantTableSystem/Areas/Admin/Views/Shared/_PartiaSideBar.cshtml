@@ -1,4 +1,14 @@
-﻿  <!-- Sidebar -->
+﻿
+
+@if (Request.IsAuthenticated)
+{
+    <div style="display:none">
+        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { @id = "logOffForm" }))
+        {
+            @Html.AntiForgeryToken()
+        }
+    </div>
+}<!-- Sidebar -->
 <div class="sidebar">
     <!-- Sidebar user (optional) -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
@@ -10,66 +20,37 @@
         </div>
     </div>
 
-    <!-- SidebarSearch Form -->
-    @*<div class="form-inline">
-            <div class="input-group" data-widget="sidebar-search">
-                <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
-                <div class="input-group-append">
-                    <button class="btn btn-sidebar">
-                        <i class="fas fa-search fa-fw"></i>
-                    </button>
-                </div>
-            </div>
-        </div>*@
-
     <!-- Sidebar Menu -->
     <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-            
             <li class="nav-item">
                 <a href="/admin/Category" class="nav-link">
                     <i class="nav-icon fas fa-tachometer-alt"></i>
-                    <p>
-                        Danh mục
-                        @*<i class="right fas fa-angle-left"></i>*@
-                    </p>
+                    <p>Danh mục</p>
                 </a>
-              
             </li>
             <li class="nav-item">
                 <a href="/admin/role" class="nav-link">
                     <i class="nav-icon fas fa-th"></i>
-                    <p>
-                        Role
-                    </p>
-                </a>
-            </li>
-          
-            <li class="nav-item">
-                <a href="/admin/posts" class="nav-link">
-                    <i class="nav-icon fas fa-th"></i>
-                    <p>
-                        Bài viết
-                        @*<span class="right badge badge-danger">New</span>*@
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/admin/order" class="nav-link">
-                    <i class="nav-icon fas fa-th"></i>
-                    <p>
-                        Bàn Đặt
-                        @*<span class="right badge badge-danger">New</span>*@
-                    </p>
+                    <p>Role</p>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="/admin/posts" class="nav-link">
                     <i class="nav-icon fas fa-th"></i>
-                    <p>
-                        Quảng cáo
-                        @*<span class="right badge badge-danger">New</span>*@
-                    </p>
+                    <p>Bài viết</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("ListBanDat", "BanDat", new { area = "Admin" })" class="nav-link">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>Bàn Đặt</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/posts" class="nav-link">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>Quảng cáo</p>
                 </a>
             </li>
             <li class="nav-item">
@@ -88,39 +69,29 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="/admin/products" class="nav-link">
+                        <a href="@Url.Action("Index", "RestaurantCategory", new { area = "Admin" })" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Sản phẩm</p>
                         </a>
                     </li>
-
                 </ul>
             </li>
             <li class="nav-item">
                 <a href="/posts" class="nav-link">
                     <i class="nav-icon fas fa-th"></i>
-                    <p>
-                        Cấu hình hệ thống
-                        @*<span class="right badge badge-danger">New</span>*@
-                    </p>
+                    <p>Cấu hình hệ thống</p>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="/admin/account" class="nav-link">
                     <i class="nav-icon fas fa-th"></i>
-                    <p>
-                        Tài khoản
-                        @*<span class="right badge badge-danger">New</span>*@
-                    </p>
+                    <p>Tài khoản</p>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="javascript:document.getElementById('logOffForm').submit()" class="nav-link">
                     <i class="nav-icon fas fa-th"></i>
-                    <p>
-                        Đăng xuất
-                        @*<span class="right badge badge-danger">New</span>*@
-                    </p>
+                    <p>Đăng xuất</p>
                 </a>
             </li>
         </ul>
@@ -134,5 +105,7 @@
     <div style="display:none">
         @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { @id = "logOffForm" }))
         {
-            @Html.AntiForgeryToken()}
-    </div>}
+            @Html.AntiForgeryToken()
+        }
+    </div>
+}
