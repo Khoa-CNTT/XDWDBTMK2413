@@ -2249,6 +2249,8 @@
     <Content Include="Views\Menu\Index.cshtml" />
     <Content Include="Views\ThanhToan\ThanhToan.cshtml" />
     <Content Include="Views\DatBan\DanhSachBanDaDat.cshtml" />
+    <Content Include="Views\Account\AccountInfo.cshtml" />
+    <Content Include="Views\Account\UpdateAccount.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
