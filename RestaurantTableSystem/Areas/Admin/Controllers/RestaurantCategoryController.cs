@@ -17,6 +17,7 @@ namespace RestaurantTableSystem.Areas.Admin.Controllers
             var restaurant = db.Restaurants.ToList(); // Lấy toàn bộ restaurant
             return View(restaurant);
         }
+
         public ActionResult Detail()
         {
             var menuItem = db.MenuItems.ToList();
