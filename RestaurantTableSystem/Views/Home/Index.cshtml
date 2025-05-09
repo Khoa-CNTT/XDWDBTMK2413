@@ -29,10 +29,12 @@
             <h1 class="heading text-3xl font-bold text-gray-800">Smart-Booking</h1>
             <nav class="flex items-center space-x-8">
                 <div class="relative">
-                    <input type="text" placeholder="Tìm kiếm nhà hàng..." class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
-                    <button class="absolute right-2 top-2 text-gray-700 hover:text-amber-600 transition">
-                        <i class="fas fa-search"></i>
-                    </button>
+                    <form method="get" action="@Url.Action("Index", "Home")">
+                        <input type="text" name="search" placeholder="Tìm kiếm nhà hàng..." value="@Request.QueryString["search"]" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <button type="submit" class="absolute right-2 top-2 text-gray-700 hover:text-amber-600 transition">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
                 </div>
                 <ul class="flex space-x-8 items-center">
                     <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Trang chủ</a></li>
@@ -78,15 +80,87 @@
         </div>
     </section>
 
-    <!-- Danh sách nhà hàng -->
+    <!-- Bộ lọc và danh sách nhà hàng -->
     <section class="py-16 bg-gray-100">
         <div class="container mx-auto px-4">
-            <h1 class="text-3xl font-bold mb-8 text-center">Danh sách nhà hàng</h1>
+            <!-- Bộ lọc -->
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                <h2 class="text-2xl font-bold mb-4">Lọc nhà hàng</h2>
+                <form method="get" action="@Url.Action("Index", "Home")" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2" for="addressFilter">Địa chỉ</label>
+                        <input type="text" id="addressFilter" name="addressFilter" value="@Request.QueryString["addressFilter"]" placeholder="Nhập địa chỉ..." class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2" for="openingHoursFilter">Giờ mở cửa</label>
+                        <select id="openingHoursFilter" name="openingHoursFilter" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="">Tất cả</option>
+                            <option value="morning" @(Request.QueryString["openingHoursFilter"] == "morning" ? "selected" : "")>Sáng</option>
+                            <option value="afternoon" @(Request.QueryString["openingHoursFilter"] == "afternoon" ? "selected" : "")>Chiều</option>
+                            <option value="evening" @(Request.QueryString["openingHoursFilter"] == "evening" ? "selected" : "")>Tối</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2" for="isApprovedFilter">Trạng thái phê duyệt</label>
+                        <select id="isApprovedFilter" name="isApprovedFilter" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="">Tất cả</option>
+                            <option value="approved" @(Request.QueryString["isApprovedFilter"] == "approved" ? "selected" : "")>Đã phê duyệt</option>
+                            <option value="notapproved" @(Request.QueryString["isApprovedFilter"] == "notapproved" ? "selected" : "")>Chưa phê duyệt</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2" for="categoryFilter">Loại nhà hàng</label>
+                        <select id="categoryFilter" name="categoryFilter" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="">Tất cả</option>
+                            <option value="hàn quốc" @(Request.QueryString["categoryFilter"] == "hàn quốc" ? "selected" : "")>Hàn Quốc</option>
+                            <option value="lẩu" @(Request.QueryString["categoryFilter"] == "lẩu" ? "selected" : "")>Lẩu</option>
+                            <option value="nướng" @(Request.QueryString["categoryFilter"] == "nướng" ? "selected" : "")>Nướng</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 transition">Áp dụng bộ lọc</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Danh sách nhà hàng -->
             <div class="grid md:grid-cols-3 gap-8">
-                @if (Model != null)
+                @if (Model != null && Model.Any())
                 {
                     foreach (var restaurant in Model)
                     {
+                        string inferredCategory = "Chưa xác định";
+                        if (!string.IsNullOrEmpty(restaurant.name))
+                        {
+                            if (restaurant.name.ToLower().Contains("hàn quốc") || restaurant.name.ToLower().Contains("gogi"))
+                            {
+                                inferredCategory = "Hàn Quốc";
+                            }
+                            else if (restaurant.name.ToLower().Contains("lẩu"))
+                            {
+                                inferredCategory = "Lẩu";
+                            }
+                            else if (restaurant.name.ToLower().Contains("nướng"))
+                            {
+                                inferredCategory = "Nướng";
+                            }
+                        }
+                        if (inferredCategory == "Chưa xác định" && !string.IsNullOrEmpty(restaurant.description))
+                        {
+                            if (restaurant.description.ToLower().Contains("hàn quốc"))
+                            {
+                                inferredCategory = "Hàn Quốc";
+                            }
+                            else if (restaurant.description.ToLower().Contains("lẩu"))
+                            {
+                                inferredCategory = "Lẩu";
+                            }
+                            else if (restaurant.description.ToLower().Contains("nướng"))
+                            {
+                                inferredCategory = "Nướng";
+                            }
+                        }
+
                         <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
                             <div class="mb-4 text-center">
                                 <img src="@restaurant.Image" alt="Hình ảnh nhà hàng" class="w-full h-48 object-cover rounded-lg" />
@@ -94,6 +168,7 @@
                             <h2 class="text-xl font-semibold mb-2">@restaurant.name</h2>
                             <p class="text-gray-600"><strong>Địa chỉ:</strong> @restaurant.address</p>
                             <p class="text-gray-600"><strong>Giờ mở cửa:</strong> @restaurant.opening_hours</p>
+                            <p class="text-gray-600"><strong>Loại:</strong> @inferredCategory</p>
                             <div class="mt-4 text-center">
                                 <a href="@Url.Action("Index", "DetailNhaHang", new { id = restaurant.restaurant_id })"
                                    class="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 transition">
@@ -105,7 +180,7 @@
                 }
                 else
                 {
-                    <p class="text-center text-gray-500">Không có dữ liệu nhà hàng.</p>
+                    <p class="text-center text-gray-500">Không có nhà hàng nào phù hợp với bộ lọc của bạn.</p>
                 }
             </div>
         </div>
@@ -135,7 +210,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-                <p>&copy; Smart Booking. All rights reserved.</p>
+                <p>© Smart Booking. All rights reserved.</p>
             </div>
         </div>
     </footer>

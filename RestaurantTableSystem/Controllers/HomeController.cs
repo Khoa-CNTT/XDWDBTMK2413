@@ -9,26 +9,34 @@ namespace RestaurantTableSystem.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
-        {
-            var restaurant = db.Restaurants.ToList(); // Lấy toàn bộ restaurant
-            return View(restaurant);
-        }
-
         private RestaurantTableSystemEntities db = new RestaurantTableSystemEntities();
-        // GET: Admin/RestaurantCategory
+
+        public ActionResult Index(string search)
+        {
+            IQueryable<Restaurant> restaurants = db.Restaurants;
+
+            // Nếu có từ khóa tìm kiếm, lọc danh sách nhà hàng
+            if (!string.IsNullOrEmpty(search))
+            {
+                search = search.ToLower();
+                restaurants = restaurants.Where(r =>
+                    r.name.ToLower().Contains(search) ||
+                    r.address.ToLower().Contains(search));
+            }
+
+            var restaurantList = restaurants.ToList();
+            return View(restaurantList);
+        }
 
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
-
             return View();
         }
     }
