@@ -42,21 +42,47 @@
             background-color: #f3f4f6;
         }
 
-        .details {
+        /* Định dạng modal */
+        .modal {
             display: none;
-            padding: 16px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
             background-color: #ffffff;
-            border: 2px solid #e5e7eb;
+            padding: 20px;
             border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-top: 8px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6B7280;
+        }
+
+            .close-modal:hover {
+                color: #F97316;
+            }
+
+        .details {
             font-size: 14px;
             line-height: 1.6;
         }
-
-            .details.show {
-                display: block;
-            }
 
             .details h2 {
                 font-size: 24px;
@@ -113,6 +139,21 @@
                 margin-top: 16px;
                 font-style: italic;
             }
+
+        /* Định dạng trạng thái thanh toán */
+        .status-complete {
+            color: #10B981; /* Màu xanh lá cây */
+            font-weight: 500;
+        }
+
+        .status-pending {
+            color: #F97316; /* Màu cam */
+            font-weight: 500;
+        }
+
+        .status-none {
+            color: #6B7280; /* Màu xám cho trạng thái "Chưa thanh toán" */
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -148,6 +189,7 @@
                                 <th>Thời gian</th>
                                 <th>Số người</th>
                                 <th>Số tiền đã thanh toán</th>
+                                <th>Trạng thái thanh toán</th>
                                 <th>Chi tiết</th>
                             </tr>
                         </thead>
@@ -163,56 +205,21 @@
                                     <td>@item.NumberOfGuests</td>
                                     <td>@(item.AmountPaid.HasValue ? item.AmountPaid.Value.ToString("N0") + " đ" : "Chưa thanh toán")</td>
                                     <td>
-                                        <button class="text-amber-600 hover:text-amber-800 transition toggle-details" data-target="details-@item.BookingId">Xem chi tiết</button>
+                                        @if (item.PaymentStatus == "completed")
+                                        {
+                                            <span class="status-complete">Completed</span>
+                                        }
+                                        else if (item.PaymentStatus == "pending")
+                                        {
+                                            <span class="status-pending">Pending</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-none">Chưa thanh toán</span>
+                                        }
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="8">
-                                        <div id="details-@item.BookingId" class="details">
-                                            <h2 class="heading">Phiếu đặt bàn</h2>
-                                            <div class="info">
-                                                <p><strong>Công ty:</strong> SMART-BOOKING</p>
-                                                <p><strong>Thu ngân:</strong> Admin-Smart-Booking</p>
-                                                <p><strong>Tên khách hàng:</strong> @item.CustomerName</p>
-                                                <p><strong>Số điện thoại:</strong> @item.PhoneNumber</p>
-                                                <p><strong>Nhà hàng:</strong> @item.RestaurantName</p>
-                                                <p><strong>Địa chỉ:</strong> @item.RestaurantAddress</p> <!-- Thêm địa chỉ nhà hàng -->
-                                                <p><strong>Số lượng khách:</strong> @item.NumberOfGuests</p>
-                                                <p><strong>Thời gian đặt bàn:</strong> @item.BookingTime.ToString("dd/MM/yyyy HH:mm")</p>
-                                                <p><strong>Yêu cầu đặc biệt:</strong> @item.SpecialRequest</p>
-                                            </div>
-
-                                            <!-- Bảng đơn hàng -->
-                                            <table class="order-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Đơn hàng</th>
-                                                        <th>SL</th>
-                                                        <th>Thành tiền</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>Đặt bàn tại nhà hàng</td>
-                                                        <td>@item.NumberOfGuests</td>
-                                                        <td>@(item.AmountPaid.HasValue ? item.AmountPaid.Value.ToString("N0") + " đ" : "Chưa thanh toán")</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                            <!-- Tổng tiền -->
-                                            <div class="total">
-                                                <p><strong>Tổng tiền:</strong> @(item.AmountPaid.HasValue ? item.AmountPaid.Value.ToString("N0") + " đ" : "Chưa thanh toán")</p>
-                                            </div>
-
-                                            <!-- Trạng thái thanh toán và lời cảm ơn -->
-                                            <div class="info">
-                                                <p><strong>Trạng thái thanh toán:</strong> @item.PaymentStatus</p>
-                                            </div>
-                                            <div class="thanks">
-                                                <p>Cảm ơn và hẹn gặp lại!</p>
-                                            </div>
-                                        </div>
+                                    <td>
+                                        <button class="text-amber-600 hover:text-amber-800 transition open-modal" data-modal-id="modal-@item.BookingId">Xem chi tiết</button>
                                     </td>
                                 </tr>
                             }
@@ -226,6 +233,69 @@
             </div>
         </div>
     </main>
+
+    <!-- Modal cho từng đặt bàn -->
+    @foreach (var item in Model)
+    {
+        <div id="modal-@item.BookingId" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">×</span>
+                <div class="details">
+                    <h2 class="heading">Phiếu đặt bàn</h2>
+                    <div class="info">
+                        <p><strong>Công ty:</strong> SMART-BOOKING</p>
+                        <p><strong>Thu ngân:</strong> Admin-Smart-Booking</p>
+                        <p><strong>Tên khách hàng:</strong> @item.CustomerName</p>
+                        <p><strong>Số điện thoại:</strong> @item.PhoneNumber</p>
+                        <p><strong>Nhà hàng:</strong> @item.RestaurantName</p>
+                        <p><strong>Địa chỉ:</strong> @item.RestaurantAddress</p>
+                        <p><strong>Số lượng khách:</strong> @item.NumberOfGuests</p>
+                        <p><strong>Thời gian đặt bàn:</strong> @item.BookingTime.ToString("dd/MM/yyyy HH:mm")</p>
+                        <p><strong>Yêu cầu đặc biệt:</strong> @item.SpecialRequest</p>
+                    </div>
+                    <table class="order-table">
+                        <thead>
+                            <tr>
+                                <th>Đơn hàng</th>
+                                <th>Só Lượng Khách</th>
+                                <th>Tiền Đặt Cọc</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Đặt bàn tại nhà hàng( @item.RestaurantName)</td>
+                                <td>@item.NumberOfGuests người  </td>
+                                <td>@(item.AmountPaid.HasValue ? item.AmountPaid.Value.ToString("N0") + " đ" : "Chưa thanh toán")</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="total">
+                        <p><strong>Tổng tiền:</strong> @(item.AmountPaid.HasValue ? item.AmountPaid.Value.ToString("N0") + " đ" : "Chưa thanh toán")</p>
+                    </div>
+                    <div class="info">
+                        <p>
+                            <strong>Trạng thái thanh toán:</strong>
+                            @if (item.PaymentStatus == "completed")
+                            {
+                                <span class="status-complete">Completed</span>
+                            }
+                            else if (item.PaymentStatus == "pending")
+                            {
+                                <span class="status-pending">Pending</span>
+                            }
+                            else
+                            {
+                                <span class="status-none">Chưa thanh toán</span>
+                            }
+                        </p>
+                    </div>
+                    <div class="thanks">
+                        <p>Cảm ơn và hẹn gặp lại!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white py-12">
@@ -256,13 +326,34 @@
         </div>
     </footer>
 
-    <!-- JavaScript để toggle chi tiết -->
+    <!-- JavaScript để mở và đóng modal -->
     <script>
-        document.querySelectorAll('.toggle-details').forEach(button => {
+        document.querySelectorAll('.open-modal').forEach(button => {
             button.addEventListener('click', () => {
-                const targetId = button.getAttribute('data-target');
-                const details = document.getElementById(targetId);
-                details.classList.toggle('show');
+                const modalId = button.getAttribute('data-modal-id');
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = 'flex';
+                }
+            });
+        });
+
+        document.querySelectorAll('.close-modal').forEach(button => {
+            button.addEventListener('click', () => {
+                const modal = button.closest('.modal');
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
+        // Đóng modal khi nhấp ra ngoài
+        window.addEventListener('click', (event) => {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
             });
         });
     </script>

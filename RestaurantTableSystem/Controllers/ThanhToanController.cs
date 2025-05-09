@@ -49,12 +49,20 @@ namespace RestaurantTableSystem.Controllers
                         return Json(new { success = false, message = "Không tìm thấy thông tin đặt bàn." });
                     }
 
+                    // Kiểm tra xem payment đã tồn tại chưa
+                    var existingPayment = db.Payments.FirstOrDefault(p => p.booking_id == bookingId);
+                    if (existingPayment != null)
+                    {
+                        Debug.WriteLine($"Payment đã tồn tại cho booking_id: {bookingId}, status={existingPayment.status}");
+                        return Json(new { success = false, message = "Thanh toán cho mã đặt bàn này đã tồn tại." });
+                    }
+
                     var payment = new Payment
                     {
                         booking_id = bookingId.Value,
-                        amount = 200000M, // Sử dụng DECIMAL để khớp với SQL
+                        amount = 200000M,
                         payment_method = paymentMethod,
-                        status = "completed",
+                        status = "pending",
                         transaction_id = Guid.NewGuid().ToString()
                     };
 
@@ -62,7 +70,7 @@ namespace RestaurantTableSystem.Controllers
                     booking.status = "Đã xác nhận";
 
                     int changes = db.SaveChanges();
-                    Debug.WriteLine($"Đã lưu {changes} thay đổi vào database.");
+                    Debug.WriteLine($"Đã lưu {changes} thay đổi vào database. Payment mới: booking_id={payment.booking_id}, status={payment.status}");
 
                     string bookingCode = $"BK{bookingId.Value.ToString("D6")}";
                     return Json(new { success = true, bookingId = bookingId, bookingCode = bookingCode });

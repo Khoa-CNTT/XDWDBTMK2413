@@ -133,6 +133,7 @@
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\BanDatController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\PaymentManagementController.cs" />
     <Compile Include="Areas\Admin\Controllers\RestaurantCategoryController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BusinesssController.cs" />
@@ -2218,6 +2219,7 @@
     <Content Include="Areas\Admin\Views\RestaurantCategory\Index.cshtml" />
     <Content Include="Areas\Admin\Views\RestaurantCategory\Detail.cshtml" />
     <Content Include="Areas\Admin\Views\BanDat\ListBanDat.cshtml" />
+    <Content Include="Areas\Admin\Views\PaymentManagement\Index.cshtml" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />

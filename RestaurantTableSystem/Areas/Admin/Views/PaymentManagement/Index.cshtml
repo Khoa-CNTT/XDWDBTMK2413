@@ -1,0 +1,214 @@
+﻿@model IEnumerable<RestaurantTableSystem.Models.ViewModels.BookingViewModel>
+@{
+    ViewBag.Title = "Quản lý thanh toán";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý thanh toán</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        tr:hover {
+            background-color: #f3f4f6;
+        }
+
+        .details {
+            display: none;
+            padding: 16px;
+            background-color: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+            .details.show {
+                display: block;
+            }
+
+            .details h2 {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                text-align: center;
+                margin-bottom: 12px;
+                border-bottom: 2px solid #e5e7eb;
+                padding-bottom: 8px;
+            }
+
+            .details .info {
+                text-align: center;
+                margin-bottom: 16px;
+            }
+
+                .details .info p {
+                    margin: 4px 0;
+                    text-align: center;
+                }
+
+                .details .info strong {
+                    color: #555;
+                    margin-right: 8px;
+                }
+
+            .details .order-table {
+                width: 100%;
+                margin-top: 12px;
+                border-collapse: collapse;
+            }
+
+                .details .order-table th,
+                .details .order-table td {
+                    border: 1px solid #e5e7eb;
+                    padding: 8px;
+                    text-align: center;
+                }
+
+                .details .order-table th {
+                    background-color: #f9fafb;
+                    font-weight: 600;
+                }
+
+            .details .total {
+                margin-top: 12px;
+                font-weight: bold;
+                text-align: right;
+            }
+
+            .details .thanks {
+                text-align: center;
+                color: #666;
+                margin-top: 16px;
+                font-style: italic;
+            }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-6 flex justify-between items-center">
+            <a href="@Url.Action("Index", "Home")" class="heading text-3xl font-bold text-gray-800">Smart-Booking</a>
+            <nav>
+                <ul class="flex space-x-8">
+                    <li><a href="@Url.Action("Index", "PaymentManagement")" class="text-gray-700 hover:text-amber-600 transition">Quản lý thanh toán</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="container mx-auto px-4 py-12">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="p-8">
+                <h1 class="heading text-3xl font-bold mb-6">Danh sách thanh toán chưa hoàn tất</h1>
+                <!-- Thêm dòng này để tạo token chống giả mạo -->
+                @Html.AntiForgeryToken()
+                @if (Model != null && Model.Any())
+                {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mã đặt bàn</th>
+                                <th>Nhà hàng</th>
+                                <th>Tên khách</th>
+                                <th>Số điện thoại</th>
+                                <th>Thời gian</th>
+                                <th>Số người</th>
+                                <th>Số tiền</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.BookingId</td>
+                                    <td>@item.RestaurantName</td>
+                                    <td>@item.CustomerName</td>
+                                    <td>@item.PhoneNumber</td>
+                                    <td>@item.BookingTime.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>@item.NumberOfGuests</td>
+                                    <td>@(item.AmountPaid.HasValue ? item.AmountPaid.Value.ToString("N0") + " đ" : "Chưa thanh toán")</td>
+                                    <td>@item.PaymentStatus</td>
+                                    <td>
+                                        <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onclick="confirmPaymentForAdmin(@item.BookingId)">Xác nhận thanh toán</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-gray-600 text-center">Không có thanh toán nào đang chờ xử lý.</p>
+                }
+            </div>
+        </div>
+    </main>
+    
+
+    
+
+    <script>
+    function confirmPaymentForAdmin(bookingId) {
+        console.log("Gửi yêu cầu xác nhận thanh toán với bookingId: " + bookingId);
+        if (confirm("Bạn có chắc chắn xác nhận thanh toán cho mã đặt bàn " + bookingId + "?")) {
+            $.ajax({
+                url: '@Url.Action("ConfirmPayment", "PaymentManagement")',
+                type: 'POST',
+                data: {
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                    bookingId: bookingId
+                },
+                success: function (response) {
+                    console.log("Phản hồi từ server: ", response);
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log("Lỗi AJAX - Status: ", status);
+                    console.log("Lỗi AJAX - Error: ", error);
+                    console.log("Chi tiết phản hồi từ server: ", xhr.responseText);
+                    alert("Có lỗi xảy ra khi xác nhận thanh toán: " + error + "\nChi tiết: " + xhr.responseText);
+                }
+            });
+        }
+    }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>

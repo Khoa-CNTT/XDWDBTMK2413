@@ -41,12 +41,24 @@
         tr:hover {
             background-color: #f3f4f6;
         }
+
+        /* Định dạng trạng thái thanh toán */
+        .status-completed {
+            color: #10B981; /* Màu xanh lá cây */
+            font-weight: 500;
+        }
+
+        .status-pending {
+            color: #F97316; /* Màu cam */
+            font-weight: 500;
+        }
+
+        .status-none {
+            color: #6B7280; /* Màu xám cho trạng thái "Chưa thanh toán" */
+        }
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Header -->
-    
-
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-12">
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -63,7 +75,8 @@
                                 <th>Số điện thoại</th>
                                 <th>Thời gian</th>
                                 <th>Số người</th>
-                                <th>Số tiền đã thanh toán</th>
+                                <th>Số tiền Cọc</th>
+                                <th>Trạng thái thanh toán</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -77,6 +90,20 @@
                                     <td>@item.BookingTime.ToString("dd/MM/yyyy HH:mm")</td>
                                     <td>@item.NumberOfGuests</td>
                                     <td>@(item.AmountPaid.HasValue ? item.AmountPaid.Value.ToString("N0") + " đ" : "Chưa thanh toán")</td>
+                                    <td>
+                                        @if (item.PaymentStatus == "completed")
+                                        {
+                                            <span class="status-completed">Completed</span>
+                                        }
+                                        else if (item.PaymentStatus == "pending")
+                                        {
+                                            <span class="status-pending">Pending</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-none">Chưa thanh toán</span>
+                                        }
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -89,8 +116,5 @@
             </div>
         </div>
     </main>
-
-    <!-- Footer -->
-    
 </body>
 </html>

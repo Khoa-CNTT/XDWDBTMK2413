@@ -27,7 +27,8 @@ namespace RestaurantTableSystem.Areas.Admin.Controllers
                                 PhoneNumber = u.phone ?? "Unknown",
                                 BookingTime = b.booking_time,
                                 NumberOfGuests = b.number_of_guests,
-                                AmountPaid = p != null ? p.amount : (decimal?)null
+                                AmountPaid = p != null ? p.amount : (decimal?)null,
+                                PaymentStatus = p != null ? p.status : null
                             }).ToList();
 
             System.Diagnostics.Debug.WriteLine($"Số lượng bookings admin trả về: {bookings.Count}");
