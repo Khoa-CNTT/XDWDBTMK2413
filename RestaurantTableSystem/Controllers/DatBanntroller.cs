@@ -125,11 +125,14 @@ namespace RestaurantTableSystem.Controllers
                             {
                                 BookingId = b.booking_id,
                                 RestaurantName = r.name,
+                                RestaurantAddress = r.address ?? "Không có địa chỉ", // Lấy địa chỉ nhà hàng
                                 CustomerName = u.full_name ?? "Unknown",
                                 PhoneNumber = u.phone ?? "Unknown",
                                 BookingTime = b.booking_time,
                                 NumberOfGuests = b.number_of_guests,
-                                AmountPaid = p != null ? p.amount : (decimal?)null
+                                AmountPaid = p != null ? p.amount : (decimal?)null,
+                                SpecialRequest = b.special_request ?? "Không có",
+                                PaymentStatus = p != null ? p.status : "Chưa thanh toán"
                             }).ToList();
 
             System.Diagnostics.Debug.WriteLine($"Số lượng bookings trả về: {bookings.Count}");

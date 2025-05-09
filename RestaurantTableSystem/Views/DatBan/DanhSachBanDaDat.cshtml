@@ -41,6 +41,78 @@
         tr:hover {
             background-color: #f3f4f6;
         }
+
+        .details {
+            display: none;
+            padding: 16px;
+            background-color: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+            .details.show {
+                display: block;
+            }
+
+            .details h2 {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                text-align: center;
+                margin-bottom: 12px;
+                border-bottom: 2px solid #e5e7eb;
+                padding-bottom: 8px;
+            }
+
+            .details .info {
+                text-align: center;
+                margin-bottom: 16px;
+            }
+
+                .details .info p {
+                    margin: 4px 0;
+                    text-align: center;
+                }
+
+                .details .info strong {
+                    color: #555;
+                    margin-right: 8px;
+                }
+
+            .details .order-table {
+                width: 100%;
+                margin-top: 12px;
+                border-collapse: collapse;
+            }
+
+                .details .order-table th,
+                .details .order-table td {
+                    border: 1px solid #e5e7eb;
+                    padding: 8px;
+                    text-align: center;
+                }
+
+                .details .order-table th {
+                    background-color: #f9fafb;
+                    font-weight: 600;
+                }
+
+            .details .total {
+                margin-top: 12px;
+                font-weight: bold;
+                text-align: right;
+            }
+
+            .details .thanks {
+                text-align: center;
+                color: #666;
+                margin-top: 16px;
+                font-style: italic;
+            }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -76,6 +148,7 @@
                                 <th>Thời gian</th>
                                 <th>Số người</th>
                                 <th>Số tiền đã thanh toán</th>
+                                <th>Chi tiết</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -89,6 +162,58 @@
                                     <td>@item.BookingTime.ToString("dd/MM/yyyy HH:mm")</td>
                                     <td>@item.NumberOfGuests</td>
                                     <td>@(item.AmountPaid.HasValue ? item.AmountPaid.Value.ToString("N0") + " đ" : "Chưa thanh toán")</td>
+                                    <td>
+                                        <button class="text-amber-600 hover:text-amber-800 transition toggle-details" data-target="details-@item.BookingId">Xem chi tiết</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="8">
+                                        <div id="details-@item.BookingId" class="details">
+                                            <h2 class="heading">Phiếu đặt bàn</h2>
+                                            <div class="info">
+                                                <p><strong>Công ty:</strong> SMART-BOOKING</p>
+                                                <p><strong>Thu ngân:</strong> Admin-Smart-Booking</p>
+                                                <p><strong>Tên khách hàng:</strong> @item.CustomerName</p>
+                                                <p><strong>Số điện thoại:</strong> @item.PhoneNumber</p>
+                                                <p><strong>Nhà hàng:</strong> @item.RestaurantName</p>
+                                                <p><strong>Địa chỉ:</strong> @item.RestaurantAddress</p> <!-- Thêm địa chỉ nhà hàng -->
+                                                <p><strong>Số lượng khách:</strong> @item.NumberOfGuests</p>
+                                                <p><strong>Thời gian đặt bàn:</strong> @item.BookingTime.ToString("dd/MM/yyyy HH:mm")</p>
+                                                <p><strong>Yêu cầu đặc biệt:</strong> @item.SpecialRequest</p>
+                                            </div>
+
+                                            <!-- Bảng đơn hàng -->
+                                            <table class="order-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Đơn hàng</th>
+                                                        <th>SL</th>
+                                                        <th>Thành tiền</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Đặt bàn tại nhà hàng</td>
+                                                        <td>@item.NumberOfGuests</td>
+                                                        <td>@(item.AmountPaid.HasValue ? item.AmountPaid.Value.ToString("N0") + " đ" : "Chưa thanh toán")</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <!-- Tổng tiền -->
+                                            <div class="total">
+                                                <p><strong>Tổng tiền:</strong> @(item.AmountPaid.HasValue ? item.AmountPaid.Value.ToString("N0") + " đ" : "Chưa thanh toán")</p>
+                                            </div>
+
+                                            <!-- Trạng thái thanh toán và lời cảm ơn -->
+                                            <div class="info">
+                                                <p><strong>Trạng thái thanh toán:</strong> @item.PaymentStatus</p>
+                                            </div>
+                                            <div class="thanks">
+                                                <p>Cảm ơn và hẹn gặp lại!</p>
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -130,5 +255,16 @@
             </div>
         </div>
     </footer>
+
+    <!-- JavaScript để toggle chi tiết -->
+    <script>
+        document.querySelectorAll('.toggle-details').forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.getAttribute('data-target');
+                const details = document.getElementById(targetId);
+                details.classList.toggle('show');
+            });
+        });
+    </script>
 </body>
 </html>
