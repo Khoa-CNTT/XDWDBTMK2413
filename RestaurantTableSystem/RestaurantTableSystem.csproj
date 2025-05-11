@@ -189,6 +189,7 @@
     </Compile>
     <Compile Include="Models\ViewModels\BookingViewMode.cs" />
     <Compile Include="Models\ViewModels\RestaurantDetailViewModel.cs" />
+    <Compile Include="Models\ViewModels\StatisticsViewModelController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -2220,6 +2221,7 @@
     <Content Include="Areas\Admin\Views\RestaurantCategory\Detail.cshtml" />
     <Content Include="Areas\Admin\Views\BanDat\ListBanDat.cshtml" />
     <Content Include="Areas\Admin\Views\PaymentManagement\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\BanDat\ThongKe.cshtml" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -2260,6 +2262,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Views\BookingViewModel\" />
+    <Folder Include="Views\StatisticsViewModel\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

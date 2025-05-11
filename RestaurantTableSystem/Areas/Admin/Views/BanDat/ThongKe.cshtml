@@ -1,0 +1,288 @@
+﻿@model RestaurantTableSystem.Models.ViewModels.StatisticsViewModel
+@{
+    ViewBag.Title = "Thống Kê Đặt Bàn";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thống kê đặt bàn - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Thêm jQuery và Chart.js -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .stat-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+
+            .stat-card h3 {
+                font-size: 1.5rem;
+                color: #374151;
+                margin-bottom: 10px;
+            }
+
+            .stat-card p {
+                font-size: 2rem;
+                font-weight: 700;
+                color: #10B981;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        tr:hover {
+            background-color: #f3f4f6;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            padding: 20px;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .chart-container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #6B7280;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-12">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="p-8">
+                <h1 class="heading text-3xl font-bold mb-6">Thống kê đặt bàn</h1>
+                <!-- Thống kê tổng quan -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="stat-card">
+                        <h3>Tổng số bàn đã đặt</h3>
+                        <p>@Model.TotalBookings</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Tổng số tiền cọc</h3>
+                        <p>@Model.TotalDeposit.ToString("N0") đ</p>
+                    </div>
+                </div>
+                <!-- Danh sách nhà hàng -->
+                <h2 class="heading text-2xl font-bold mb-4">Thống kê theo nhà hàng</h2>
+                @if (Model.RestaurantStats.Any())
+                {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tên nhà hàng</th>
+                                <th>Số bàn đặt</th>
+                                <th>Tổng tiền cọc</th>
+                                <th>Chi tiết</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var stat in Model.RestaurantStats)
+                            {
+                                <tr>
+                                    <td>@stat.RestaurantName</td>
+                                    <td>@stat.BookingCount</td>
+                                    <td>@stat.DepositAmount.ToString("N0") đ</td>
+                                    <td>
+                                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded view-details" data-restaurant-id="@stat.RestaurantId">
+                                            Chi tiết
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-gray-600 text-center">Không có dữ liệu thống kê theo nhà hàng.</p>
+                }
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal cho thống kê chi tiết -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">×</span>
+            <h2 class="heading text-2xl font-bold mb-4">Thống kê chi tiết</h2>
+            <div id="detailContent">
+                <div class="chart-container mb-4">
+                    <canvas id="dailyChart"></canvas>
+                </div>
+                <table id="detailTable">
+                    <thead>
+                        <tr>
+                            <th>Ngày</th>
+                            <th>Số bàn đặt</th>
+                            <th>Tổng tiền cọc</th>
+                        </tr>
+                    </thead>
+                    <tbody id="detailTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script xử lý modal và biểu đồ -->
+    <script>
+        $(document).ready(function () {
+            // Mở modal khi bấm nút Chi tiết
+            $('.view-details').click(function () {
+                var restaurantId = $(this).data('restaurant-id');
+                $.ajax({
+                    url: '@Url.Action("GetRestaurantDailyStats", "BanDat", new { area = "Admin" })',
+                    type: 'GET',
+                    data: { restaurantId: restaurantId },
+                    success: function (data) {
+                        // Cập nhật bảng
+                        var tableBody = $('#detailTableBody');
+                        tableBody.empty();
+                        if (data.length === 0) {
+                            tableBody.append('<tr><td colspan="3" class="no-data">Không có dữ liệu thống kê cho nhà hàng này.</td></tr>');
+                        } else {
+                            $.each(data, function (i, stat) {
+                                tableBody.append(
+                                    '<tr>' +
+                                    '<td>' + stat.Date + '</td>' +
+                                    '<td>' + stat.BookingCount + '</td>' +
+                                    '<td>' + stat.DepositAmount.toLocaleString('vi-VN') + ' đ</td>' +
+                                    '</tr>'
+                                );
+                            });
+                        }
+
+                        // Chuẩn bị dữ liệu cho biểu đồ (giới hạn 30 ngày gần nhất)
+                        var chartData = data.slice(-30);
+
+                        // Vẽ biểu đồ
+                        var ctx = $('#dailyChart')[0].getContext('2d');
+                        if (window.dailyChartInstance) {
+                            window.dailyChartInstance.destroy(); // Hủy biểu đồ cũ
+                        }
+                        window.dailyChartInstance = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: chartData.map(stat => stat.Date),
+                                datasets: [
+                                    {
+                                        label: 'Số bàn đặt',
+                                        data: chartData.map(stat => stat.BookingCount),
+                                        borderColor: '#10B981',
+                                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                                        fill: true,
+                                        tension: 0.4
+                                    },
+                                    {
+                                        label: 'Tổng tiền cọc (đ)',
+                                        data: chartData.map(stat => stat.DepositAmount),
+                                        borderColor: '#F97316',
+                                        backgroundColor: 'rgba(249, 115, 22, 0.2)',
+                                        fill: true,
+                                        tension: 0.4
+                                    }
+                                ]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: { display: true, text: 'Giá trị' }
+                                    },
+                                    x: {
+                                        title: { display: true, text: 'Ngày' }
+                                    }
+                                },
+                                plugins: {
+                                    legend: { display: true, position: 'top' },
+                                    title: { display: true, text: 'Thống kê theo ngày' }
+                                }
+                            }
+                        });
+
+                        // Hiển thị modal
+                        $('#detailModal').show();
+                    },
+                    error: function () {
+                        alert('Lỗi khi tải dữ liệu thống kê.');
+                    }
+                });
+            });
+
+            // Đóng modal
+            $('.close-modal').click(function () {
+                $('#detailModal').hide();
+            });
+
+            // Đóng modal khi bấm ra ngoài
+            $(window).click(function (e) {
+                if (e.target.id === 'detailModal') {
+                    $('#detailModal').hide();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
