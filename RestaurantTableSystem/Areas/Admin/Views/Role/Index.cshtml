@@ -1,0 +1,68 @@
+﻿@model IEnumerable<RestaurantTableSystem.Models.User>
+
+@{
+    ViewBag.Title = "Quản lý vai trò người dùng";
+}
+
+<h2>Quản lý vai trò người dùng</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID Người dùng</th>
+            <th>Họ và Tên</th>
+            <th>Email</th>
+            <th>Số điện thoại</th>
+            <th>Vai trò</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.user_id</td>
+                <td>@user.full_name</td>
+                <td>@user.email</td>
+                <td>@user.phone</td>
+                <td>
+                    <select class="form-control role-select" data-user-id="@user.user_id">
+                        <option value="Admin" @(user.role == "Admin" ? "selected" : "")>Quản trị viên</option>
+                        <option value="Business" @(user.role == "Business" ? "selected" : "")>Doanh nghiệp</option>
+                        <option value="User" @(user.role == "User" ? "selected" : "")>Người dùng</option>
+                    </select>
+                </td>
+                <td>
+                    <button class="btn btn-primary update-role" data-user-id="@user.user_id">Cập nhật</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.update-role').click(function () {
+                var userId = $(this).data('user-id');
+                var role = $(this).closest('tr').find('.role-select').val();
+
+                $.ajax({
+                    url: '@Url.Action("UpdateRole", "Role", new { area = "Admin" })',
+                    type: 'POST',
+                    data: { userId: userId, role: role },
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                        } else {
+                            alert('Lỗi: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Đã xảy ra lỗi khi cập nhật vai trò.');
+                    }
+                });
+            });
+        });
+    </script>
+}
