@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace RestaurantTableSystem.Areas.Admin.Controllers
 {
-    public class PaymentManagementController : Controller
+    public class PaymentManagementController : System.Web.Mvc.Controller
     {
         private RestaurantTableSystemEntities db = new RestaurantTableSystemEntities();
 

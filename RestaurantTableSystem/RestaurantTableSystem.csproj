@@ -132,7 +132,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\BanDatController.cs" />
-    <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\PaymentManagementController.cs" />
     <Compile Include="Areas\Admin\Controllers\RestaurantCategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
@@ -2216,7 +2216,7 @@
     <Content Include="Areas\Admin\Views\Shared\_LayoutEmpty.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_LayoutLogin.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_PartiaSideBar.cshtml" />
-    <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Account\Index.cshtml" />
     <Content Include="Areas\Admin\Views\RestaurantCategory\Index.cshtml" />
     <Content Include="Areas\Admin\Views\RestaurantCategory\Detail.cshtml" />

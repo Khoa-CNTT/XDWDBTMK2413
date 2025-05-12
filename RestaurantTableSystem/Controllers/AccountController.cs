@@ -52,7 +52,6 @@ namespace RestaurantTableSystem.Controllers
         {
             return View(new User());
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Login(User model)
@@ -64,8 +63,21 @@ namespace RestaurantTableSystem.Controllers
                 {
                     Session["user"] = user;
                     Session["user_id"] = user.user_id;
+                    Session["role"] = user.role;
 
-                    return RedirectToAction("Index", "Home");
+                    if (user.role == "Admin")
+                    {
+                        // Chuyển hướng đến Index của RoleController trong khu vực Admin
+                        return RedirectToAction("Index", "Role", new { area = "Admin" });
+                    }
+                    else if (user.role == "business")
+                    {
+                        return RedirectToAction("Index", "Businesss");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
 
                 ModelState.AddModelError("", "Email hoặc mật khẩu không đúng.");

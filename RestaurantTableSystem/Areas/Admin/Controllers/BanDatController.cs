@@ -8,7 +8,7 @@ using RestaurantTableSystem.Models.ViewModels;
 
 namespace RestaurantTableSystem.Areas.Admin.Controllers
 {
-    public class BanDatController : Controller
+    public class BanDatController : System.Web.Mvc.Controller
     {
         private RestaurantTableSystemEntities db = new RestaurantTableSystemEntities();
 

@@ -8,7 +8,7 @@ using RestaurantTableSystem.Models;
 
 namespace RestaurantTableSystem.Areas.Admin.Controllers
 {
-    public class RestaurantCategoryController : Controller
+    public class RestaurantCategoryController : System.Web.Mvc.Controller
     {
         private RestaurantTableSystemEntities db = new RestaurantTableSystemEntities();
         // GET: Admin/RestaurantCategory
