@@ -12,7 +12,6 @@ namespace RestaurantTableSystem.Controllers
     {
         private readonly RestaurantTableSystemEntities db = new RestaurantTableSystemEntities();
 
-        // Danh sách các danh mục hợp lệ (khớp với ràng buộc CHECK)
         private readonly List<string> validCategories = new List<string>
         {
             "main",
@@ -24,115 +23,107 @@ namespace RestaurantTableSystem.Controllers
         // GET: Menu
         public ActionResult Index(int? restaurant_id)
         {
-            if (restaurant_id.HasValue && !db.Restaurants.Any(r => r.restaurant_id == restaurant_id.Value))
+            if (Session["user"] == null)
             {
-                return HttpNotFound("Nhà hàng không tồn tại.");
+                TempData["Error"] = "Bạn cần đăng nhập để xem thực đơn.";
+                return RedirectToAction("Login", "Account");
             }
 
-            var menuItems = restaurant_id.HasValue
-                ? db.MenuItems.Where(m => m.restaurant_id == restaurant_id.Value).ToList()
-                : db.MenuItems.ToList();
+            var user = Session["user"] as User;
+            var restaurant = db.Restaurants.FirstOrDefault(r => r.user_id == user.user_id);
 
-            ViewBag.RestaurantId = restaurant_id;
+            if (restaurant == null)
+            {
+                TempData["Error"] = "Không tìm thấy nhà hàng của bạn.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var menuItems = db.MenuItems
+                .Where(m => m.restaurant_id == restaurant.restaurant_id)
+                .ToList();
+
+            ViewBag.RestaurantId = restaurant.restaurant_id;
             return View(menuItems);
-        }
-
-        // GET: Menu/Create
-        public ActionResult Create(int? restaurant_id)
-        {
-            if (!restaurant_id.HasValue || !db.Restaurants.Any(r => r.restaurant_id == restaurant_id.Value))
-            {
-                return HttpNotFound("Nhà hàng không tồn tại.");
-            }
-
-            ViewBag.RestaurantId = restaurant_id;
-            ViewBag.Categories = validCategories;
-            return View();
         }
 
         // POST: Menu/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(MenuItem menuItem, HttpPostedFileBase Image, int? restaurant_id)
+        public ActionResult Create(MenuItem menuItem, HttpPostedFileBase Image)
         {
-            // Kiểm tra restaurant_id
-            const int fixedRestaurantId = 22; // Giá trị cố định theo yêu cầu
-            if (!db.Restaurants.Any(r => r.restaurant_id == fixedRestaurantId))
+            if (Session["user"] == null)
             {
-                ModelState.AddModelError("restaurant_id", "Nhà hàng với ID 22 không tồn tại.");
+                TempData["Error"] = "Bạn cần đăng nhập để thêm món ăn.";
+                return RedirectToAction("Login", "Account");
             }
 
-            // Kiểm tra category
-            if (!validCategories.Contains(menuItem.category))
+            var user = Session["user"] as User;
+            var restaurant = db.Restaurants.FirstOrDefault(r => r.user_id == user.user_id);
+
+            if (restaurant == null)
             {
-                ModelState.AddModelError("category", "Danh mục không hợp lệ. Vui lòng chọn một danh mục hợp lệ.");
+                TempData["Error"] = "Không tìm thấy nhà hàng của bạn.";
+                return RedirectToAction("Index", "Home");
             }
 
-            if (ModelState.IsValid)
+            // Assign restaurant_id to the menu item
+            menuItem.restaurant_id = restaurant.restaurant_id;
+
+            // Handle is_available checkbox
+            if (Image != null && Image.ContentLength > 0)
             {
-                menuItem.restaurant_id = fixedRestaurantId; // Gán cố định restaurant_id = 22
+                var uploadsFolder = Server.MapPath("~/Content/Uploadss/MenuImages/");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
 
-                if (Image != null && Image.ContentLength > 0)
-                {
-                    var uploadDir = "~/Content/Uploadss/MenuImages/";
-                    var physicalPath = Server.MapPath(uploadDir);
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Image.FileName);
+                var fullPath = Path.Combine(uploadsFolder, fileName);
+                Image.SaveAs(fullPath);
 
-                    if (!Directory.Exists(physicalPath))
-                    {
-                        Directory.CreateDirectory(physicalPath);
-                    }
-
-                    var fileName = Path.GetFileName(Image.FileName);
-                    var path = Path.Combine(physicalPath, fileName);
-                    Image.SaveAs(path);
-                    menuItem.Image = "/Content/Uploadss/MenuImages/" + fileName;
-                }
-
-                db.MenuItems.Add(menuItem);
-                db.SaveChanges();
-
-                // Chuyển hướng về /Menu?restaurantId=22
-                return RedirectToAction("Index", new { restaurant_id = fixedRestaurantId });
+                menuItem.Image = "/Content/Uploadss/MenuImages/" + fileName;
+            }
+            else
+            {
+                menuItem.Image = "/Content/Uploadss/MenuImages/default.jpg";
             }
 
-            ViewBag.RestaurantId = restaurant_id;
-            ViewBag.Categories = validCategories;
-            return View(menuItem);
+            db.MenuItems.Add(menuItem);
+            db.SaveChanges();
+
+            TempData["Success"] = "Thêm món ăn thành công.";
+            return View("Index", db.MenuItems.Where(m => m.restaurant_id == restaurant.restaurant_id).ToList());
+
+
         }
-
-        // GET: Menu/Edit/5
-        public ActionResult Edit(int id)
-        {
-            var menuItem = db.MenuItems.Find(id);
-            if (menuItem == null)
-            {
-                return HttpNotFound();
-            }
-            if (!db.Restaurants.Any(r => r.restaurant_id == menuItem.restaurant_id))
-            {
-                return HttpNotFound("Nhà hàng không tồn tại.");
-            }
-
-            ViewBag.RestaurantId = menuItem.restaurant_id;
-            ViewBag.Categories = validCategories;
-            return View(menuItem);
-        }
-
-        // POST: Menu/Edit/5
+        // POST: Menu/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(MenuItem menuItem, HttpPostedFileBase Image)
         {
-            // Kiểm tra restaurant_id
-            if (!db.Restaurants.Any(r => r.restaurant_id == menuItem.restaurant_id))
+            if (Session["user"] == null)
             {
-                ModelState.AddModelError("restaurant_id", "Nhà hàng không hợp lệ.");
+                TempData["Error"] = "Bạn cần đăng nhập để chỉnh sửa món ăn.";
+                return RedirectToAction("Login", "Account");
             }
 
-            // Kiểm tra category
+            var user = Session["user"] as User;
+            var restaurant = db.Restaurants.FirstOrDefault(r => r.user_id == user.user_id);
+
+            if (restaurant == null)
+            {
+                TempData["Error"] = "Không tìm thấy nhà hàng của bạn.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Handle is_available checkbox (unchecked sends null, set to false)
+            if (!Request.Form.AllKeys.Contains("is_available"))
+            {
+                menuItem.is_available = false;
+            }
+
             if (!validCategories.Contains(menuItem.category))
             {
-                ModelState.AddModelError("category", "Danh mục không hợp lệ. Vui lòng chọn một danh mục hợp lệ.");
+                ModelState.AddModelError("category", "Danh mục không hợp lệ.");
             }
 
             if (ModelState.IsValid)
@@ -140,77 +131,117 @@ namespace RestaurantTableSystem.Controllers
                 var existingItem = db.MenuItems.Find(menuItem.menu_item_id);
                 if (existingItem == null)
                 {
-                    return HttpNotFound();
+                    TempData["Error"] = "Không tìm thấy món ăn.";
+                    return RedirectToAction("Index");
                 }
 
-                existingItem.name = menuItem.name;
-                existingItem.category = menuItem.category;
-                existingItem.price = menuItem.price;
-                existingItem.description = menuItem.description;
-                existingItem.is_available = menuItem.is_available;
-                existingItem.restaurant_id = menuItem.restaurant_id;
-
-                if (Image != null && Image.ContentLength > 0)
+                if (existingItem.restaurant_id != restaurant.restaurant_id)
                 {
-                    var uploadDir = "~/Content/Uploadss/MenuImages/";
-                    var physicalPath = Server.MapPath(uploadDir);
+                    TempData["Error"] = "Bạn không có quyền chỉnh sửa món ăn này.";
+                    return RedirectToAction("Index");
+                }
 
-                    if (!Directory.Exists(physicalPath))
+                try
+                {
+                    existingItem.name = menuItem.name;
+                    existingItem.category = menuItem.category;
+                    existingItem.price = menuItem.price;
+                    existingItem.description = menuItem.description;
+                    existingItem.is_available = menuItem.is_available;
+
+                    if (Image != null && Image.ContentLength > 0)
                     {
-                        Directory.CreateDirectory(physicalPath);
+                        var validImageTypes = new[] { "image/jpeg", "image/png", "image/gif" };
+                        if (!validImageTypes.Contains(Image.ContentType))
+                        {
+                            ModelState.AddModelError("Image", "Vui lòng chọn file ảnh (JPEG, PNG, GIF).");
+                        }
+                        else if (Image.ContentLength > 2 * 1024 * 1024) // 2MB
+                        {
+                            ModelState.AddModelError("Image", "Kích thước ảnh không được vượt quá 2MB.");
+                        }
+                        else
+                        {
+                            var uploadDir = Server.MapPath("~/Content/Uploadss/MenuImages/");
+                            if (!Directory.Exists(uploadDir))
+                            {
+                                Directory.CreateDirectory(uploadDir);
+                            }
+
+                            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Image.FileName);
+                            var path = Path.Combine(uploadDir, fileName);
+                            Image.SaveAs(path);
+                            existingItem.Image = "/Content/Uploadss/MenuImages/" + fileName;
+                        }
                     }
 
-                    var fileName = Path.GetFileName(Image.FileName);
-                    var path = Path.Combine(physicalPath, fileName);
-                    Image.SaveAs(path);
-                    existingItem.Image = "/Content/Uploadss/MenuImages/" + fileName;
+                    if (ModelState.IsValid)
+                    {
+                        db.SaveChanges();
+                        TempData["Success"] = "Cập nhật món ăn thành công!";
+                        return RedirectToAction("Index");
+                    }
                 }
-
-                db.SaveChanges();
-                return RedirectToAction("Index", new { restaurant_id = existingItem.restaurant_id });
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Lỗi khi cập nhật món ăn: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"Exception: {ex.ToString()}");
+                }
             }
 
-            ViewBag.RestaurantId = menuItem.restaurant_id;
+            TempData["Error"] = "Có lỗi khi cập nhật món ăn. Vui lòng kiểm tra lại.";
+            ViewBag.RestaurantId = restaurant.restaurant_id;
             ViewBag.Categories = validCategories;
-            return View(menuItem);
+            ViewBag.InvalidMenuItem = menuItem; // Pass the invalid model to preserve input
+            return View("Index", db.MenuItems.Where(m => m.restaurant_id == restaurant.restaurant_id).ToList());
         }
 
-        // GET: Menu/Delete/5
-        public ActionResult Delete(int id)
-        {
-            var menuItem = db.MenuItems.Find(id);
-            if (menuItem == null)
-            {
-                return HttpNotFound();
-            }
-            if (!db.Restaurants.Any(r => r.restaurant_id == menuItem.restaurant_id))
-            {
-                return HttpNotFound("Nhà hàng không tồn tại.");
-            }
-
-            ViewBag.RestaurantId = menuItem.restaurant_id;
-            return View(menuItem);
-        }
-
-        // POST: Menu/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // POST: Menu/Delete
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult Delete(int id, int restaurant_id)
         {
+            if (Session["user"] == null)
+            {
+                TempData["Error"] = "Bạn cần đăng nhập để xóa món ăn.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            var user = Session["user"] as User;
+            var restaurant = db.Restaurants.FirstOrDefault(r => r.user_id == user.user_id);
+
+            if (restaurant == null || restaurant.restaurant_id != restaurant_id)
+            {
+                TempData["Error"] = "Bạn không có quyền xóa món ăn này.";
+                return RedirectToAction("Index");
+            }
+
             var menuItem = db.MenuItems.Find(id);
             if (menuItem == null)
             {
-                return HttpNotFound();
-            }
-            if (!db.Restaurants.Any(r => r.restaurant_id == menuItem.restaurant_id))
-            {
-                return HttpNotFound("Nhà hàng không tồn tại.");
+                TempData["Error"] = "Không tìm thấy món ăn.";
+                return RedirectToAction("Index");
             }
 
-            var restaurant_id = menuItem.restaurant_id;
-            db.MenuItems.Remove(menuItem);
-            db.SaveChanges();
-            return RedirectToAction("Index", new { restaurant_id });
+            if (menuItem.restaurant_id != restaurant.restaurant_id)
+            {
+                TempData["Error"] = "Bạn không có quyền xóa món ăn này.";
+                return RedirectToAction("Index");
+            }
+
+            try
+            {
+                db.MenuItems.Remove(menuItem);
+                db.SaveChanges();
+                TempData["Success"] = "Xóa món ăn thành công!";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Lỗi khi xóa món ăn: {ex.Message}";
+                System.Diagnostics.Debug.WriteLine($"Exception: {ex.ToString()}");
+            }
+
+            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
