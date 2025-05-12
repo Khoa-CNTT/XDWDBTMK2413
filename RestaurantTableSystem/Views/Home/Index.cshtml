@@ -1,237 +1,158 @@
 ﻿@model IEnumerable<RestaurantTableSystem.Models.Restaurant>
+
 @{
     ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đặt bàn nhà hàng</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+@section styles {
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-        }
-
-        .heading {
-            font-family: 'Playfair Display', serif;
-        }
+        /* Các style đặc thù nếu có */
     </style>
-</head>
-<body class="bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white shadow-md">
-        <div class="container mx-auto px-4 py-6 flex justify-between items-center">
-            <h1 class="heading text-3xl font-bold text-gray-800">Smart-Booking</h1>
-            <nav class="flex items-center space-x-8">
-                <div class="relative">
-                    <form method="get" action="@Url.Action("Index", "Home")">
-                        <input type="text" name="search" placeholder="Tìm kiếm nhà hàng..." value="@Request.QueryString["search"]" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
-                        <button type="submit" class="absolute right-2 top-2 text-gray-700 hover:text-amber-600 transition">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </form>
+}
+
+<!-- Hero Section -->
+<section class="relative h-96 bg-[url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4')] bg-cover bg-center">
+    <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center">
+        <div class="container mx-auto px-4 text-white">
+            <h2 class="heading text-5xl font-bold mb-4">Bạn Đang Cần Tìm Kiếm Nhà Hàng ?</h2>
+            <p class="text-xl max-w-2xl">Trải nghiệm ẩm thực đẳng cấp</p>
+            <p class="text-xl max-w-2xl">Nhà hàng sang trọng với không gian ấm cúng và thực đơn đa dạng</p>
+        </div>
+    </div>
+</section>
+
+<!-- Bộ lọc và danh sách nhà hàng -->
+<section class="py-16 bg-gray-100">
+    <div class="container mx-auto px-4">
+        <!-- Bộ lọc -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl font-bold mb-4">Lọc nhà hàng</h2>
+            <form method="get" action="@Url.Action("Index", "Home")" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2" for="addressFilter">Địa chỉ</label>
+                    <input type="text" id="addressFilter" name="addressFilter" value="@Request.QueryString["addressFilter"]" placeholder="Nhập địa chỉ..." class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
                 </div>
-                <ul class="flex space-x-8 items-center">
-                    <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Trang chủ</a></li>
-                    <li>
-                        <a href="@Url.Action("Index", "Businesss")" class="text-gray-700 hover:text-amber-600 transition">
-                            Đăng Kí Nhà Hàng
-                        </a>
-                    </li>
-                    <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Liên hệ</a></li>
-                    @if (Session["user"] == null)
-                    {
-                        <li><a href="@Url.Action("Login", "Account")" class="text-gray-700 hover:text-amber-600 transition">Login</a></li>
-                        <li><a href="@Url.Action("Register", "Account")" class="text-gray-700 hover:text-amber-600 transition">Register</a></li>
-                    }
-                    else
-                    {
-                        var user = (RestaurantTableSystem.Models.User)Session["user"];
-                        <li class="relative">
-                            <button id="profileMenuToggle" class="flex items-center space-x-2 text-gray-700 hover:text-amber-600 transition focus:outline-none">
-                                <i class="fas fa-user-circle text-2xl"></i>
-                                <span>@user.full_name</span>
-                            </button>
-                            <ul id="dropdownMenu" class="hidden absolute bg-white border rounded-lg shadow-lg mt-2 py-2 right-0 w-40 z-50">
-                                <li><a href="@Url.Action("Logout", "Account")" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Đăng xuất</a></li>
-                                <li><a href="@Url.Action("AccountInfo", "Account")" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a></li>
-                                <li><a href="@Url.Action("DanhSachBanDaDat", "DatBan")" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Bàn Đặt</a></li>
-                            </ul>
-                        </li>
-                    }
-                </ul>
-            </nav>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2" for="openingHoursFilter">Giờ mở cửa</label>
+                    <select id="openingHoursFilter" name="openingHoursFilter" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <option value="">Tất cả</option>
+                        <option value="morning" @(Request.QueryString["openingHoursFilter"] == "morning" ? "selected" : "")>Sáng</option>
+                        <option value="afternoon" @(Request.QueryString["openingHoursFilter"] == "afternoon" ? "selected" : "")>Chiều</option>
+                        <option value="evening" @(Request.QueryString["openingHoursFilter"] == "evening" ? "selected" : "")>Tối</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2" for="isApprovedFilter">Trạng thái phê duyệt</label>
+                    <select id="isApprovedFilter" name="isApprovedFilter" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <option value="">Tất cả</option>
+                        <option value="approved" @(Request.QueryString["isApprovedFilter"] == "approved" ? "selected" : "")>Đã phê duyệt</option>
+                        <option value="notapproved" @(Request.QueryString["isApprovedFilter"] == "notapproved" ? "selected" : "")>Chưa phê duyệt</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2" for="categoryFilter">Loại nhà hàng</label>
+                    <select id="categoryFilter" name="categoryFilter" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <option value="">Tất cả</option>
+                        <option value="hàn quốc" @(Request.QueryString["categoryFilter"] == "hàn quốc" ? "selected" : "")>Hàn Quốc</option>
+                        <option value="lẩu" @(Request.QueryString["categoryFilter"] == "lẩu" ? "selected" : "")>Lẩu</option>
+                        <option value="nướng" @(Request.QueryString["categoryFilter"] == "nướng" ? "selected" : "")>Nướng</option>
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button type="submit" class="w-full bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 transition">Áp dụng bộ lọc</button>
+                </div>
+            </form>
         </div>
-    </header>
 
-    <!-- Hero Section -->
-    <section class="relative h-96 bg-[url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4')] bg-cover bg-center">
-        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center">
-            <div class="container mx-auto px-4 text-white">
-                <h2 class="heading text-5xl font-bold mb-4">Bạn Đang Cần Tìm Kiếm Nhà Hàng ?</h2>
-                <p class="text-xl max-w-2xl">Trải nghiệm ẩm thực đẳng cấp</p>
-                <p class="text-xl max-w-2xl">Nhà hàng sang trọng với không gian ấm cúng và thực đơn đa dạng</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Bộ lọc và danh sách nhà hàng -->
-    <section class="py-16 bg-gray-100">
-        <div class="container mx-auto px-4">
-            <!-- Bộ lọc -->
-            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-                <h2 class="text-2xl font-bold mb-4">Lọc nhà hàng</h2>
-                <form method="get" action="@Url.Action("Index", "Home")" class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                    <div>
-                        <label class="block text-gray-700 font-medium mb-2" for="addressFilter">Địa chỉ</label>
-                        <input type="text" id="addressFilter" name="addressFilter" value="@Request.QueryString["addressFilter"]" placeholder="Nhập địa chỉ..." class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 font-medium mb-2" for="openingHoursFilter">Giờ mở cửa</label>
-                        <select id="openingHoursFilter" name="openingHoursFilter" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
-                            <option value="">Tất cả</option>
-                            <option value="morning" @(Request.QueryString["openingHoursFilter"] == "morning" ? "selected" : "")>Sáng</option>
-                            <option value="afternoon" @(Request.QueryString["openingHoursFilter"] == "afternoon" ? "selected" : "")>Chiều</option>
-                            <option value="evening" @(Request.QueryString["openingHoursFilter"] == "evening" ? "selected" : "")>Tối</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 font-medium mb-2" for="isApprovedFilter">Trạng thái phê duyệt</label>
-                        <select id="isApprovedFilter" name="isApprovedFilter" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
-                            <option value="">Tất cả</option>
-                            <option value="approved" @(Request.QueryString["isApprovedFilter"] == "approved" ? "selected" : "")>Đã phê duyệt</option>
-                            <option value="notapproved" @(Request.QueryString["isApprovedFilter"] == "notapproved" ? "selected" : "")>Chưa phê duyệt</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 font-medium mb-2" for="categoryFilter">Loại nhà hàng</label>
-                        <select id="categoryFilter" name="categoryFilter" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
-                            <option value="">Tất cả</option>
-                            <option value="hàn quốc" @(Request.QueryString["categoryFilter"] == "hàn quốc" ? "selected" : "")>Hàn Quốc</option>
-                            <option value="lẩu" @(Request.QueryString["categoryFilter"] == "lẩu" ? "selected" : "")>Lẩu</option>
-                            <option value="nướng" @(Request.QueryString["categoryFilter"] == "nướng" ? "selected" : "")>Nướng</option>
-                        </select>
-                    </div>
-                    <div class="flex items-end">
-                        <button type="submit" class="w-full bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 transition">Áp dụng bộ lọc</button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Danh sách nhà hàng -->
-            <div class="grid md:grid-cols-3 gap-8">
-                @if (Model != null && Model.Any())
+        <!-- Danh sách nhà hàng -->
+        <div class="grid md:grid-cols-3 gap-8">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var restaurant in Model)
                 {
-                    foreach (var restaurant in Model)
+                    string inferredCategory = "Chưa xác định";
+                    if (!string.IsNullOrEmpty(restaurant.name))
                     {
-                        string inferredCategory = "Chưa xác định";
-                        if (!string.IsNullOrEmpty(restaurant.name))
+                        if (restaurant.name.ToLower().Contains("hàn quốc") || restaurant.name.ToLower().Contains("gogi"))
                         {
-                            if (restaurant.name.ToLower().Contains("hàn quốc") || restaurant.name.ToLower().Contains("gogi"))
-                            {
-                                inferredCategory = "Hàn Quốc";
-                            }
-                            else if (restaurant.name.ToLower().Contains("lẩu"))
-                            {
-                                inferredCategory = "Lẩu";
-                            }
-                            else if (restaurant.name.ToLower().Contains("nướng"))
-                            {
-                                inferredCategory = "Nướng";
-                            }
+                            inferredCategory = "Hàn Quốc";
                         }
-                        if (inferredCategory == "Chưa xác định" && !string.IsNullOrEmpty(restaurant.description))
+                        else if (restaurant.name.ToLower().Contains("lẩu"))
                         {
-                            if (restaurant.description.ToLower().Contains("hàn quốc"))
-                            {
-                                inferredCategory = "Hàn Quốc";
-                            }
-                            else if (restaurant.description.ToLower().Contains("lẩu"))
-                            {
-                                inferredCategory = "Lẩu";
-                            }
-                            else if (restaurant.description.ToLower().Contains("nướng"))
-                            {
-                                inferredCategory = "Nướng";
-                            }
+                            inferredCategory = "Lẩu";
                         }
+                        else if (restaurant.name.ToLower().Contains("nướng"))
+                        {
+                            inferredCategory = "Nướng";
+                        }
+                    }
+                    if (inferredCategory == "Chưa xác định" && !string.IsNullOrEmpty(restaurant.description))
+                    {
+                        if (restaurant.description.ToLower().Contains("hàn quốc"))
+                        {
+                            inferredCategory = "Hàn Quốc";
+                        }
+                        else if (restaurant.description.ToLower().Contains("lẩu"))
+                        {
+                            inferredCategory = "Lẩu";
+                        }
+                        else if (restaurant.description.ToLower().Contains("nướng"))
+                        {
+                            inferredCategory = "Nướng";
+                        }
+                    }
 
-                        <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
-                            <div class="mb-4 text-center">
-                                <img src="@restaurant.Image" alt="Hình ảnh nhà hàng" class="w-full h-48 object-cover rounded-lg" />
-                            </div>
-                            <h2 class="text-xl font-semibold mb-2">@restaurant.name</h2>
-                            <p class="text-gray-600"><strong>Địa chỉ:</strong> @restaurant.address</p>
-                            <p class="text-gray-600"><strong>Giờ mở cửa:</strong> @restaurant.opening_hours</p>
-                            <p class="text-gray-600"><strong>Loại:</strong> @inferredCategory</p>
-                            <div class="mt-4 text-center">
-                                <a href="@Url.Action("Index", "DetailNhaHang", new { id = restaurant.restaurant_id })"
-                                   class="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 transition">
-                                    Xem chi tiết
-                                </a>
-                            </div>
+                    <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
+                        <div class="mb-4 text-center">
+                            <img src="@restaurant.Image" alt="Hình ảnh nhà hàng" class="w-full h-48 object-cover rounded-lg" />
                         </div>
-                    }
-                }
-                else
-                {
-                    <p class="text-center text-gray-500">Không có nhà hàng nào phù hợp với bộ lọc của bạn.</p>
-                }
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-12">
-        <div class="container mx-auto px-4">
-            <div class="grid md:grid-cols-3 gap-8">
-                <div>
-                    <h3 class="heading text-2xl font-bold mb-4">GoGi House</h3>
-                    <p class="mb-4">09 Nguyễn Văn Linh ,Hải Châu , Đà Nẵng </p>
-                    <p>Email: gogihouse.com</p>
-                </div>
-                <div>
-                    <h4 class="text-xl font-medium mb-4">Giờ mở cửa</h4>
-                    <p class="mb-2">Thứ 2 - Thứ 6: 11:00 - 22:00</p>
-                    <p>Thứ 7 - Chủ nhật: 10:00 - 23:00</p>
-                </div>
-                <div>
-                    <h4 class="text-xl font-medium mb-4">Theo dõi chúng tôi</h4>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-2xl hover:text-amber-400 transition"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="text-2xl hover:text-amber-400 transition"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-2xl hover:text-amber-400 transition"><i class="fab fa-tiktok"></i></a>
+                        <h2 class="text-xl font-semibold mb-2">@restaurant.name</h2>
+                        <p class="text-gray-600"><strong>Địa chỉ:</strong> @restaurant.address</p>
+                        <p class="text-gray-600"><strong>Giờ mở cửa:</strong> @restaurant.opening_hours</p>
+                        <p class="text-gray-600"><strong>Loại:</strong> @inferredCategory</p>
+                        <div class="mt-4 text-center">
+                            <a href="@Url.Action("Index", "DetailNhaHang", new { id = restaurant.restaurant_id })"
+                               class="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 transition">
+                                Xem chi tiết
+                            </a>
+                        </div>
                     </div>
+                }
+            }
+            else
+            {
+                <p class="text-center text-gray-500">Không có nhà hàng nào phù hợp với bộ lọc của bạn.</p>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="grid md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="heading text-2xl font-bold mb-4">GoGi House</h3>
+                <p class="mb-4">09 Nguyễn Văn Linh, Hải Châu, Đà Nẵng</p>
+                <p>Email: gogihouse.com</p>
+            </div>
+            <div>
+                <h4 class="text-xl font-medium mb-4">Giờ mở cửa</h4>
+                <p class="mb-2">Thứ 2 - Thứ 6: 11:00 - 22:00</p>
+                <p>Thứ 7 - Chủ nhật: 10:00 - 23:00</p>
+            </div>
+            <div>
+                <h4 class="text-xl font-medium mb-4">Theo dõi chúng tôi</h4>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-2xl hover:text-amber-400 transition"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-2xl hover:text-amber-400 transition"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-2xl hover:text-amber-400 transition"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-                <p>© Smart Booking. All rights reserved.</p>
-            </div>
         </div>
-    </footer>
-
-    <!-- Dropdown Script -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const toggle = document.getElementById("profileMenuToggle");
-            const menu = document.getElementById("dropdownMenu");
-
-            toggle?.addEventListener("click", function (e) {
-                e.stopPropagation();
-                menu?.classList.toggle("hidden");
-            });
-
-            document.addEventListener("click", function (e) {
-                if (!menu?.contains(e.target) && !toggle?.contains(e.target)) {
-                    menu?.classList.add("hidden");
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+            <p>© Smart Booking. All rights reserved.</p>
+        </div>
+    </div>
+</footer>

@@ -1,42 +1,102 @@
-﻿﻿
-<!DOCTYPE html>
-<html>
+﻿<!DOCTYPE html>
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - RestaurantTableSystem</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-</head>
-<body>
+    @RenderSection("styles", required: false)
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
 
-    <!--<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
-        <div class="container">-->
-            @*@Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
-            <!--<button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">-->
-                    @*<li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>*@
-                <!--</ul>
-            </div>
-        </div>
-    </nav>-->
+        .heading {
+            font-family: 'Playfair Display', serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    @{
+        // Lấy controller và action hiện tại
+        var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+        var action = ViewContext.RouteData.Values["action"]?.ToString();
+
+        // Kiểm tra nếu không phải trang Login thì hiển thị header
+        if (!(controller == "Account" && (action == "Login" || action == "Register")))
+        {
+            <header class="bg-white shadow-md">
+                <div class="container mx-auto px-4 py-6 flex justify-between items-center">
+                    <h1 class="heading text-3xl font-bold text-gray-800">Smart-Booking</h1>
+                    <nav class="flex items-center space-x-8">
+                        <div class="relative">
+                            <form method="get" action="@Url.Action("Index", "Home")">
+                                <input type="text" name="search" placeholder="Tìm kiếm nhà hàng..." value="@Request.QueryString["search"]" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                                <button type="submit" class="absolute right-2 top-2 text-gray-700 hover:text-amber-600 transition">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </form>
+                        </div>
+                        <ul class="flex space-x-8 items-center">
+                            <li><a href="@Url.Action("Index", "Home")" class="text-gray-700 hover:text-amber-600 transition">Trang chủ</a></li>
+                            <li><a href="@Url.Action("Index", "Businesss")" class="text-gray-700 hover:text-amber-600 transition">Nhà hàng của tôi</a></li>
+                            <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Liên hệ</a></li>
+                            @if (Session["user"] == null)
+                            {
+                                <li><a href="@Url.Action("Login", "Account")" class="text-gray-700 hover:text-amber-600 transition">Login</a></li>
+                                <li><a href="@Url.Action("Register", "Account")" class="text-gray-700 hover:text-amber-600 transition">Register</a></li>
+                            }
+                            else
+                            {
+                                var user = (RestaurantTableSystem.Models.User)Session["user"];
+                                <li class="relative">
+                                    <button id="profileMenuToggle" class="flex items-center space-x-2 text-gray-700 hover:text-amber-600 transition focus:outline-none">
+                                        <i class="fas fa-user-circle text-2xl"></i>
+                                        <span>@user.full_name</span>
+                                    </button>
+                                    <ul id="dropdownMenu" class="hidden absolute bg-white border rounded-lg shadow-lg mt-2 py-2 right-0 w-40 z-50">
+                                        <li><a href="@Url.Action("Logout", "Account")" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Đăng xuất</a></li>
+                                        <li><a href="@Url.Action("AccountInfo", "Account")" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a></li>
+                                        <li><a href="@Url.Action("DanhSachBanDaDat", "DatBan")" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Bàn Đặt</a></li>
+                                    </ul>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            </header>
+        }
+    }
+
     <div class="container body-content">
         @RenderBody()
-        <hr />
-        @*<footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>*@
     </div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+    <!-- Dropdown Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggle = document.getElementById("profileMenuToggle");
+            const menu = document.getElementById("dropdownMenu");
+
+            toggle?.addEventListener("click", function (e) {
+                e.stopPropagation();
+                menu?.classList.toggle("hidden");
+            });
+
+            document.addEventListener("click", function (e) {
+                if (!menu?.contains(e.target) && !toggle?.contains(e.target)) {
+                    menu?.classList.add("hidden");
+                }
+            });
+        });
+    </script>
 </body>
 </html>
