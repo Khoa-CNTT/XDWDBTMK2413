@@ -24,7 +24,7 @@ namespace RestaurantTableSystem.Areas.Admin.Controllers
         {
             try
             {
-                if (!new[] { "Admin", "Business", "User" }.Contains(role))
+                if (!new[] { "Admin", "business", "User" }.Contains(role))
                 {
                     return Json(new { success = false, message = "Vai trò không hợp lệ." });
                 }

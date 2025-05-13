@@ -137,6 +137,7 @@
     <Compile Include="Areas\Admin\Controllers\RestaurantCategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BusinessHomeController.cs" />
     <Compile Include="Controllers\BusinesssController.cs" />
     <Compile Include="Controllers\DatBanntroller.cs" />
     <Compile Include="Controllers\DetailNhaHangController.cs" />
@@ -2259,6 +2260,8 @@
     <Content Include="Views\DatBan\DanhSachBanDaDat.cshtml" />
     <Content Include="Views\Account\AccountInfo.cshtml" />
     <Content Include="Views\Account\UpdateAccount.cshtml" />
+    <Content Include="Views\BusinessHome\Index.cshtml" />
+    <Content Include="Views\BusinessHome\DaDatBan.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

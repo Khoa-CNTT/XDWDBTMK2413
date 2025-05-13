@@ -67,12 +67,12 @@ namespace RestaurantTableSystem.Controllers
 
                     if (user.role == "Admin")
                     {
-                        // Chuyển hướng đến Index của RoleController trong khu vực Admin
                         return RedirectToAction("Index", "Role", new { area = "Admin" });
                     }
                     else if (user.role == "business")
                     {
-                        return RedirectToAction("Index", "Businesss");
+                        // Chuyển hướng đến BusinessHomeController
+                        return RedirectToAction("Index", "BusinessHome");
                     }
                     else
                     {
