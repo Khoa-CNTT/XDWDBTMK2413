@@ -40,38 +40,7 @@
 </head>
 <body class="bg-gray-50">
     <!-- Header với menu điều hướng -->
-    <header class="bg-white shadow-md">
-        <div class="container mx-auto px-4 py-6 flex justify-between items-center">
-            <h1 class="heading text-3xl font-bold text-gray-800">@ViewBag.RestaurantName</h1>
-            <nav class="flex items-center space-x-8">
-                <div class="relative">
-                    <form method="get" action="@Url.Action("Index", "Home")">
-                    </form>
-                </div>
-                <ul class="flex space-x-8 items-center">
-                    <li><a href="@Url.Action("Index", "Businesss")" class="text-gray-700 hover:text-amber-600 transition">Nhà Hàng Của Tôi</a></li>
-                    <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Thông Báo</a></li>
-                    @{
-                        var user = (RestaurantTableSystem.Models.User)Session["user"];
-                        if (user != null)
-                        {
-                            <li class="relative">
-                                <button id="profileMenuToggle" class="flex items-center space-x-2 text-gray-700 hover:text-amber-600 transition focus:outline-none">
-                                    <i class="fas fa-user-circle text-2xl"></i>
-                                    <span>@user.full_name</span>
-                                </button>
-                                <ul id="dropdownMenu" class="hidden absolute bg-white border rounded-lg shadow-lg mt-2 py-2 right-0 w-40 z-50">
-                                    <li><a href="@Url.Action("Logout", "Account")" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Đăng xuất</a></li>
-                                    <li><a href="@Url.Action("AccountInfo", "Account")" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a></li>
-                                    <li><a href="@Url.Action("DanhSachBanDaDat", "DatBan")" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Bàn Đặt</a></li>
-                                </ul>
-                            </li>
-                        }
-                    }
-                </ul>
-            </nav>
-        </div>
-    </header>
+    
 
     <!-- Thông tin nhà hàng -->
     <section class="bg-amber-500 text-white py-6">

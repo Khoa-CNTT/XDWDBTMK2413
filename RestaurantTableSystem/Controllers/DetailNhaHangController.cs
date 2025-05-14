@@ -30,6 +30,7 @@ namespace RestaurantTableSystem.Controllers
 
             return View(viewModel);
         }
+
         public ActionResult Menu(int restaurantId)
         {
             var menuItems = db.MenuItems

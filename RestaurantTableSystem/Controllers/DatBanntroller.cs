@@ -6,7 +6,6 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web.Mvc;
 
-
 namespace RestaurantTableSystem.Controllers
 {
     public class DatBanController : Controller
@@ -36,9 +35,26 @@ namespace RestaurantTableSystem.Controllers
                 Restaurant = restaurant,
             };
 
+            // Lấy thông tin người dùng từ Session
+            var userId = Session["user_id"] as int? ?? 0;
+            if (userId == 0)
+            {
+                // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
+                return RedirectToAction("Login", "Account");
+            }
+
+            var user = db.Users.FirstOrDefault(u => u.user_id == userId);
+            if (user == null)
+            {
+                return HttpNotFound("Không tìm thấy thông tin người dùng.");
+            }
+
+            // Truyền thông tin người dùng vào ViewBag để sử dụng trong view
+            ViewBag.UserFullName = user.full_name ?? "";
+            ViewBag.UserPhone = user.phone ?? "";
+
             return View(viewModel);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -105,6 +121,7 @@ namespace RestaurantTableSystem.Controllers
                 return Json(new { success = false, message = "Lỗi thực tế: " + errorMessage });
             }
         }
+
         public ActionResult DanhSachBanDaDat()
         {
             var userId = Session["user_id"] != null ? (int)Session["user_id"] : 0;
@@ -125,7 +142,7 @@ namespace RestaurantTableSystem.Controllers
                             {
                                 BookingId = b.booking_id,
                                 RestaurantName = r.name,
-                                RestaurantAddress = r.address ?? "Không có địa chỉ", // Lấy địa chỉ nhà hàng
+                                RestaurantAddress = r.address ?? "Không có địa chỉ",
                                 CustomerName = u.full_name ?? "Unknown",
                                 PhoneNumber = u.phone ?? "Unknown",
                                 BookingTime = b.booking_time,

@@ -4,12 +4,8 @@
     var menuItems = Model.MenuItems;
     ViewBag.Title = restaurant.name;
 }
- 
-@{   ViewBag.Title = "Index";
-    
-}
 
-
+@{ ViewBag.Title = "Index"; }
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -31,9 +27,6 @@
 </head>
 
 <body class="bg-white text-gray-800">
-    <!-- HEADER -->
-    
-
     <!-- DANH SÁCH NHÀ HÀNG -->
     <section class="py-12">
         <div class="container mx-auto px-4">
@@ -58,7 +51,6 @@
                            class="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 transition">
                             Đặt Bàn
                         </a>
-
                     </div>
                 </div>
 
@@ -78,15 +70,27 @@
                                 <ul class="space-y-2">
                                     @foreach (var item in group)
                                     {
-                                        <li class="border-b pb-2">
-                                            <div class="flex justify-between text-gray-800">
-                                                <span class="font-medium">@item.name</span>
-                                                <span class="text-amber-500">@item.price.ToString("C")</span>
-                                            </div>
-                                            @if (!string.IsNullOrEmpty(item.description))
+                                        <li class="border-b pb-2 flex items-center gap-4">
+                                            @if (!string.IsNullOrEmpty(item.Image))
                                             {
-                                                <p class="text-sm text-gray-500">@item.description</p>
+                                                <img src="@Url.Content(item.Image)" alt="@item.name" class="w-16 h-16 object-cover rounded-lg" onerror="this.style.display='none'; console.log('Image failed to load for @item.name');" />
                                             }
+                                            else
+                                            {
+                                                <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+                                                    <span class="text-gray-500">No Image</span>
+                                                </div>
+                                            }
+                                            <div class="flex-1">
+                                                <div class="flex justify-between text-gray-800">
+                                                    <span class="font-medium">@item.name</span>
+                                                    <span class="text-amber-500">@item.price.ToString("C")</span>
+                                                </div>
+                                                @if (!string.IsNullOrEmpty(item.description))
+                                                {
+                                                    <p class="text-sm text-gray-500">@item.description</p>
+                                                }
+                                            </div>
                                         </li>
                                     }
                                 </ul>
@@ -98,7 +102,6 @@
                         <p class="text-gray-500">Chưa có món nào được thêm.</p>
                     }
                 </div>
-
             </div>
         </div>
     </section>
@@ -126,10 +129,11 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-                <p>&copy; 2025 Smart Booking. All rights reserved.</p>
+                <p>© 2025 Smart Booking. All rights reserved.</p>
             </div>
         </div>
     </footer>
+
     <div id="menuModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
         <div class="bg-white rounded-xl max-w-3xl w-full p-6 overflow-y-auto max-h-[80vh] relative">
             <button onclick="closeMenuModal()" class="absolute top-4 right-4 text-gray-600 hover:text-red-500">
@@ -148,15 +152,27 @@
                         <ul class="space-y-2">
                             @foreach (var item in group)
                             {
-                                <li class="border-b pb-2">
-                                    <div class="flex justify-between text-gray-800">
-                                        <span class="font-medium">@item.name</span>
-                                        <span class="text-amber-500">@item.price.ToString("C")</span>
-                                    </div>
-                                    @if (!string.IsNullOrEmpty(item.description))
+                                <li class="border-b pb-2 flex items-center gap-4">
+                                    @if (!string.IsNullOrEmpty(item.Image))
                                     {
-                                        <p class="text-sm text-gray-500">@item.description</p>
+                                        <img src="@Url.Content(item.Image)" alt="@item.name" class="w-16 h-16 object-cover rounded-lg" onerror="this.style.display='none'; console.log('Image failed to load for @item.name');" />
                                     }
+                                    else
+                                    {
+                                        <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+                                            <span class="text-gray-500">No Image</span>
+                                        </div>
+                                    }
+                                    <div class="flex-1">
+                                        <div class="flex justify-between text-gray-800">
+                                            <span class="font-medium">@item.name</span>
+                                            <span class="text-amber-500">@item.price.ToString("C")</span>
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(item.description))
+                                        {
+                                            <p class="text-sm text-gray-500">@item.description</p>
+                                        }
+                                    </div>
                                 </li>
                             }
                         </ul>
@@ -169,6 +185,7 @@
             }
         </div>
     </div>
+
     <script>
         function openMenuModal() {
             document.getElementById("menuModal").classList.remove("hidden");
@@ -180,9 +197,5 @@
             document.getElementById("menuModal").classList.remove("flex");
         }
     </script>
-
 </body>
-
 </html>
-
-
