@@ -13,9 +13,11 @@ namespace RestaurantTableSystem.Controllers
 
         public ActionResult Index(string search)
         {
-            IQueryable<Restaurant> restaurants = db.Restaurants;
+            // Chỉ lấy nhà hàng đã được duyệt
+            IQueryable<Restaurant> restaurants = db.Restaurants
+                                                   .Where(r => r.is_approved == true);
 
-            // Nếu có từ khóa tìm kiếm, lọc danh sách nhà hàng
+            // Nếu có từ khóa tìm kiếm, lọc thêm theo tên hoặc địa chỉ
             if (!string.IsNullOrEmpty(search))
             {
                 search = search.ToLower();
@@ -27,6 +29,7 @@ namespace RestaurantTableSystem.Controllers
             var restaurantList = restaurants.ToList();
             return View(restaurantList);
         }
+
 
         public ActionResult About()
         {

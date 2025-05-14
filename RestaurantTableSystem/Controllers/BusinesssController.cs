@@ -24,8 +24,17 @@ namespace RestaurantTableSystem.Controllers
             var existingRestaurant = db.Restaurants.FirstOrDefault(r => r.user_id == user.user_id);
 
             // Nếu nhà hàng đã tồn tại -> load dữ liệu cũ
+
             if (existingRestaurant != null)
             {
+                // Nếu chưa được duyệt => thông báo và không cho vào form
+                if (existingRestaurant.is_approved == false || existingRestaurant.is_approved == null)
+                {
+                    TempData["Error"] = "Yêu cầu đăng ký nhà hàng của bạn đang được xử lý. Vui lòng đợi admin duyệt.";
+                    return RedirectToAction("PendingNotice");
+                }
+
+                // Đã được duyệt => cho chỉnh sửa
                 ViewBag.IsEdit = true;
                 return View(existingRestaurant);
             }
@@ -33,7 +42,12 @@ namespace RestaurantTableSystem.Controllers
             ViewBag.IsEdit = false;
             return View(new Restaurant());
         }
+        public ActionResult PendingNotice()
+        {
+            return View();
+        }
 
+        // POST: Business
         // POST: Business
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -50,7 +64,6 @@ namespace RestaurantTableSystem.Controllers
                 var user = Session["user"] as User;
                 var existingRestaurant = db.Restaurants.FirstOrDefault(r => r.user_id == user.user_id);
 
-                // Nếu nhà hàng đã tồn tại -> cập nhật
                 if (existingRestaurant != null)
                 {
                     existingRestaurant.name = restaurant.name;
@@ -61,7 +74,12 @@ namespace RestaurantTableSystem.Controllers
                     existingRestaurant.max_tables = restaurant.max_tables;
                     existingRestaurant.opening_hours = restaurant.opening_hours;
                     existingRestaurant.created_at = DateTime.Now;
-                    existingRestaurant.is_approved = false;
+
+                    // Chỉ đặt lại trạng thái nếu đang là chưa duyệt
+                    if (existingRestaurant.is_approved == null || existingRestaurant.is_approved == false)
+                    {
+                        existingRestaurant.is_approved = false;
+                    }
 
                     if (ImageUpload != null && ImageUpload.ContentLength > 0)
                     {
@@ -77,12 +95,17 @@ namespace RestaurantTableSystem.Controllers
                     }
 
                     db.SaveChanges();
-                    TempData["Success"] = "Cập nhật thông tin nhà hàng thành công!";
-                    return RedirectToAction("Index", "Menu", new { restaurantId = existingRestaurant.restaurant_id });
+                    TempData["Success"] = "Thông tin đã được cập nhật.";
+
+                    // Nếu nhà hàng đã được duyệt, chuyển tới Menu
+                    if (existingRestaurant.is_approved == true)
+                        return RedirectToAction("Index", "Menu", new { restaurantId = existingRestaurant.restaurant_id });
+
+                    return RedirectToAction("PendingNotice");
                 }
+
                 else
                 {
-                    // Nếu chưa có nhà hàng, thì tạo mới
                     restaurant.user_id = user.user_id;
                     restaurant.created_at = DateTime.Now;
                     restaurant.is_approved = false;
@@ -107,12 +130,13 @@ namespace RestaurantTableSystem.Controllers
                     db.Restaurants.Add(restaurant);
                     db.SaveChanges();
 
-                    TempData["Success"] = "Đăng ký nhà hàng thành công.";
-                    return RedirectToAction("Index", "Menu", new { restaurantId = restaurant.restaurant_id });
+                    TempData["Success"] = "Đăng ký thành công. Vui lòng đợi admin duyệt!";
+                    return RedirectToAction("PendingNotice");
                 }
             }
 
             return View(restaurant);
         }
+
     }
 }

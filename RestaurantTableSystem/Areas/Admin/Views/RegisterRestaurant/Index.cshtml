@@ -1,0 +1,72 @@
+﻿@model IEnumerable<RestaurantTableSystem.Models.Restaurant>
+
+@{
+    ViewBag.Title = "Phê duyệt nhà hàng";
+}
+
+@section naviheader{
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/admin" class="nav-link">Trang chủ</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/admin" class="nav-link">@ViewBag.Title</a>
+        </li>
+    </ul>
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Danh sách nhà hàng chờ duyệt</h3>
+        </div>
+
+        <div class="card-body">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">@TempData["Success"]</div>
+            }
+
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tên nhà hàng</th>
+                        <th>Địa chỉ</th>
+                        <th style="width: 30%;">Mô tả</th>
+                        <th>Ngày tạo</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var restaurant in Model)
+                    {
+                        <tr>
+                            <td>@restaurant.restaurant_id</td>
+                            <td>@restaurant.name</td>
+                            <td>@restaurant.address</td>
+                            <td>
+                                @(restaurant.description != null && restaurant.description.Length > 100
+                                    ? restaurant.description.Substring(0, 100) + "..."
+                                    : restaurant.description)
+                            </td>
+                            <td>@restaurant.created_at</td>
+                            <td>
+                                <a href="@Url.Action("Approve", "RegisterRestaurant", new { id = restaurant.restaurant_id, area = "Admin" })" class="btn btn-success btn-sm">Duyệt</a>
+                                <a href="@Url.Action("Reject", "RegisterRestaurant", new { id = restaurant.restaurant_id, area = "Admin" })" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn từ chối nhà hàng này?');">Từ chối</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer">
+        </div>
+    </div>
+</section>

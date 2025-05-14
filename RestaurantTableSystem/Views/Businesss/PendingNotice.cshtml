@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewBag.Title = "Thông báo chờ duyệt";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="alert alert-info text-center">
+        <h3>@TempData["Success"] "Đăng ký thành công. Vui lòng đợi admin duyệt!"</h3>
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary mt-3">Về trang chủ</a>
+    </div>
+</div>
+

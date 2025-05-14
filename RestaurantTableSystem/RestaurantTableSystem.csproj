@@ -134,6 +134,7 @@
     <Compile Include="Areas\Admin\Controllers\BanDatController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\PaymentManagementController.cs" />
+    <Compile Include="Areas\Admin\Controllers\RegisterRestaurantController.cs" />
     <Compile Include="Areas\Admin\Controllers\RestaurantCategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -2225,6 +2226,7 @@
     <Content Include="Areas\Admin\Views\PaymentManagement\Index.cshtml" />
     <Content Include="Areas\Admin\Views\BanDat\ThongKe.cshtml" />
     <Content Include="Areas\Admin\Views\Role\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\RegisterRestaurant\Index.cshtml" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -2262,6 +2264,7 @@
     <Content Include="Views\Account\UpdateAccount.cshtml" />
     <Content Include="Views\BusinessHome\Index.cshtml" />
     <Content Include="Views\BusinessHome\DaDatBan.cshtml" />
+    <Content Include="Views\Businesss\PendingNotice.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
