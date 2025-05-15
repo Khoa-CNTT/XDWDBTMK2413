@@ -1,4 +1,9 @@
 ﻿@model IEnumerable<RestaurantTableSystem.Models.MenuItem>
+@{
+    ViewBag.Title = "Nhà Hàng Của Tôi";
+    bool isEdit = ViewBag.IsEdit != null && (bool)ViewBag.IsEdit;
+    Layout = "~/Views/Shared/_LayoutBusiness.cshtml"; // Sử dụng layout chung
+}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -139,6 +144,11 @@
                             var index = 1;
                             foreach (var menuItem in Model)
                             {
+                                // Xử lý các giá trị null và ký tự đặc biệt
+                                var name = (menuItem.name ?? "").Replace("'", "\\'");
+                                var description = (menuItem.description ?? "").Replace("'", "\\'");
+                                var image = (menuItem.Image ?? "").Replace("'", "\\'");
+                                var isAvailable = menuItem.is_available.HasValue && menuItem.is_available.Value ? "true" : "false";
                                 <tr class="border-t">
                                     <td class="py-2 px-4">@index</td>
                                     <td class="py-2 px-4">@menuItem.name</td>
@@ -164,7 +174,7 @@
                                     </td>
                                     <td class="py-2 px-4">@menuItem.price.ToString("N0") VNĐ</td>
                                     <td class="py-2 px-4">@menuItem.description</td>
-                                    <td class="py-2 px-4">@(menuItem.is_available == true ? "Có" : "Không")</td>
+                                    <td class="py-2 px-4">@(menuItem.is_available.HasValue && menuItem.is_available.Value ? "Có" : "Không")</td>
                                     <td class="py-2 px-4">
                                         @if (!string.IsNullOrEmpty(menuItem.Image))
                                         {
@@ -176,7 +186,7 @@
                                         }
                                     </td>
                                     <td class="py-2 px-4">
-                                        <button onclick="openEditModal(@menuItem.menu_item_id, '@menuItem.name', '@menuItem.category', @menuItem.price, '@menuItem.description', @menuItem.is_available, '@menuItem.Image')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button>
+                                        <button onclick="openEditModal(@menuItem.menu_item_id, '@name', '@menuItem.category', @menuItem.price, '@description', '@isAvailable', '@image')" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button>
                                         <form action="@Url.Action("Delete", "Menu", new { id = menuItem.menu_item_id, restaurant_id = ViewBag.RestaurantId })" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xóa món ăn này?');">
                                             @Html.AntiForgeryToken()
                                             <button type="submit" class="text-red-500 hover:text-red-700 ml-2"><i class="fas fa-trash"></i></button>
@@ -195,6 +205,7 @@
     <!-- Script xử lý modal và tìm kiếm -->
     <script>
         function openAddModal() {
+            console.log('Opening add modal');
             document.getElementById('addMenuItemModal').classList.remove('hidden');
             document.getElementById('modalTitle').textContent = 'Thêm món ăn mới';
             document.getElementById('submitButton').textContent = 'Thêm';
@@ -204,34 +215,42 @@
         }
 
         function openEditModal(id, name, category, price, description, isAvailable, image) {
-            document.getElementById('addMenuItemModal').classList.remove('hidden');
-            document.getElementById('modalTitle').textContent = 'Sửa món ăn';
-            document.getElementById('submitButton').textContent = 'Cập nhật';
-            document.getElementById('menuItemForm').action = '@Url.Action("Edit", "Menu")';
+            console.log('Opening edit modal with:', { id, name, category, price, description, isAvailable, image });
+            try {
+                document.getElementById('addMenuItemModal').classList.remove('hidden');
+                document.getElementById('modalTitle').textContent = 'Sửa món ăn';
+                document.getElementById('submitButton').textContent = 'Cập nhật';
+                document.getElementById('menuItemForm').action = '@Url.Action("Edit", "Menu")';
 
-            // Điền dữ liệu vào form
-            document.getElementById('menuItemId').value = id;
-            document.getElementById('name').value = name;
-            document.getElementById('category').value = category;
-            document.getElementById('price').value = price;
-            document.getElementById('description').value = description || '';
-            document.getElementById('is_available').checked = isAvailable;
+                // Điền dữ liệu vào form
+                document.getElementById('menuItemId').value = id || '';
+                document.getElementById('name').value = name || '';
+                document.getElementById('category').value = category || 'main';
+                document.getElementById('price').value = price || 0;
+                document.getElementById('description').value = description || '';
+                document.getElementById('is_available').checked = isAvailable === true || isAvailable === "true";
 
-            // Hiển thị hình ảnh hiện tại
-            if (image) {
-                document.getElementById('currentImage').src = image;
-                document.getElementById('currentImage').style.display = 'block';
-            } else {
-                document.getElementById('currentImage').style.display = 'none';
+                // Hiển thị hình ảnh hiện tại
+                if (image && image !== '') {
+                    document.getElementById('currentImage').src = image;
+                    document.getElementById('currentImage').style.display = 'block';
+                } else {
+                    document.getElementById('currentImage').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error in openEditModal:', error);
+                alert('Có lỗi khi mở modal chỉnh sửa. Vui lòng thử lại.');
             }
         }
 
         function closeModal() {
+            console.log('Closing modal');
             document.getElementById('addMenuItemModal').classList.add('hidden');
             resetForm();
         }
 
         function resetForm() {
+            console.log('Resetting form');
             document.getElementById('menuItemForm').reset();
             document.getElementById('menuItemId').value = '';
             document.getElementById('currentImage').style.display = 'none';
@@ -239,6 +258,7 @@
 
         // Client-side validation for image upload
         document.getElementById('menuItemForm').addEventListener('submit', function (e) {
+            console.log('Form submitting');
             const imageInput = document.getElementById('image');
             if (imageInput.files.length > 0) {
                 const file = imageInput.files[0];

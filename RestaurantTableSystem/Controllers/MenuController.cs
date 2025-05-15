@@ -69,7 +69,10 @@ namespace RestaurantTableSystem.Controllers
             // Assign restaurant_id to the menu item
             menuItem.restaurant_id = restaurant.restaurant_id;
 
-            // Handle is_available checkbox
+            // Handle is_available checkbox (unchecked sends null, set to false)
+            menuItem.is_available = Request.Form.AllKeys.Contains("is_available") ? bool.Parse(Request.Form["is_available"]) : (bool?)false;
+
+            // Handle image upload
             if (Image != null && Image.ContentLength > 0)
             {
                 var uploadsFolder = Server.MapPath("~/Content/Uploadss/MenuImages/");
@@ -92,9 +95,8 @@ namespace RestaurantTableSystem.Controllers
 
             TempData["Success"] = "Thêm món ăn thành công.";
             return View("Index", db.MenuItems.Where(m => m.restaurant_id == restaurant.restaurant_id).ToList());
-
-
         }
+
         // POST: Menu/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -116,10 +118,7 @@ namespace RestaurantTableSystem.Controllers
             }
 
             // Handle is_available checkbox (unchecked sends null, set to false)
-            if (!Request.Form.AllKeys.Contains("is_available"))
-            {
-                menuItem.is_available = false;
-            }
+            menuItem.is_available = Request.Form.AllKeys.Contains("is_available") ? bool.Parse(Request.Form["is_available"]) : (bool?)false;
 
             if (!validCategories.Contains(menuItem.category))
             {
@@ -242,15 +241,6 @@ namespace RestaurantTableSystem.Controllers
             }
 
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

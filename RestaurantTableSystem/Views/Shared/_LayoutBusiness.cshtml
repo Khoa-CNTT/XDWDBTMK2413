@@ -32,10 +32,10 @@
         {
             <header class="bg-white shadow-md">
                 <div class="container mx-auto px-4 py-6 flex justify-between items-center">
-                    <h1 class="heading text-3xl font-bold text-gray-800">Smart-Booking</h1>
+                        <h1 class="heading text-3xl font-bold text-gray-800"><a href="@Url.Action("Index", "BusinessHome")">Smart-Booking</a></h1>
                     <nav class="flex items-center space-x-8">
                         <ul class="flex space-x-8 items-center">
-                            <li><a href="@Url.Action("Index", "Businesss")" class="text-gray-700 hover:text-amber-600 transition">Nhà hàng của tôi</a></li>
+                            <li><a href="@Url.Action("CapNhatBusiness", "BusinessHome")" class="text-gray-700 hover:text-amber-600 transition">Nhà hàng của tôi</a></li>
                             <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Liên hệ</a></li>
                             @if (Session["user"] == null)
                             {

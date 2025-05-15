@@ -18,20 +18,86 @@
         .heading {
             font-family: 'Playfair Display', serif;
         }
+
+        /* Định dạng cho chatbot */
+        #chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        #chatbot-window {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 320px;
+            max-height: 400px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+        }
+
+        #chatbot-header {
+            background: #f59e0b;
+            color: white;
+            padding: 12px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #chatbot-messages {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+
+        #chatbot-input {
+            display: flex;
+            border-top: 1px solid #e5e7eb;
+            padding: 8px;
+        }
+
+            #chatbot-input input {
+                flex: 1;
+                border: none;
+                outline: none;
+                padding: 8px;
+                border-radius: 4px;
+                background: #f3f4f6;
+            }
+
+            #chatbot-input button {
+                background: #f59e0b;
+                color: white;
+                border: none;
+                padding: 8px 12px;
+                border-radius: 4px;
+                margin-left: 8px;
+                cursor: pointer;
+            }
+
+                #chatbot-input button:hover {
+                    background: #d97706;
+                }
     </style>
 </head>
 <body class="bg-gray-50">
     @{
-        // Lấy controller và action hiện tại
         var controller = ViewContext.RouteData.Values["controller"]?.ToString();
         var action = ViewContext.RouteData.Values["action"]?.ToString();
 
-        // Kiểm tra nếu không phải trang Login thì hiển thị header
         if (!(controller == "Account" && (action == "Login" || action == "Register" || action == "ForgotPassword")))
         {
             <header class="bg-white shadow-md">
                 <div class="container mx-auto px-4 py-6 flex justify-between items-center">
-                    <h1 class="heading text-3xl font-bold text-gray-800">Smart-Booking</h1>
+                    <h1><a href="@Url.Action("Index", "Home")" class="heading text-3xl font-bold text-gray-800">Smart-Booking</a></h1>
                     <nav class="flex items-center space-x-8">
                         <div class="relative">
                             <form method="get" action="@Url.Action("Index", "Home")">
@@ -43,7 +109,7 @@
                         </div>
                         <ul class="flex space-x-8 items-center">
                             <li><a href="@Url.Action("Index", "Home")" class="text-gray-700 hover:text-amber-600 transition">Trang chủ</a></li>
-                            <li><a href="@Url.Action("Index", "Businesss")" class="text-gray-700 hover:text-amber-600 transition">Nhà hàng của tôi</a></li>
+                            <li><a href="@Url.Action("Index", "Businesss")" class="text-gray-700 hover:text-amber-600 transition">Đăng Kí Nhà Hàng </a></li>
                             <li><a href="#" class="text-gray-700 hover:text-amber-600 transition">Liên hệ</a></li>
                             @if (Session["user"] == null)
                             {
@@ -76,6 +142,24 @@
         @RenderBody()
     </div>
 
+    <!-- Chatbot Widget -->
+    <button id="chatbot-toggle" class="bg-amber-500 text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-amber-600 transition">
+        <i class="fas fa-comment-alt"></i>
+    </button>
+    <div id="chatbot-window" class="flex flex-col">
+        <div id="chatbot-header">
+            <span class="heading text-lg">Smart Booking Chatbot</span>
+            <button onclick="toggleChatbot()" class="text-white hover:text-gray-200">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="chatbot-messages" class="text-sm"></div>
+        <div id="chatbot-input">
+            <input type="text" id="chatInput" placeholder="Hỏi về nhà hàng..." />
+            <button onclick="sendQuestion()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
@@ -98,5 +182,84 @@
             });
         });
     </script>
+
+    <!-- Chatbot Script -->
+    <script>
+        function toggleChatbot() {
+            const window = document.getElementById("chatbot-window");
+            window.style.display = window.style.display === "none" || window.style.display === "" ? "flex" : "none";
+        }
+
+        document.getElementById("chatbot-toggle")?.addEventListener("click", toggleChatbot);
+
+        function sendQuestion() {
+            const input = document.getElementById("chatInput");
+            const question = input.value.trim();
+            if (!question) return;
+
+            const messages = document.getElementById("chatbot-messages");
+            messages.innerHTML += `<p class="mb-2"><strong>Bạn:</strong> ${question}</p>`;
+
+            console.log("Sending question:", question);
+
+            fetch('/Chatbot/Ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question })
+            })
+                .then(response => {
+                    console.log("Response status:", response.status);
+                    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Response data:", data);
+                    if (data.success) {
+                        let responseText = formatResponse(data.data);
+                        messages.innerHTML += `<p class="mb-2"><strong>Bot:</strong> ${responseText}</p>`;
+                    } else {
+                        messages.innerHTML += `<p class="mb-2 text-red-500"><strong>Lỗi:</strong> ${data.error}</p>`;
+                    }
+                    messages.scrollTop = messages.scrollHeight;
+                    input.value = "";
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    messages.innerHTML += `<p class="mb-2 text-red-500"><strong>Lỗi:</strong> ${error.message}</p>`;
+                    messages.scrollTop = messages.scrollHeight;
+                    input.value = "";
+                });
+        }
+
+        function formatResponse(data) {
+            if (Array.isArray(data) && data.length > 0) {
+                let result = "<ul class='list-disc pl-4'>";
+                data.forEach(item => {
+                    result += "<li>";
+                    for (let key in item) {
+                        result += `${key}: ${item[key]}<br>`;
+                    }
+                    result += "</li>";
+                });
+                result += "</ul>";
+                return result;
+            } else if (typeof data === 'string') {
+                return data;
+            } else {
+                return "Không tìm thấy kết quả.";
+            }
+        }
+
+        document.getElementById("chatInput")?.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                sendQuestion();
+            }
+        });
+    </script>
+    @*<script src="https://app.tudongchat.com/js/chatbox.js"></script>
+    <script>
+        const tudong_chatbox = new TuDongChat('ar5BUmAGM0506hTV-vGwk')
+        tudong_chatbox.initial()
+    </script>*@
 </body>
 </html>

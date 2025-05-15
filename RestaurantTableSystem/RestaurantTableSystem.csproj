@@ -140,6 +140,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BusinessHomeController.cs" />
     <Compile Include="Controllers\BusinesssController.cs" />
+    <Compile Include="Controllers\ChatbotController.cs" />
     <Compile Include="Controllers\DatBanntroller.cs" />
     <Compile Include="Controllers\DetailNhaHangController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -2267,11 +2268,13 @@
     <Content Include="Views\Businesss\PendingNotice.cshtml" />
     <Content Include="Views\Shared\_LayoutBusiness.cshtml" />
     <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\BusinessHome\CapNhatBusiness.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Views\BookingViewModel\" />
+    <Folder Include="Views\Chatbot\" />
     <Folder Include="Views\StatisticsViewModel\" />
   </ItemGroup>
   <ItemGroup>
