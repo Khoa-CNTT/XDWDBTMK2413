@@ -26,6 +26,7 @@
                     </div>
                     @Html.TextBoxFor(m => m.full_name, new { @class = "form-control", placeholder = "Họ và tên" })
                 </div>
+                @Html.ValidationMessageFor(m => m.full_name, "", new { @class = "text-danger" })
             </div>
 
             <div class="form-group mb-3">
@@ -50,6 +51,7 @@
                         <span class="input-group-text" style="cursor:pointer" id="togglePassword">👁️</span>
                     </div>
                 </div>
+                @Html.ValidationMessageFor(m => m.password_hash, "", new { @class = "text-danger" })
             </div>
 
             <div class="form-group mb-4">
@@ -60,10 +62,15 @@
                     </div>
                     @Html.TextBoxFor(m => m.phone, new { @class = "form-control", placeholder = "Số điện thoại" })
                 </div>
+                @Html.ValidationMessageFor(m => m.phone, "", new { @class = "text-danger" })
             </div>
 
-            <div class="text-center">
+            
+            <div class="d-flex justify-content-center align-items-center mt-3 gap-3">
+                <a href="@Url.Action("Login", "Account")" class="btn btn-success btn-lg">Đăng Nhập</a>
+                
                 <input type="submit" class="btn btn-primary btn-lg px-5" value="Đăng ký" />
+
             </div>
 
         </div>

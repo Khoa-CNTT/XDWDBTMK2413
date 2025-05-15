@@ -25,6 +25,21 @@ namespace RestaurantTableSystem.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Register(User model)
         {
+            if (string.IsNullOrEmpty(model.email))
+                ModelState.AddModelError("email", "Email không được để trống.");
+            else if (!System.Text.RegularExpressions.Regex.IsMatch(model.email, @"^[a-zA-Z0-9._%+-]+@gmail\.com$"))
+                ModelState.AddModelError("email", "Email phải đúng định dạng và kết thúc bằng @gmail.com.");
+
+
+            if (string.IsNullOrEmpty(model.phone))
+                ModelState.AddModelError("phone", "Số điện thoại không được để trống.");
+            else if (!System.Text.RegularExpressions.Regex.IsMatch(model.phone, @"^0\d{9,10}$"))
+                ModelState.AddModelError("phone", "Số điện thoại phải bắt đầu bằng 0 và có 10 hoặc 11 số.");
+            if (string.IsNullOrEmpty(model.password_hash))
+                ModelState.AddModelError("password_hash", "Mật khẩu không được để trống.");
+            if (string.IsNullOrEmpty(model.full_name))
+                ModelState.AddModelError("full_name", " không được để trống.");
+
             if (ModelState.IsValid)
             {
                 if (db.Users.Any(u => u.email == model.email))
