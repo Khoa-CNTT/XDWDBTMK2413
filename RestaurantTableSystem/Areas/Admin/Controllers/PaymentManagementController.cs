@@ -60,10 +60,24 @@ namespace RestaurantTableSystem.Areas.Admin.Controllers
                         return Json(new { success = false, message = "Chỉ có thể xác nhận thanh toán khi trạng thái là 'pending'." });
                     }
 
+                    // Tìm booking tương ứng
+                    var booking = db.Bookings.FirstOrDefault(b => b.booking_id == bookingId);
+                    if (booking == null)
+                    {
+                        Debug.WriteLine($"Không tìm thấy booking cho booking_id: {bookingId}");
+                        return Json(new { success = false, message = "Không tìm thấy thông tin đặt bàn." });
+                    }
+
+                    // Cập nhật trạng thái payment
                     payment.status = "completed";
-                    Debug.WriteLine($"Đã cập nhật trạng thái thành 'completed' cho booking_id: {bookingId}");
+                    Debug.WriteLine($"Đã cập nhật trạng thái payment thành 'completed' cho booking_id: {bookingId}");
+
+                    // Cập nhật trạng thái booking
+                    booking.status = "Đã xác nhận";
+                    Debug.WriteLine($"Đã cập nhật trạng thái booking thành 'Đã xác nhận' cho booking_id: {bookingId}");
 
                     db.Entry(payment).State = System.Data.Entity.EntityState.Modified;
+                    db.Entry(booking).State = System.Data.Entity.EntityState.Modified;
 
                     int changes = db.SaveChanges();
                     Debug.WriteLine($"Đã lưu {changes} thay đổi vào database cho booking_id: {bookingId}");
@@ -71,10 +85,10 @@ namespace RestaurantTableSystem.Areas.Admin.Controllers
                     if (changes == 0)
                     {
                         Debug.WriteLine($"Không có thay đổi nào được lưu cho booking_id: {bookingId}");
-                        return Json(new { success = false, message = "Không thể cập nhật trạng thái thanh toán." });
+                        return Json(new { success = false, message = "Không thể cập nhật trạng thái thanh toán hoặc đặt bàn." });
                     }
 
-                    return Json(new { success = true, message = "Xác nhận thanh toán thành công." });
+                    return Json(new { success = true, message = "Xác nhận thanh toán và đặt bàn thành công." });
                 }
             }
             catch (Exception ex)

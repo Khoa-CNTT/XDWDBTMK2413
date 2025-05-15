@@ -154,15 +154,23 @@
         .status-none {
             color: #6B7280; /* Màu xám cho trạng thái "Chưa thanh toán" */
         }
+
+        /* Định dạng trạng thái đặt bàn */
+        .booking-status-processing {
+            color: #F97316; /* Màu cam cho trạng thái "Đang xử lý" */
+            font-weight: 500;
+        }
+
+        .booking-status-confirmed {
+            color: #10B981; /* Màu xanh lá cây cho trạng thái "Đã xác nhận" */
+            font-weight: 500;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Header -->
-    
-
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-12">
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="bg rejected by assistant-white rounded-lg shadow-lg overflow-hidden">
             <div class="p-8">
                 <h1 class="heading text-3xl font-bold mb-6">Danh sách bàn đã đặt</h1>
                 @if (Model != null && Model.Any())
@@ -240,46 +248,60 @@
                         <p><strong>Số lượng khách:</strong> @item.NumberOfGuests</p>
                         <p><strong>Thời gian đặt bàn:</strong> @item.BookingTime.ToString("dd/MM/yyyy HH:mm")</p>
                         <p><strong>Yêu cầu đặc biệt:</strong> @item.SpecialRequest</p>
+
                     </div>
                     <table class="order-table">
                         <thead>
                             <tr>
                                 <th>Đơn hàng</th>
-                                <th>Só Lượng Khách</th>
-                                <th>Tiền Đặt Cọc</th>
+                                <th>Số lượng khách</th>
+                                <th>Tiền đặt cọc</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Đặt bàn tại nhà hàng( @item.RestaurantName)</td>
-                                <td>@item.NumberOfGuests người  </td>
+                                <td>Đặt bàn tại nhà hàng (@item.RestaurantName)</td>
+                                <td>@item.NumberOfGuests người</td>
                                 <td>@(item.AmountPaid.HasValue ? item.AmountPaid.Value.ToString("N0") + " đ" : "Chưa thanh toán")</td>
                             </tr>
                         </tbody>
                     </table>
                     <div class="total">
-                        <p><strong>Tổng tiền:</strong> @(item.AmountPaid.HasValue ? item.AmountPaid.Value.ToString("N0") + " đ" : "Chưa thanh toán")</p>
+                        <th><strong>Tổng tiền:</strong> @(item.AmountPaid.HasValue ? item.AmountPaid.Value.ToString("N0") + " đ" : "Chưa thanh toán")</th>
                     </div>
-                    <div class="info">
-                        <p>
-                            <strong>Trạng thái thanh toán:</strong>
-                            @if (item.PaymentStatus == "completed")
-                            {
-                                <span class="status-complete">Completed</span>
-                            }
-                            else if (item.PaymentStatus == "pending")
-                            {
-                                <span class="status-pending">Pending</span>
-                            }
-                            else
-                            {
-                                <span class="status-none">Chưa thanh toán</span>
-                            }
-                        </p>
-                    </div>
+                    <p>
+                        <strong>Trạng thái đặt bàn:</strong>
+                        @if (item.BookingStatus == "Đã xác nhận")
+                        {
+                            <span class="booking-status-confirmed">Đã xác nhận</span>
+                        }
+                        else if (item.BookingStatus == "Đang xử lý")
+                        {
+                            <span class="booking-status-processing">Đang xử lý</span>
+                        }
+                        else
+                        {
+                            <span class="status-none">@item.BookingStatus</span>
+                        }
+                    </p>
+                    <p>
+                        <strong>Trạng thái thanh toán:</strong>
+                        @if (item.PaymentStatus == "completed")
+                        {
+                            <span class="status-complete">Completed</span>
+                        }
+                        else if (item.PaymentStatus == "pending")
+                        {
+                            <span class="status-pending">Pending</span>
+                        }
+                        else
+                        {
+                            <span class="status-none">Chưa thanh toán</span>
+                        }
+                    </p>
                     <div class="thanks">
                         <p>Cảm ơn và hẹn gặp lại!</p>
-                        <b>Nếu Bạn Muốn Hủy Đặt Bàn Vui Lòng Liên Hệ Trực Tiếp Hotline : 0762847535 Or FB : Duy Thắng </b>
+                        <b>Nếu bạn muốn hủy đặt bàn, vui lòng liên hệ trực tiếp qua hotline: 0762847535 hoặc Facebook: Duy Thắng</b>
                     </div>
                 </div>
             </div>

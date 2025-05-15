@@ -137,7 +137,7 @@ namespace RestaurantTableSystem.Controllers
                             join u in db.Users on b.user_id equals u.user_id
                             join p in db.Payments on b.booking_id equals p.booking_id into payments
                             from p in payments.DefaultIfEmpty()
-                            where b.status == "Đã xác nhận" && b.user_id == userId
+                            where b.user_id == userId // Bỏ điều kiện b.status == "Đã xác nhận"
                             select new BookingViewModel
                             {
                                 BookingId = b.booking_id,
@@ -149,7 +149,8 @@ namespace RestaurantTableSystem.Controllers
                                 NumberOfGuests = b.number_of_guests,
                                 AmountPaid = p != null ? p.amount : (decimal?)null,
                                 SpecialRequest = b.special_request ?? "Không có",
-                                PaymentStatus = p != null ? p.status : "Chưa thanh toán"
+                                PaymentStatus = p != null ? p.status : "Chưa thanh toán",
+                                BookingStatus = b.status // Thêm trường này
                             }).ToList();
 
             System.Diagnostics.Debug.WriteLine($"Số lượng bookings trả về: {bookings.Count}");
