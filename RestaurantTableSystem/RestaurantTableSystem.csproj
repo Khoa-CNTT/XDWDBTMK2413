@@ -2266,6 +2266,7 @@
     <Content Include="Views\BusinessHome\DaDatBan.cshtml" />
     <Content Include="Views\Businesss\PendingNotice.cshtml" />
     <Content Include="Views\Shared\_LayoutBusiness.cshtml" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
