@@ -97,51 +97,7 @@ namespace RestaurantTableSystem.Controllers
             return View("DaDatBan", bookings);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id)
-        {
-            var userId = Session["user_id"] != null ? (int)Session["user_id"] : 0;
-            if (userId == 0)
-            {
-                TempData["Error"] = "Bạn cần đăng nhập để hủy đặt bàn.";
-                return RedirectToAction("Login", "Account");
-            }
-
-            var restaurant = db.Restaurants.FirstOrDefault(r => r.user_id == userId);
-            if (restaurant == null)
-            {
-                TempData["Error"] = "Không tìm thấy nhà hàng của bạn.";
-                return RedirectToAction("DaDatBan");
-            }
-
-            var booking = db.Bookings.Find(id);
-            if (booking == null)
-            {
-                TempData["Error"] = "Không tìm thấy đặt bàn.";
-                return RedirectToAction("DaDatBan");
-            }
-
-            if (booking.restaurant_id != restaurant.restaurant_id)
-            {
-                TempData["Error"] = "Bạn không có quyền hủy đặt bàn này.";
-                return RedirectToAction("DaDatBan");
-            }
-
-            try
-            {
-                booking.status = "Đã hủy";
-                db.SaveChanges();
-                TempData["Success"] = "Hủy đặt bàn thành công!";
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = $"Lỗi khi hủy đặt bàn: {ex.Message}";
-                System.Diagnostics.Debug.WriteLine($"Exception: {ex.ToString()}");
-            }
-
-            return RedirectToAction("DaDatBan");
-        }
+        
 
         public ActionResult CapNhatBusiness()
         {
