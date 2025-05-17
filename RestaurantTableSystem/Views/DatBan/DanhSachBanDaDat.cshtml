@@ -162,6 +162,11 @@
             color: #10B981;
             font-weight: 500;
         }
+
+        .booking-status-cancelled {
+            color: #EF4444;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -194,6 +199,7 @@
                                 <th>Số người</th>
                                 <th>Số tiền đã thanh toán</th>
                                 <th>Trạng thái thanh toán</th>
+                                <th>Trạng thái đặt bàn</th>
                                 <th>Chi tiết</th>
                                 <th>Hành động</th>
                             </tr>
@@ -224,13 +230,34 @@
                                         }
                                     </td>
                                     <td>
+                                        @if (item.BookingStatus == "Đã xác nhận")
+                                        {
+                                            <span class="booking-status-confirmed">Đã xác nhận</span>
+                                        }
+                                        else if (item.BookingStatus == "Đang xử lý")
+                                        {
+                                            <span class="booking-status-processing">Đang xử lý</span>
+                                        }
+                                        else if (item.BookingStatus == "Đã hủy")
+                                        {
+                                            <span class="booking-status-cancelled">Đã hủy</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-none">@item.BookingStatus</span>
+                                        }
+                                    </td>
+                                    <td>
                                         <button class="text-amber-600 hover:text-amber-800 transition open-modal" data-modal-id="modal-@item.BookingId">Xem chi tiết</button>
                                     </td>
                                     <td>
-                                        <form action="@Url.Action("Delete", "DatBan", new { id = item.BookingId })" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xóa đặt bàn này?');">
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></button>
-                                        </form>
+                                        @if (item.BookingStatus != "Đã hủy")
+                                        {
+                                            <form action="@Url.Action("Delete", "DatBan", new { id = item.BookingId })" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn hủy đặt bàn này?');">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="text-red-500 hover:text-red-700"><i class="fas fa-times-circle"></i></button>
+                                            </form>
+                                        }
                                     </td>
                                 </tr>
                             }
@@ -258,7 +285,7 @@
                         <p><strong>Tên khách hàng:</strong> @item.CustomerName</p>
                         <p><strong>Số điện thoại:</strong> @item.PhoneNumber</p>
                         <p><strong>Nhà hàng:</strong> @item.RestaurantName</p>
-                        <p><strong>Địa chỉ:</strong> @item.RestaurantAddress</p>
+                        <p><strong>Địa chỉ:</strong>CMakeLists.txt @item.RestaurantAddress</p>
                         <p><strong>Số lượng khách:</strong> @item.NumberOfGuests</p>
                         <p><strong>Thời gian đặt bàn:</strong> @item.BookingTime.ToString("dd/MM/yyyy HH:mm")</p>
                         <p><strong>Yêu cầu đặc biệt:</strong> @item.SpecialRequest</p>
@@ -291,6 +318,10 @@
                         else if (item.BookingStatus == "Đang xử lý")
                         {
                             <span class="booking-status-processing">Đang xử lý</span>
+                        }
+                        else if (item.BookingStatus == "Đã hủy")
+                        {
+                            <span class="booking-status-cancelled">Đã hủy</span>
                         }
                         else
                         {

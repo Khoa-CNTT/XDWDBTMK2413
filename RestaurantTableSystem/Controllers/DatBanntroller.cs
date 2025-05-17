@@ -161,7 +161,7 @@ namespace RestaurantTableSystem.Controllers
             var userId = Session["user_id"] != null ? (int)Session["user_id"] : 0;
             if (userId == 0)
             {
-                TempData["Error"] = "Bạn cần đăng nhập để xóa đặt bàn.";
+                TempData["Error"] = "Bạn cần đăng nhập để hủy đặt bàn.";
                 return RedirectToAction("Login", "Account");
             }
 
@@ -174,19 +174,19 @@ namespace RestaurantTableSystem.Controllers
 
             if (booking.user_id != userId)
             {
-                TempData["Error"] = "Bạn không có quyền xóa đặt bàn này.";
+                TempData["Error"] = "Bạn không có quyền hủy đặt bàn này.";
                 return RedirectToAction("DanhSachBanDaDat");
             }
 
             try
             {
-                db.Bookings.Remove(booking);
+                booking.status = "Đã hủy";
                 db.SaveChanges();
-                TempData["Success"] = "Xóa đặt bàn thành công!";
+                TempData["Success"] = "Hủy đặt bàn thành công!";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Lỗi khi xóa đặt bàn: {ex.Message}";
+                TempData["Error"] = $"Lỗi khi hủy đặt bàn: {ex.Message}";
                 System.Diagnostics.Debug.WriteLine($"Exception: {ex.ToString()}");
             }
 

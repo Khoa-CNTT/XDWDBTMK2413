@@ -42,28 +42,53 @@
             background-color: #f3f4f6;
         }
 
-        /* Định dạng trạng thái thanh toán */
         .status-completed {
-            color: #10B981; /* Màu xanh lá cây */
+            color: #10B981;
             font-weight: 500;
         }
 
         .status-pending {
-            color: #F97316; /* Màu cam */
+            color: #F97316;
             font-weight: 500;
         }
 
         .status-none {
-            color: #6B7280; /* Màu xám cho trạng thái "Chưa thanh toán" */
+            color: #6B7280;
+        }
+
+        .booking-status-processing {
+            color: #F97316;
+            font-weight: 500;
+        }
+
+        .booking-status-confirmed {
+            color: #10B981;
+            font-weight: 500;
+        }
+
+        .booking-status-cancelled {
+            color: #EF4444;
+            font-weight: 500;
         }
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Main Content -->
     <main class="container mx-auto px-4 py-12">
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             <div class="p-8">
                 <h1 class="heading text-3xl font-bold mb-6">Danh sách toàn bộ bàn đã đặt</h1>
+                @if (TempData["Error"] != null)
+                {
+                    <div class="bg-red-500 text-white p-4 rounded-lg mb-4">
+                        @TempData["Error"]
+                    </div>
+                }
+                @if (TempData["Success"] != null)
+                {
+                    <div class="bg-green-500 text-white p-4 rounded-lg mb-4">
+                        @TempData["Success"]
+                    </div>
+                }
                 @if (Model != null && Model.Any())
                 {
                     <table>
@@ -75,8 +100,9 @@
                                 <th>Số điện thoại</th>
                                 <th>Thời gian</th>
                                 <th>Số người</th>
-                                <th>Số tiền Cọc</th>
+                                <th>Số tiền cọc</th>
                                 <th>Trạng thái thanh toán</th>
+                                <th>Trạng thái đặt bàn</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -102,6 +128,24 @@
                                         else
                                         {
                                             <span class="status-none">Chưa thanh toán</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.BookingStatus == "Đã xác nhận")
+                                        {
+                                            <span class="booking-status-confirmed">Đã xác nhận</span>
+                                        }
+                                        else if (item.BookingStatus == "Đang xử lý")
+                                        {
+                                            <span class="booking-status-processing">Đang xử lý</span>
+                                        }
+                                        else if (item.BookingStatus == "Đã hủy")
+                                        {
+                                            <span class="booking-status-cancelled">Đã hủy</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-none">@item.BookingStatus</span>
                                         }
                                     </td>
                                 </tr>

@@ -37,9 +37,9 @@
                     <label class="block text-gray-700 font-medium mb-2" for="openingHoursFilter">Giờ mở cửa</label>
                     <select id="openingHoursFilter" name="openingHoursFilter" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
                         <option value="">Tất cả</option>
-                        <option value="morning" @(Request.QueryString["openingHoursFilter"] == "morning" ? "selected" : "")>Sáng</option>
-                        <option value="afternoon" @(Request.QueryString["openingHoursFilter"] == "afternoon" ? "selected" : "")>Chiều</option>
-                        <option value="evening" @(Request.QueryString["openingHoursFilter"] == "evening" ? "selected" : "")>Tối</option>
+                        <option value="before12" @(Request.QueryString["openingHoursFilter"] == "before12" ? "selected" : "")>Trước 12:00</option>
+                        <option value="12to18" @(Request.QueryString["openingHoursFilter"] == "12to18" ? "selected" : "")>12:00 - 18:00</option>
+                        <option value="after18" @(Request.QueryString["openingHoursFilter"] == "after18" ? "selected" : "")>Sau 18:00</option>
                     </select>
                 </div>
                 <div>

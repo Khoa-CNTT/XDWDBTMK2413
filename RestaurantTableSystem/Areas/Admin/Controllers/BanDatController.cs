@@ -14,7 +14,6 @@ namespace RestaurantTableSystem.Areas.Admin.Controllers
 
         public ActionResult ThongKe()
         {
-            // Tính tổng số bàn đã đặt và tổng tiền cọc
             var totalBookings = db.Bookings.Count(b => b.status == "Đã xác nhận");
             var totalDeposit = (from b in db.Bookings
                                 join p in db.Payments on b.booking_id equals p.booking_id into payments
@@ -22,7 +21,6 @@ namespace RestaurantTableSystem.Areas.Admin.Controllers
                                 where b.status == "Đã xác nhận"
                                 select p != null ? p.amount : 0).Sum();
 
-            // Thống kê theo nhà hàng
             var restaurantStats = (from b in db.Bookings
                                    join r in db.Restaurants on b.restaurant_id equals r.restaurant_id
                                    join p in db.Payments on b.booking_id equals p.booking_id into payments
@@ -49,7 +47,6 @@ namespace RestaurantTableSystem.Areas.Admin.Controllers
             return View(model);
         }
 
-        // Action để lấy thống kê chi tiết theo ngày cho một nhà hàng (toàn bộ lịch sử)
         [HttpGet]
         public ActionResult GetRestaurantDailyStats(int restaurantId)
         {
@@ -86,7 +83,6 @@ namespace RestaurantTableSystem.Areas.Admin.Controllers
             }), JsonRequestBehavior.AllowGet);
         }
 
-        // Action ListBanDat giữ nguyên
         public ActionResult ListBanDat()
         {
             var bookings = (from b in db.Bookings
@@ -94,7 +90,6 @@ namespace RestaurantTableSystem.Areas.Admin.Controllers
                             join u in db.Users on b.user_id equals u.user_id
                             join p in db.Payments on b.booking_id equals p.booking_id into payments
                             from p in payments.DefaultIfEmpty()
-                            where b.status == "Đã xác nhận"
                             select new BookingViewModel
                             {
                                 BookingId = b.booking_id,
@@ -104,7 +99,8 @@ namespace RestaurantTableSystem.Areas.Admin.Controllers
                                 BookingTime = b.booking_time,
                                 NumberOfGuests = b.number_of_guests,
                                 AmountPaid = p != null ? p.amount : (decimal?)null,
-                                PaymentStatus = p != null ? p.status : null
+                                PaymentStatus = p != null ? p.status : null,
+                                BookingStatus = b.status
                             }).ToList();
 
             System.Diagnostics.Debug.WriteLine($"Số lượng bookings admin trả về: {bookings.Count}");

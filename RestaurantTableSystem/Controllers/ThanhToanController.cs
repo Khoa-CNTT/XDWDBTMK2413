@@ -67,7 +67,7 @@ namespace RestaurantTableSystem.Controllers
                     };
 
                     db.Payments.Add(payment);
-                    booking.status = "Đã xác nhận";
+                    booking.status = "Đang xử lý ";
 
                     int changes = db.SaveChanges();
                     Debug.WriteLine($"Đã lưu {changes} thay đổi vào database. Payment mới: booking_id={payment.booking_id}, status={payment.status}");
