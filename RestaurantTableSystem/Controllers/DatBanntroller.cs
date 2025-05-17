@@ -35,11 +35,9 @@ namespace RestaurantTableSystem.Controllers
                 Restaurant = restaurant,
             };
 
-            // Lấy thông tin người dùng từ Session
             var userId = Session["user_id"] as int? ?? 0;
             if (userId == 0)
             {
-                // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
                 return RedirectToAction("Login", "Account");
             }
 
@@ -49,7 +47,6 @@ namespace RestaurantTableSystem.Controllers
                 return HttpNotFound("Không tìm thấy thông tin người dùng.");
             }
 
-            // Truyền thông tin người dùng vào ViewBag để sử dụng trong view
             ViewBag.UserFullName = user.full_name ?? "";
             ViewBag.UserPhone = user.phone ?? "";
 
@@ -71,14 +68,12 @@ namespace RestaurantTableSystem.Controllers
                 return Json(new { success = false, message = "Vui lòng đăng nhập để đặt bàn." });
             }
 
-            // Kiểm tra restaurant
             var restaurant = db.Restaurants.FirstOrDefault(r => r.restaurant_id == booking.restaurant_id);
             if (restaurant == null)
             {
                 return Json(new { success = false, message = "Nhà hàng không tồn tại." });
             }
 
-            // Kiểm tra user
             var user = db.Users.FirstOrDefault(u => u.user_id == userId);
             if (user == null)
             {
@@ -137,7 +132,7 @@ namespace RestaurantTableSystem.Controllers
                             join u in db.Users on b.user_id equals u.user_id
                             join p in db.Payments on b.booking_id equals p.booking_id into payments
                             from p in payments.DefaultIfEmpty()
-                            where b.user_id == userId // Bỏ điều kiện b.status == "Đã xác nhận"
+                            where b.user_id == userId
                             select new BookingViewModel
                             {
                                 BookingId = b.booking_id,
@@ -150,12 +145,52 @@ namespace RestaurantTableSystem.Controllers
                                 AmountPaid = p != null ? p.amount : (decimal?)null,
                                 SpecialRequest = b.special_request ?? "Không có",
                                 PaymentStatus = p != null ? p.status : "Chưa thanh toán",
-                                BookingStatus = b.status // Thêm trường này
+                                BookingStatus = b.status
                             }).ToList();
 
             System.Diagnostics.Debug.WriteLine($"Số lượng bookings trả về: {bookings.Count}");
 
             return View(bookings);
+        }
+
+        // POST: DatBan/Delete
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id)
+        {
+            var userId = Session["user_id"] != null ? (int)Session["user_id"] : 0;
+            if (userId == 0)
+            {
+                TempData["Error"] = "Bạn cần đăng nhập để xóa đặt bàn.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            var booking = db.Bookings.Find(id);
+            if (booking == null)
+            {
+                TempData["Error"] = "Không tìm thấy đặt bàn.";
+                return RedirectToAction("DanhSachBanDaDat");
+            }
+
+            if (booking.user_id != userId)
+            {
+                TempData["Error"] = "Bạn không có quyền xóa đặt bàn này.";
+                return RedirectToAction("DanhSachBanDaDat");
+            }
+
+            try
+            {
+                db.Bookings.Remove(booking);
+                db.SaveChanges();
+                TempData["Success"] = "Xóa đặt bàn thành công!";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Lỗi khi xóa đặt bàn: {ex.Message}";
+                System.Diagnostics.Debug.WriteLine($"Exception: {ex.ToString()}");
+            }
+
+            return RedirectToAction("DanhSachBanDaDat");
         }
     }
 }

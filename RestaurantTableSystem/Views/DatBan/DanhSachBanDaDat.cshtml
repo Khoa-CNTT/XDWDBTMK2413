@@ -42,7 +42,6 @@
             background-color: #f3f4f6;
         }
 
-        /* Định dạng modal */
         .modal {
             display: none;
             position: fixed;
@@ -140,39 +139,48 @@
                 font-style: italic;
             }
 
-        /* Định dạng trạng thái thanh toán */
         .status-complete {
-            color: #10B981; /* Màu xanh lá cây */
+            color: #10B981;
             font-weight: 500;
         }
 
         .status-pending {
-            color: #F97316; /* Màu cam */
+            color: #F97316;
             font-weight: 500;
         }
 
         .status-none {
-            color: #6B7280; /* Màu xám cho trạng thái "Chưa thanh toán" */
+            color: #6B7280;
         }
 
-        /* Định dạng trạng thái đặt bàn */
         .booking-status-processing {
-            color: #F97316; /* Màu cam cho trạng thái "Đang xử lý" */
+            color: #F97316;
             font-weight: 500;
         }
 
         .booking-status-confirmed {
-            color: #10B981; /* Màu xanh lá cây cho trạng thái "Đã xác nhận" */
+            color: #10B981;
             font-weight: 500;
         }
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Main Content -->
     <main class="container mx-auto px-4 py-12">
-        <div class="bg rejected by assistant-white rounded-lg shadow-lg overflow-hidden">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             <div class="p-8">
                 <h1 class="heading text-3xl font-bold mb-6">Danh sách bàn đã đặt</h1>
+                @if (TempData["Error"] != null)
+                {
+                    <div class="bg-red-500 text-white p-4 rounded-lg mb-4">
+                        @TempData["Error"]
+                    </div>
+                }
+                @if (TempData["Success"] != null)
+                {
+                    <div class="bg-green-500 text-white p-4 rounded-lg mb-4">
+                        @TempData["Success"]
+                    </div>
+                }
                 @if (Model != null && Model.Any())
                 {
                     <table>
@@ -187,6 +195,7 @@
                                 <th>Số tiền đã thanh toán</th>
                                 <th>Trạng thái thanh toán</th>
                                 <th>Chi tiết</th>
+                                <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -217,6 +226,12 @@
                                     <td>
                                         <button class="text-amber-600 hover:text-amber-800 transition open-modal" data-modal-id="modal-@item.BookingId">Xem chi tiết</button>
                                     </td>
+                                    <td>
+                                        <form action="@Url.Action("Delete", "DatBan", new { id = item.BookingId })" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xóa đặt bàn này?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -230,7 +245,6 @@
         </div>
     </main>
 
-    <!-- Modal cho từng đặt bàn -->
     @foreach (var item in Model)
     {
         <div id="modal-@item.BookingId" class="modal">
@@ -248,7 +262,6 @@
                         <p><strong>Số lượng khách:</strong> @item.NumberOfGuests</p>
                         <p><strong>Thời gian đặt bàn:</strong> @item.BookingTime.ToString("dd/MM/yyyy HH:mm")</p>
                         <p><strong>Yêu cầu đặc biệt:</strong> @item.SpecialRequest</p>
-
                     </div>
                     <table class="order-table">
                         <thead>
@@ -308,7 +321,6 @@
         </div>
     }
 
-    <!-- Footer -->
     <footer class="bg-gray-800 text-white py-12">
         <div class="container mx-auto px-4">
             <div class="grid md:grid-cols-3 gap-8">
@@ -337,7 +349,6 @@
         </div>
     </footer>
 
-    <!-- JavaScript để mở và đóng modal -->
     <script>
         document.querySelectorAll('.open-modal').forEach(button => {
             button.addEventListener('click', () => {
@@ -358,7 +369,6 @@
             });
         });
 
-        // Đóng modal khi nhấp ra ngoài
         window.addEventListener('click', (event) => {
             const modals = document.querySelectorAll('.modal');
             modals.forEach(modal => {
