@@ -146,6 +146,8 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\ThanhToanController.cs" />
+    <Compile Include="Controllers\ThongBaoController.cs" />
+    <Compile Include="Controllers\ThongBaoUserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -2269,6 +2271,8 @@
     <Content Include="Views\Shared\_LayoutBusiness.cshtml" />
     <Content Include="Views\Account\ForgotPassword.cshtml" />
     <Content Include="Views\BusinessHome\CapNhatBusiness.cshtml" />
+    <Content Include="Views\ThongBao\Index.cshtml" />
+    <Content Include="Views\ThongBaoUser\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

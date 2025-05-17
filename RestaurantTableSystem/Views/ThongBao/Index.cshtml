@@ -1,0 +1,67 @@
+﻿@model IEnumerable<RestaurantTableSystem.Models.Booking>
+
+@{
+    ViewBag.Title = "thông báo của tôi";
+    bool isEdit = ViewBag.IsEdit != null && (bool)ViewBag.IsEdit;
+    Layout = "~/Views/Shared/_LayoutBusiness.cshtml"; // Sử dụng layout chung
+}
+
+<h2>Thông báo đặt bàn</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>Số điện thoại</th>
+            <th>Loại bàn</th>
+            <th>Mô tả</th>
+            <th>Thời gian đặt</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @(item.User != null ? item.User.full_name : "Không có thông tin")
+                    </td>
+                    <td>
+                        @(item.User != null ? item.User.email : "Không có thông tin") <!-- Giả sử User có email -->
+                    </td>
+                    <td>
+                        @(item.User != null ? item.User.phone : "Không có thông tin")
+                    </td>
+                    <td>
+                        @item.number_of_guests <!-- Giả sử Booking có table_type -->
+                    </td>
+                    <td>
+                        @item.special_request <!-- Giả sử Booking có description -->
+                    </td>
+                    <td>@item.booking_time.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@item.status</td>
+                    <td>
+                        @using (Html.BeginForm("Confirm", "ThongBao", new { id = item.booking_id }, FormMethod.Post))
+                        {
+                            <button type="submit" class="btn btn-success" onclick="return confirm('Xác nhận đặt bàn này?');">Xác nhận</button>
+                        }
+                        @using (Html.BeginForm("Cancel", "ThongBao", new { id = item.booking_id }, FormMethod.Post))
+                        {
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn hủy đặt bàn này?');">Hủy</button>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8" class="text-center">Không có dữ liệu đặt bàn.</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,33 @@
+﻿@model List<RestaurantTableSystem.Models.Booking>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Thông báo đặt bàn</h2>
+
+@if (Model.Any())
+{
+    <ul class="list-group">
+        @foreach (var item in Model)
+        {
+            <li class="list-group-item d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-center clickable-notification">
+                    @if (item.status == "Ðã xác nhận")
+                    {
+                        <span> Nhà hàng <strong>@item.Restaurant.name</strong> đã <strong>@item.status</strong> việc đặt bàn của bạn.</span>
+                    }
+                    else if (item.status == "Ðã hủy")
+                    {
+                        <span> Nhà hàng <strong>@item.Restaurant.name</strong> đã <strong>@item.status</strong> việc đặt bàn của bạn.</span>
+                    }
+                </div>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>Không có thông báo nào.</p>
+}
+
