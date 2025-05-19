@@ -4,23 +4,57 @@
     ViewBag.Title = "Home Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-@section styles {
-    <style>
-        /* Các style đặc thù nếu có */
-    </style>
-}
+    body, html {
+        height: 100%;
+    }
 
-<!-- Hero Section -->
-<section class="relative h-96 bg-[url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4')] bg-cover bg-center">
-    <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center">
-        <div class="container mx-auto px-4 text-white">
-            <h2 class="heading text-5xl font-bold mb-4">Bạn Đang Cần Tìm Kiếm Nhà Hàng ?</h2>
-            <p class="text-xl max-w-2xl">Trải nghiệm ẩm thực đẳng cấp</p>
-            <p class="text-xl max-w-2xl">Nhà hàng sang trọng với không gian ấm cúng và thực đơn đa dạng</p>
-        </div>
+    .hero {
+        position: relative;
+        width: 100%;
+        height: 50vh; /* chỉ chiếm nửa màn hình */
+        background-size: cover;
+        background-position: center;
+        transition: background-image 1s ease-in-out;
+    }
+
+    .overlay {
+        position: absolute;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+    }
+
+        .overlay h1 {
+            color: white;
+            font-size: 2.5rem;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+            .overlay h1.visible {
+                opacity: 1;
+            }
+</style>
+
+
+<section class="hero" id="hero">
+    <div class="overlay">
+        <h1 id="slideText"></h1>
     </div>
 </section>
+
+
 
 <!-- Bộ lọc và danh sách nhà hàng -->
 <section class="py-16 bg-gray-100">
@@ -133,9 +167,9 @@
     <div class="container mx-auto px-4">
         <div class="grid md:grid-cols-3 gap-8">
             <div>
-                <h3 class="heading text-2xl font-bold mb-4">GoGi House</h3>
-                <p class="mb-4">09 Nguyễn Văn Linh, Hải Châu, Đà Nẵng</p>
-                <p>Email: gogihouse.com</p>
+                <h3 class="heading text-2xl font-bold mb-4">Smart-Booking</h3>
+                <p class="mb-4">03 Quang Trung, Hải Châu, Đà Nẵng</p>
+                <p>Email: smart_booking@gmail.com</p>
             </div>
             <div>
                 <h4 class="text-xl font-medium mb-4">Giờ mở cửa</h4>
@@ -152,7 +186,51 @@
             </div>
         </div>
         <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-            <p>© Smart Booking. All rights reserved.</p>
+            <p>© 2025 Smart Booking. All rights reserved.</p>
         </div>
     </div>
 </footer>
+<script>
+        const hero = document.getElementById('hero');
+        const text = document.getElementById('slideText');
+
+        const slides = [
+            {
+                image: "https://images.unsplash.com/photo-1555992336-cbf8a0e4b2d5?auto=format&fit=crop&w=1920&q=80",
+                text: "Chào mừng đến với Smart Booking"
+            },
+            {
+                image: "https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&w=1920&q=80",
+                text: "Khám phá các nhà hàng tuyệt vời"
+            },
+            {
+                image: "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1920&q=80",
+                text: "Đặt bàn dễ dàng, nhanh chóng"
+            }
+        ];
+
+        let current = 0;
+
+        function showSlide(index) {
+            // Ẩn chữ trước
+            text.classList.remove("visible");
+
+            const img = new Image();
+            img.onload = () => {
+                hero.style.backgroundImage = `url('${slides[index].image}')`;
+                text.textContent = slides[index].text;
+                text.classList.add("visible");
+            };
+            img.src = slides[index].image;
+        }
+
+        showSlide(current); // Hiển thị slide đầu tiên
+
+        setInterval(() => {
+            current = (current + 1) % slides.length;
+            showSlide(current);
+        }, 3000);
+</script>
+
+
+

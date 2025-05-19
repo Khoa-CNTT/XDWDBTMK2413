@@ -17,13 +17,25 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
+            background-color: #f8f1e9;
         }
 
         .heading {
             font-family: 'Playfair Display', serif;
         }
 
-        /* Enhanced menu styling */
+        .section-container {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+            .section-container:hover {
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            }
+
         .menu-section {
             background: linear-gradient(to bottom, #fff7ed, #ffffff);
             border: 2px solid #f59e0b;
@@ -31,13 +43,13 @@
         }
 
             .menu-section h2 {
-                font-size: 2.5rem;
+                font-size: 2rem;
                 color: #d97706;
                 text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
             }
 
             .menu-section h3 {
-                font-size: 1.75rem;
+                font-size: 1.5rem;
                 color: #b45309;
                 border-bottom: 2px solid #f59e0b;
                 padding-bottom: 0.5rem;
@@ -54,89 +66,166 @@
             .menu-item img {
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             }
+
+        .divider {
+            border-top: 1px solid #e5e7eb;
+            margin: 2rem 0;
+        }
+
+        .filter-btn {
+            background-color: #e5e7eb;
+            color: #374151;
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+            .filter-btn:hover {
+                background-color: #d1d5db;
+            }
+
+            .filter-btn.active {
+                background-color: #f59e0b;
+                color: white;
+            }
     </style>
 </head>
 
-<body class="bg-white text-gray-800">
-    <!-- Restaurant Details Section -->
-    <section class="py-12">
-        <div class="container mx-auto px-4">
-            <h1 class="text-4xl font-bold mb-8 text-center heading">Chi Tiết Nhà Hàng</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Restaurant Information -->
-                <div class="bg-white border border-gray-200 rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition">
-                    @if (!string.IsNullOrEmpty(restaurant.Image))
-                    {
-                        <div class="w-full h-64">
-                            <img src="@Url.Content(restaurant.Image)" alt="@restaurant.name" class="w-full h-full object-cover rounded-t-2xl" onerror="this.style.display='none'; console.log('Restaurant image failed to load for @restaurant.name');" />
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="w-full h-64 bg-gray-200 rounded-t-2xl flex items-center justify-center">
-                            <span class="text-gray-500">No Image</span>
-                        </div>
-                    }
-                    <div class="p-6">
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-2">@restaurant.name</h2>
-                        <p class="text-gray-600 mb-1"><strong>Địa chỉ:</strong> @restaurant.address</p>
-                        <p class="text-gray-600 mb-1"><strong>Số bàn tối đa:</strong> @restaurant.max_tables</p>
-                        <p class="text-gray-600 mb-1"><strong>Giờ mở cửa:</strong> @restaurant.opening_hours</p>
-                        <p class="text-gray-600 mb-1"><strong>Mô Tả:</strong> @restaurant.description</p>
+<body>
+    <!-- Section 1: Restaurant Image and Name (Full-Width) -->
+    <section class="py-8">
+        <div class="px-4">
+            <div class="section-container w-full text-center p-8">
+                @if (!string.IsNullOrEmpty(restaurant.Image))
+                {
+                    <div class="w-full h-96">
+                        <img src="@Url.Content(restaurant.Image)" alt="@restaurant.name" class="w-full h-full object-cover rounded-xl" onerror="this.style.display='none'; console.log('Restaurant image failed to load for @restaurant.name');" />
                     </div>
-                    <div class="px-6 pb-6 text-center space-x-4">
-                        <button onclick="openMenuModal()" class="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 transition">
-                            Xem Chi Tiết Menu
-                        </button>
-                        <a href="@Url.Action("DatBan", "DatBan", new { id = restaurant.restaurant_id })" class="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 transition">
-                            Đặt Bàn
-                        </a>
+                }
+                else
+                {
+                    <div class="w-full h-96 bg-gray-200 rounded-xl flex items-center justify-center">
+                        <span class="text-gray-500">Không có hình ảnh</span>
                     </div>
-                </div>
+                }
+                <h1 class="text-4xl font-bold mt-4 heading text-gray-800">@restaurant.name</h1>
+            </div>
+        </div>
+    </section>
 
-                <!-- Menu Section (only main category) -->
-                <div class="menu-section rounded-2xl p-8 overflow-y-auto max-h-[600px]">
-                    <h2 class="text-2xl font-semibold mb-6 heading">Các Món Ăn BestSeller </h2>
-                    @{
-                        var mainMenuItems = menuItems.Where(m => m.category?.ToLower() == "main").ToList();
-                    }
-                    @if (mainMenuItems.Any())
-                    {
-                        <div class="mb-8">
-                            <h3 class="text-xl font-bold text-amber-600 mb-4">Món Chính</h3>
-                            <ul class="space-y-4">
-                                @foreach (var item in mainMenuItems)
+    <!-- Section 2: Description and Information (Full-Width) -->
+    <section class="py-8">
+        <div class="px-4">
+            <div class="section-container w-full p-8">
+                <h2 class="text-2xl font-semibold mb-4 heading text-gray-800">Thông Tin Nhà Hàng</h2>
+                <div class="divider"></div>
+                <p class="text-gray-600 mb-2"><strong>Mô tả:</strong> @restaurant.description</p>
+                <p class="text-gray-600 mb-2"><strong>Địa chỉ:</strong> @restaurant.address</p>
+                <p class="text-gray-600 mb-2"><strong>Số bàn tối đa:</strong> @restaurant.max_tables</p>
+                <p class="text-gray-600 mb-2"><strong>Giờ mở cửa:</strong> @restaurant.opening_hours</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Featured Dishes (BestSeller) and Full Menu -->
+    <section class="py-8">
+        <div class="container mx-auto px-4">
+            <div class="section-container menu-section max-w-4xl mx-auto p-6">
+                <!-- BestSeller Section -->
+                <h2 class="text-2xl font-semibold mb-4 heading text-center">Món Ăn Nổi Bật</h2>
+                <div class="divider"></div>
+                @{
+                    var mainMenuItems = menuItems.Where(m => m.category?.ToLower() == "main" && m.is_available == true).ToList();
+                }
+                @if (mainMenuItems.Any())
+                {
+                    <ul class="space-y-4 mb-8">
+                        @foreach (var item in mainMenuItems)
+                        {
+                            <li class="menu-item border-b pb-4 flex items-center gap-4">
+                                @if (!string.IsNullOrEmpty(item.Image))
                                 {
-                                    <li class="menu-item border-b pb-4 flex items-center gap-4">
-                                        @if (!string.IsNullOrEmpty(item.Image))
-                                        {
-                                            <img src="@Url.Content(item.Image)" alt="@item.name" class="w-20 h-20 object-cover rounded-lg" onerror="this.style.display='none'; console.log('Image failed to load for @item.name');" />
-                                        }
-                                        else
-                                        {
-                                            <div class="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
-                                                <span class="text-gray-500">No Image</span>
-                                            </div>
-                                        }
-                                        <div class="flex-1">
-                                            <div class="flex justify-between text-gray-800">
-                                                <span class="font-medium text-lg">@item.name</span>
-                                                <span class="text-amber-500 font-semibold">@item.price.ToString("C")</span>
-                                            </div>
-                                            @if (!string.IsNullOrEmpty(item.description))
-                                            {
-                                                <p class="text-sm text-gray-500 mt-1">@item.description</p>
-                                            }
-                                        </div>
-                                    </li>
+                                    <img src="@Url.Content(item.Image)" alt="@item.name" class="w-20 h-20 object-cover rounded-lg" onerror="this.style.display='none'; console.log('Image failed to load for @item.name');" />
                                 }
-                            </ul>
-                        </div>
-                    }
-                    else
+                                else
+                                {
+                                    <div class="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
+                                        <span class="text-gray-500">Không có hình ảnh</span>
+                                    </div>
+                                }
+                                <div class="flex-1">
+                                    <div class="flex justify-between text-gray-800">
+                                        <span class="font-medium text-lg">@item.name</span>
+                                        <span class="text-amber-500 font-semibold">@item.price.ToString("C")</span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(item.description))
+                                    {
+                                        <p class="text-sm text-gray-500 mt-1">@item.description</p>
+                                    }
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-gray-500 text-center mb-8">Chưa có món chính nào được thêm.</p>
+                }
+
+                <!-- Full Menu Section with Filter -->
+                <h2 class="text-2xl font-semibold mb-4 heading text-center">Thực Đơn</h2>
+                <div class="divider"></div>
+                <div class="flex justify-center space-x-4 mb-6">
+                    <button class="filter-btn active" onclick="filterMenu('all')">Tất cả</button>
+                    <button class="filter-btn" onclick="filterMenu('main')">Món chính</button>
+                    <button class="filter-btn" onclick="filterMenu('drink')">Đồ uống</button>
+                    <button class="filter-btn" onclick="filterMenu('appetizer')">Khai vị</button>
+                </div>
+                <ul id="menuItems" class="space-y-4">
+                    @foreach (var item in menuItems.Where(m => m.is_available == true))
                     {
-                        <p class="text-gray-500 text-center">Chưa có món chính nào được thêm.</p>
+                        <li class="menu-item border-b pb-4 flex items-center gap-4" data-category="@(item.category?.ToLower() ?? "other")">
+                            @if (!string.IsNullOrEmpty(item.Image))
+                            {
+                                <img src="@Url.Content(item.Image)" alt="@item.name" class="w-20 h-20 object-cover rounded-lg" onerror="this.style.display='none'; console.log('Image failed to load for @item.name');" />
+                            }
+                            else
+                            {
+                                <div class="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
+                                    <span class="text-gray-500">Không có hình ảnh</span>
+                                </div>
+                            }
+                            <div class="flex-1">
+                                <div class="flex justify-between text-gray-800">
+                                    <span class="font-medium text-lg">@item.name</span>
+                                    <span class="text-amber-500 font-semibold">@item.price.ToString("C")</span>
+                                </div>
+                                @if (!string.IsNullOrEmpty(item.description))
+                                {
+                                    <p class="text-sm text-gray-500 mt-1">@item.description</p>
+                                }
+                            </div>
+                        </li>
                     }
+                </ul>
+                @if (!menuItems.Any(m => m.is_available == true))
+                {
+                    <p class="text-gray-500 text-center">Chưa có món nào được thêm.</p>
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Reservation -->
+    <section class="py-8">
+        <div class="container mx-auto px-4">
+            <div class="section-container max-w-4xl mx-auto p-6 text-center">
+                <h2 class="text-2xl font-semibold mb-4 heading">Đặt Bàn Ngay</h2>
+                <div class="divider"></div>
+                <div class="flex justify-center">
+                    <a href="@Url.Action("DatBan", "DatBan", new { id = restaurant.restaurant_id })" class="bg-amber-500 text-white px-6 py-3 rounded-lg hover:bg-amber-600 transition">
+                        Đặt Bàn
+                    </a>
                 </div>
             </div>
         </div>
@@ -171,69 +260,28 @@
         </div>
     </footer>
 
-    <!-- Menu Modal (all categories) -->
-    <div id="menuModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
-        <div class="bg-white rounded-xl max-w-3xl w-full p-8 overflow-y-auto max-h-[80vh] relative">
-            <button onclick="closeMenuModal()" class="absolute top-4 right-4 text-gray-600 hover:text-red-500">
-                <i class="fas fa-times"></i>
-            </button>
-            <h2 class="text-3xl font-semibold mb-6 heading text-center">Thực Đơn</h2>
-            @if (menuItems != null && menuItems.Any())
-            {
-                var groupedMenu = menuItems.GroupBy(m => m.category);
-                foreach (var group in groupedMenu)
-                {
-                    <div class="mb-8">
-                        <h3 class="text-xl font-bold text-amber-600 mb-4">
-                            @group.Key
-                        </h3>
-                        <ul class="space-y-4">
-                            @foreach (var item in group)
-                            {
-                                <li class="border-b pbblia; pb-4 flex items-center gap-4">
-                                    @if (!string.IsNullOrEmpty(item.Image))
-                                    {
-                                        <img src="@Url.Content(item.Image)" alt="@item.name" class="w-20 h-20 object-cover rounded-lg" onerror="this.style.display='none'; console.log('Image failed to load for @item.name');" />
-                                    }
-                                    else
-                                    {
-                                        <div class="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
-                                            <span class="text-gray-500">No Image</span>
-                                        </div>
-                                    }
-                                    <div class="flex-1">
-                                        <div class="flex justify-between text-gray-800">
-                                            <span class="font-medium text-lg">@item.name</span>
-                                            <span class="text-amber-500 font-semibold">@item.price.ToString("C")</span>
-                                        </div>
-                                        @if (!string.IsNullOrEmpty(item.description))
-                                        {
-                                            <p class="text-sm text-gray-500 mt-1">@item.description</p>
-                                        }
-                                    </div>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                }
-            }
-            else
-            {
-                <p class="text-gray-500 text-center">Chưa có món nào được thêm.</p>
-            }
-        </div>
-    </div>
-
     <script>
-        function openMenuModal() {
-            document.getElementById("menuModal").classList.remove("hidden");
-            document.getElementById("menuModal").classList.add("flex");
+        function filterMenu(category) {
+            const items = document.querySelectorAll('#menuItems .menu-item');
+            const buttons = document.querySelectorAll('.filter-btn');
+
+            // Update active button
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Filter items
+            items.forEach(item => {
+                const itemCategory = item.getAttribute('data-category');
+                if (category === 'all' || itemCategory === category) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
         }
 
-        function closeMenuModal() {
-            document.getElementById("menuModal").classList.add("hidden");
-            document.getElementById("menuModal").classList.remove("flex");
-        }
+        // Initialize with "all" category
+        filterMenu('all');
     </script>
 </body>
 </html>

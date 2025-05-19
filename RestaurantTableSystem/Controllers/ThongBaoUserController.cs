@@ -9,11 +9,7 @@ public class ThongBaoUserController : Controller
 
     private int GetCurrentUserId()
     {
-        if (Session["user_id"] == null)
-        {
-            // Có thể redirect hoặc throw exception
-            throw new UnauthorizedAccessException("User chưa đăng nhập");
-        }
+       
         return Convert.ToInt32(Session["user_id"]);
     }
 
