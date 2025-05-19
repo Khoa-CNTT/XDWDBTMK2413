@@ -16,6 +16,7 @@ public class ThongBaoController : Controller
 
     public ActionResult Index()
     {
+        DeleteOldNotifications();
         int businessUserId = GetCurrentBusinessUserId();
 
         // Lấy danh sách các nhà hàng của business
@@ -52,6 +53,7 @@ public class ThongBaoController : Controller
             return HttpNotFound();
 
         booking.status = "Đã xác nhận";
+        booking.booking_time = DateTime.Now;
         db.SaveChanges();
         return RedirectToAction("Index");
     }
@@ -62,12 +64,48 @@ public class ThongBaoController : Controller
         var booking = db.Bookings.Include(b => b.Restaurant).FirstOrDefault(b => b.booking_id == id);
         if (booking == null)
             return HttpNotFound();
-        booking.status = "Đã hủy";
+        booking.status = "Đã huỷ";
+        booking.booking_time = DateTime.Now;
         db.SaveChanges();
 
         return RedirectToAction("Index");
     }
+    [ChildActionOnly]
+    public ActionResult NotificationCount()
+    {
+        int businessUserId = Convert.ToInt32(Session["user_id"]);
 
+        var restaurantIds = db.Restaurants
+                              .Where(r => r.User.user_id == businessUserId)
+                              .Select(r => r.restaurant_id)
+                              .ToList();
+
+        int count = db.Bookings
+                      .Count(b => b.restaurant_id != null &&
+                                  restaurantIds.Contains(b.restaurant_id.Value) &&
+                                  b.user_id != null &&
+                                  b.status == "Đang xử lý");
+
+        ViewBag.NotificationCount = count;
+
+        return PartialView("_NotificationCount");
+    }
+    private void DeleteOldNotifications()
+    {
+        DateTime limit = DateTime.Now.AddDays(-7);
+
+        var expiredBookings = db.Bookings
+            .Where(b => (b.status == "Đã xác nhận" || b.status == "Đã huỷ") &&
+                        b.booking_time != null &&
+                        b.booking_time < limit)
+            .ToList();
+
+        if (expiredBookings.Any())
+        {
+            db.Bookings.RemoveRange(expiredBookings);
+            db.SaveChanges();
+        }
+    }
 
     protected override void Dispose(bool disposing)
     {

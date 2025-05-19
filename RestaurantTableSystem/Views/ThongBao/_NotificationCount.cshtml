@@ -1,0 +1,14 @@
+﻿@{
+    int count = ViewBag.NotificationCount ?? 0;
+}
+
+<a href="@Url.Action("Index", "ThongBao")" class="btn btn-light position-relative">
+    Thông báo
+    @if (count > 0)
+    {
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            @count
+            <span class="visually-hidden">số lượng thông báo</span>
+        </span>
+    }
+</a>

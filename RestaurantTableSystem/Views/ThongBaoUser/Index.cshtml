@@ -1,26 +1,52 @@
 ﻿@model List<RestaurantTableSystem.Models.Booking>
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Thông báo đặt bàn";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Thông báo đặt bàn</h2>
+<style>
+    .bg-gradient-success {
+        background: linear-gradient(90deg, #e0f9e6, #d1f2e2);
+    }
+
+    .bg-gradient-danger {
+        background: linear-gradient(90deg, #ffe6e6, #ffd6d6);
+    }
+
+    .notification-icon {
+        font-size: 1.5rem;
+        margin-right: 1rem;
+    }
+
+    .notification-card {
+        border: none;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+</style>
+
+<h2 class="mb-4">Thông báo đặt bàn</h2>
 
 @if (Model.Any())
 {
     <ul class="list-group">
         @foreach (var item in Model)
         {
-            <li class="list-group-item d-flex flex-column">
-                <div class="d-flex justify-content-between align-items-center clickable-notification">
-                    @if (item.status == "Ðã xác nhận")
-                    {
-                        <span> Nhà hàng <strong>@item.Restaurant.name</strong> đã <strong>@item.status</strong> việc đặt bàn của bạn.</span>
-                    }
-                    else if (item.status == "Ðã hủy")
-                    {
-                        <span> Nhà hàng <strong>@item.Restaurant.name</strong> đã <strong>@item.status</strong> việc đặt bàn của bạn.</span>
-                    }
+            var isConfirmed = item.status == "Đã xác nhận";
+            var cardClass = isConfirmed ? "bg-gradient-success" : "bg-gradient-danger";
+            var icon = isConfirmed ? "✅" : "❌";
+            var textClass = isConfirmed ? "text-success" : "text-danger";
+            <li class="list-group-item notification-card mb-3 @cardClass">
+                <div class="d-flex align-items-start">
+                    <div class="notification-icon">@icon</div>
+                    <div>
+                        <p class="mb-1 text-dark">
+                            Nhà hàng <strong>@item.Restaurant.name</strong> đã
+                            <span class="fw-bold @textClass">@item.status</span> việc đặt bàn của bạn.
+                        </p>
+                        <small class="text-muted">Thời gian đặt: @item.booking_time</small>
+                    </div>
                 </div>
             </li>
         }
@@ -28,6 +54,7 @@
 }
 else
 {
-    <p>Không có thông báo nào.</p>
+    <div class="alert alert-info" role="alert">
+        Không có thông báo nào.
+    </div>
 }
-

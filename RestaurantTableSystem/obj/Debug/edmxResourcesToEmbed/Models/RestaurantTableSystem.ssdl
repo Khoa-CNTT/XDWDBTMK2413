@@ -9,8 +9,8 @@
     <Property Name="restaurant_id" Type="int" />
     <Property Name="booking_time" Type="datetime" Nullable="false" />
     <Property Name="number_of_guests" Type="int" Nullable="false" />
-    <Property Name="status" Type="varchar" MaxLength="20" />
-    <Property Name="special_request" Type="text" />
+    <Property Name="status" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="special_request" Type="nvarchar(max)" />
   </EntityType>
   <EntityType Name="BookingTable">
     <Key>
@@ -33,8 +33,8 @@
     </Key>
     <Property Name="menu_item_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="restaurant_id" Type="int" />
-    <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
-    <Property Name="description" Type="text" />
+    <Property Name="name" Type="nvarchar(max)" />
+    <Property Name="description" Type="nvarchar(max)" />
     <Property Name="price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
     <Property Name="category" Type="varchar" MaxLength="20" />
     <Property Name="is_available" Type="bit" />
@@ -58,7 +58,7 @@
     <Property Name="booking_id" Type="int" />
     <Property Name="amount" Type="decimal" Precision="10" Scale="2" Nullable="false" />
     <Property Name="payment_method" Type="varchar" MaxLength="50" Nullable="false" />
-    <Property Name="status" Type="varchar" MaxLength="20" />
+    <Property Name="status" Type="nvarchar" MaxLength="50" />
     <Property Name="transaction_id" Type="varchar" MaxLength="255" />
   </EntityType>
   <EntityType Name="Restaurants">
@@ -67,11 +67,11 @@
     </Key>
     <Property Name="restaurant_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="user_id" Type="int" />
-    <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
-    <Property Name="address" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="name" Type="nvarchar(max)" />
+    <Property Name="address" Type="nvarchar(max)" />
     <Property Name="latitude" Type="decimal" Precision="10" Scale="8" Nullable="false" />
     <Property Name="longitude" Type="decimal" Precision="11" Scale="8" Nullable="false" />
-    <Property Name="description" Type="text" />
+    <Property Name="description" Type="nvarchar(max)" />
     <Property Name="max_tables" Type="int" Nullable="false" />
     <Property Name="opening_hours" Type="nvarchar(max)" />
     <Property Name="is_approved" Type="bit" />
@@ -107,7 +107,7 @@
     <Property Name="user_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="email" Type="varchar" MaxLength="255" Nullable="false" />
     <Property Name="password_hash" Type="varchar" MaxLength="255" Nullable="false" />
-    <Property Name="full_name" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="full_name" Type="nvarchar" MaxLength="100" />
     <Property Name="phone" Type="varchar" MaxLength="20" />
     <Property Name="role" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="created_at" Type="datetime" />

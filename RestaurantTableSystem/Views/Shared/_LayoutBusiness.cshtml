@@ -36,7 +36,7 @@
                     <nav class="flex items-center space-x-8">
                         <ul class="flex space-x-8 items-center">
                             <li><a href="@Url.Action("CapNhatBusiness", "BusinessHome")" class="text-gray-700 hover:text-amber-600 transition">Nhà hàng của tôi</a></li>
-                            <li><a href="@Url.Action("Index", "ThongBao")" class="text-gray-700 hover:text-amber-600 transition">Thông Báo</a></li>
+                            <li><a @Html.Action("NotificationCount", "ThongBao")
                             @if (Session["user"] == null)
                             {
                                 <li><a href="@Url.Action("Login", "Account")" class="text-gray-700 hover:text-amber-600 transition">Login</a></li>

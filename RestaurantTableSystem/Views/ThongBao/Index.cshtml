@@ -1,21 +1,48 @@
 ﻿@model IEnumerable<RestaurantTableSystem.Models.Booking>
 
 @{
-    ViewBag.Title = "thông báo của tôi";
-    bool isEdit = ViewBag.IsEdit != null && (bool)ViewBag.IsEdit;
-    Layout = "~/Views/Shared/_LayoutBusiness.cshtml"; // Sử dụng layout chung
+    ViewBag.Title = "Thông báo của tôi";
+    Layout = "~/Views/Shared/_LayoutBusiness.cshtml";
 }
 
-<h2>Thông báo đặt bàn</h2>
+<style>
+    .bg-gradient-success {
+        background: linear-gradient(90deg, #e0f9e6, #d1f2e2);
+    }
 
-<table class="table table-bordered">
+    .bg-gradient-danger {
+        background: linear-gradient(90deg, #ffe6e6, #ffd6d6);
+    }
+
+    .status-icon {
+        font-size: 1.2rem;
+        margin-right: 5px;
+    }
+
+    .table-notify th {
+        background-color: #f8f9fa;
+    }
+
+    .rounded-row {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .action-buttons form {
+        display: inline-block;
+    }
+</style>
+
+<h2 class="mb-4">Thông báo đặt bàn</h2>
+
+<table class="table table-bordered table-notify">
     <thead>
         <tr>
             <th>Họ tên</th>
             <th>Email</th>
             <th>Số điện thoại</th>
-            <th>Loại bàn</th>
-            <th>Mô tả</th>
+            <th>Số khách</th>
+            <th>Ghi chú</th>
             <th>Thời gian đặt</th>
             <th>Trạng thái</th>
             <th>Hành động</th>
@@ -26,32 +53,30 @@
         {
             foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @(item.User != null ? item.User.full_name : "Không có thông tin")
-                    </td>
-                    <td>
-                        @(item.User != null ? item.User.email : "Không có thông tin") <!-- Giả sử User có email -->
-                    </td>
-                    <td>
-                        @(item.User != null ? item.User.phone : "Không có thông tin")
-                    </td>
-                    <td>
-                        @item.number_of_guests <!-- Giả sử Booking có table_type -->
-                    </td>
-                    <td>
-                        @item.special_request <!-- Giả sử Booking có description -->
-                    </td>
+                var isConfirmed = item.status == "Đã xác nhận";
+                var isCancelled = item.status == "Đã huỷ";
+                var rowClass = isConfirmed ? "bg-gradient-success" : (isCancelled ? "bg-gradient-danger" : "");
+                var icon = isConfirmed ? "✅" : (isCancelled ? "❌" : "⏳");
+                var textClass = isConfirmed ? "text-success" : (isCancelled ? "text-danger" : "text-warning");
+
+                <tr class="rounded-row @rowClass">
+                    <td>@(item.User?.full_name ?? "Không có thông tin")</td>
+                    <td>@(item.User?.email ?? "Không có thông tin")</td>
+                    <td>@(item.User?.phone ?? "Không có thông tin")</td>
+                    <td>@item.number_of_guests</td>
+                    <td>@item.special_request</td>
                     <td>@item.booking_time.ToString("dd/MM/yyyy HH:mm")</td>
-                    <td>@item.status</td>
-                    <td>
+                    <td class="@textClass">
+                        <span class="status-icon">@icon</span>@item.status
+                    </td>
+                    <td class="action-buttons">
                         @using (Html.BeginForm("Confirm", "ThongBao", new { id = item.booking_id }, FormMethod.Post))
                         {
-                            <button type="submit" class="btn btn-success" onclick="return confirm('Xác nhận đặt bàn này?');">Xác nhận</button>
+                            <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Xác nhận đặt bàn này?');">Xác nhận</button>
                         }
                         @using (Html.BeginForm("Cancel", "ThongBao", new { id = item.booking_id }, FormMethod.Post))
                         {
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn hủy đặt bàn này?');">Hủy</button>
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn hủy đặt bàn này?');">Hủy</button>
                         }
                     </td>
                 </tr>

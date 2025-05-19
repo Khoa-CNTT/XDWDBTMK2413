@@ -20,6 +20,7 @@ public class ThongBaoUserController : Controller
     // Danh sách thông báo
     public ActionResult Index()
     {
+        DeleteOldNotifications();
         int userId = GetCurrentUserId();
 
         var confirmedBookings = db.Bookings
@@ -29,6 +30,33 @@ public class ThongBaoUserController : Controller
                                   .ToList();
 
         return View(confirmedBookings);
+    }
+    [ChildActionOnly]
+    public ActionResult NotificationCount()
+    {
+        int userId = GetCurrentUserId();
+
+        int count = db.Bookings
+                      .Count(b => b.user_id == userId && (b.status == "Đã xác nhận" || b.status == "Đã huỷ"));
+
+        ViewBag.UserNotificationCount = count;
+        return PartialView("_NotificationCount");
+    }
+    private void DeleteOldNotifications()
+    {
+        DateTime limit = DateTime.Now.AddDays(-7);
+
+        var expiredBookings = db.Bookings
+            .Where(b => (b.status == "Đã xác nhận" || b.status == "Đã huỷ") &&
+                        b.booking_time != null &&
+                        b.booking_time < limit)
+            .ToList();
+
+        if (expiredBookings.Any())
+        {
+            db.Bookings.RemoveRange(expiredBookings);
+            db.SaveChanges();
+        }
     }
 
     // Chi tiết thông báo
