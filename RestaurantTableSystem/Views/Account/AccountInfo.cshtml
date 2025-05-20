@@ -2,6 +2,8 @@
 @using System.Linq
 @{
     ViewBag.Title = "Thông Tin Tài Khoản";
+    bool isEdit = ViewBag.IsEdit != null && (bool)ViewBag.IsEdit;
+    Layout = "~/Views/Shared/_LayoutBusiness.cshtml"; // Sử dụng layout chung
 }
 <!DOCTYPE html>
 <html lang="vi">

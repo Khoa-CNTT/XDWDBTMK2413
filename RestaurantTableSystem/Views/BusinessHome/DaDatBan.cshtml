@@ -1,4 +1,10 @@
 ﻿@model IEnumerable<RestaurantTableSystem.Models.ViewModels.BookingViewModel>
+@{
+    ViewBag.Title = "Lịch sử đặt bàn";
+    bool isEdit = ViewBag.IsEdit != null && (bool)ViewBag.IsEdit;
+    Layout = "~/Views/Shared/_LayoutBusiness.cshtml"; // Sử dụng layout chung
+}
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -48,18 +54,7 @@
     </style>
 </head>
 <body class="bg-gray-50">
-    <header class="bg-white shadow-md">
-        <div class="container mx-auto px-4 py-6 flex justify-between items-center">
-            <h1 class="heading text-3xl font-bold text-gray-800">@ViewBag.RestaurantName</h1>
-            <nav class="flex items-center space-x-8">
-                <ul class="flex space-x-8 items-center">
-                    <li><a href="@Url.Action("Index", "BusinessHome")" class="text-gray-700 hover:text-amber-600 transition">Quản lý món ăn</a></li>
-                    <li><a href="@Url.Action("DaDatBan", "BusinessHome")" class="text-gray-700 hover:text-amber-600 transition">Bàn đặt</a></li>
-                    <li><a href="@Url.Action("Logout", "Account")" class="text-gray-700 hover:text-amber-600 transition">Đăng xuất</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    
 
     <section class="py-16 bg-gray-100">
         <div class="container mx-auto px-4">
@@ -92,7 +87,7 @@
                             <th class="py-2 px-4">Số tiền thanh toán</th>
                             <th class="py-2 px-4">Trạng thái thanh toán</th>
                             <th class="py-2 px-4">Trạng thái đặt bàn</th>
-                            
+
                         </tr>
                     </thead>
                     <tbody>
@@ -140,7 +135,7 @@
                                             <span class="status-none">@booking.BookingStatus</span>
                                         }
                                     </td>
-                                    
+
                                 </tr>
                                 index++;
                             }
