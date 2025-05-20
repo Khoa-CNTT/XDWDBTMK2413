@@ -3,45 +3,66 @@
 @{
     ViewBag.Title = "Quản lý vai trò người dùng";
 }
+@section naviheader{
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/admin" class="nav-link">Trang chủ</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/admin" class="nav-link">@ViewBag.Title</a>
+        </li>
+    </ul>
+}
+<section class="content">
 
-<h2>Quản lý vai trò người dùng</h2>
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Quản lý vai trò người dùng</h3>
+        </div>
+        <form enctype="multipart/form-data"></form>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID Người dùng</th>
+                        <th>Họ và Tên</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th>Vai trò</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>@user.user_id</td>
+                            <td>@user.full_name</td>
+                            <td>@user.email</td>
+                            <td>@user.phone</td>
+                            <td>
+                                <select class="form-control role-select" data-user-id="@user.user_id">
+                                    <option value="Admin" @(user.role == "Admin" ? "selected" : "")>Quản trị viên</option>
+                                    <option value="business" @(user.role == "business" ? "selected" : "")>Doanh nghiệp</option>
+                                    <option value="User" @(user.role == "User" ? "selected" : "")>Người dùng</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary update-role" data-user-id="@user.user_id">Cập nhật</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>ID Người dùng</th>
-            <th>Họ và Tên</th>
-            <th>Email</th>
-            <th>Số điện thoại</th>
-            <th>Vai trò</th>
-            <th>Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>@user.user_id</td>
-                <td>@user.full_name</td>
-                <td>@user.email</td>
-                <td>@user.phone</td>
-                <td>
-                    <select class="form-control role-select" data-user-id="@user.user_id">
-                        <option value="Admin" @(user.role == "Admin" ? "selected" : "")>Quản trị viên</option>
-                        <option value="business" @(user.role == "business" ? "selected" : "")>Doanh nghiệp</option>
-                        <option value="User" @(user.role == "User" ? "selected" : "")>Người dùng</option>
-                    </select>
-                </td>
-                <td>
-                    <button class="btn btn-primary update-role" data-user-id="@user.user_id">Cập nhật</button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-@section Scripts {
-    <script>
+            @section Scripts {
+                <script>
         $(document).ready(function () {
             $('.update-role').click(function () {
                 var userId = $(this).data('user-id');
@@ -64,5 +85,5 @@
                 });
             });
         });
-    </script>
-}
+                </script>
+            }

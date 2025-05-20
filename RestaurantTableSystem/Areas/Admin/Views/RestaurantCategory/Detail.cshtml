@@ -5,9 +5,6 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-
-
-
 @section naviheader{
     <!-- Left navbar links -->
     <ul class="navbar-nav">
@@ -22,7 +19,6 @@
         </li>
     </ul>
 }
-
 
 <section class="content-header">
     <div class="container-fluid">
@@ -45,12 +41,12 @@
     <!-- Default box -->
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Danh sách @ViewBag.Title</h3>
+            <h3 class="card-title">Danh sách Món ăn</h3>
 
-            <div class="card-tools">
+            @*<div class="card-tools">
                 <a href="/admin/ProductCategory/add" class="btn btn-primary">Thêm mới</a>
                 <a href="#" class="btn btn-danger" id="BtnDeleteAll">Xóa</a>
-            </div>
+            </div>*@
         </div>
         <div class="card-body">
 
@@ -60,49 +56,39 @@
                         <th><input type="checkbox" id="SelectAll" /></th>
                         <th>STT</th>
                         <th>Tên món</th>
-                        <th>Image</th>
+                        <th>Hình ảnh</th>
                         <th>Mô tả</th>
-                        <th>giá </th>
-
-
-                        @*<th>Hiển thị</th>*@
-
-                        <th style="width:150px;"></th>
+                        <th>Giá</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var menuItem in Model)
                     {
                         <tr>
+                            <td><input type="checkbox" name="selectedItems" value="@menuItem.menu_item_id" /></td>
                             <td>@menuItem.menu_item_id</td>
                             <td>@menuItem.name</td>
-                            <td>@menuItem.Image</td>
-                            <td>@menuItem.description</td>
-                            <td>@menuItem.price</td>
-
                             <td>
-                                @*<a href="@Url.Action("Detail", "RestaurantCategory", new { id = restaurant.restaurant_id })" class="btn btn-sm btn-primary">Chi Tiết</a>*@
-
+                                <img src="@Url.Content(menuItem.Image)" alt="Hình ảnh món ăn" style="max-width: 100px; max-height: 80px;" />
                             </td>
-
+                            <td>@menuItem.description</td>
+                            <td>@menuItem.price.ToString("N0") ₫</td>
+                            @*<td>
+                                <a href="@Url.Action("Edit", "MenuItem", new { id = menuItem.menu_item_id })" class="btn btn-sm btn-warning">Sửa</a>
+                                <a href="@Url.Action("Delete", "MenuItem", new { id = menuItem.menu_item_id })" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa món này không?');">Xóa</a>
+                            </td>*@
                         </tr>
                     }
                 </tbody>
             </table>
 
-
-
         </div>
         <!-- /.card-body -->
         <div class="card-footer">
-
+            <!-- Có thể thêm phân trang hoặc thông tin khác ở đây -->
         </div>
         <!-- /.card-footer-->
     </div>
     <!-- /.card -->
 
 </section>
-
-
-
-

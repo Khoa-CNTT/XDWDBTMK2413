@@ -9,7 +9,6 @@ public class ThongBaoUserController : Controller
 
     private int GetCurrentUserId()
     {
-       
         return Convert.ToInt32(Session["user_id"]);
     }
 

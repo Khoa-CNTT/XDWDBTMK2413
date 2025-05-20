@@ -23,6 +23,18 @@ namespace RestaurantTableSystem.Areas.Admin.Controllers
             var menuItem = db.MenuItems.ToList();
             return View(menuItem);
         }
-        
+        [HttpGet]
+        public ActionResult Delete(int id)
+        {
+            var restaurant = db.Restaurants.Find(id);
+            if (restaurant != null)
+            {
+                db.Restaurants.Remove(restaurant);
+                db.SaveChanges();
+            }
+
+            return RedirectToAction("Index");
+        }
+
     }
 }
