@@ -18,6 +18,50 @@
         .heading {
             font-family: 'Playfair Display', serif;
         }
+
+        /* Tùy chỉnh giao diện chatbot */
+        .tudong-chatbox-container {
+            bottom: 20px !important;
+            right: 20px !important; /* Quay lại góc phải để dễ nhận diện */
+            left: auto !important;
+        }
+
+        .tudong-chatbox-button {
+            width: 70px !important;
+            height: 70px !important;
+            background-color: #ef4444 !important; /* Màu đỏ nổi bật (red-500) */
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important; /* Hiệu ứng bóng */
+        }
+
+            .tudong-chatbox-button:hover {
+                background-color: #dc2626 !important; /* Màu đỏ đậm hơn khi hover (red-600) */
+            }
+
+            .tudong-chatbox-button::before {
+                content: "\f075"; /* Icon chat từ Font Awesome */
+                font-family: "Font Awesome 6 Free" !important;
+                font-weight: 900 !important;
+                color: white !important;
+                font-size: 24px !important;
+            }
+
+        .tudong-chatbox-window {
+            width: 350px !important;
+            border-radius: 10px !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+            border: 2px solid #ef4444 !important; /* Viền đỏ để nổi bật */
+        }
+
+        /* Tùy chỉnh nội dung cửa sổ (nếu có thể) */
+        .tudong-chatbox-header {
+            background-color: #ef4444 !important; /* Đầu cửa sổ màu đỏ */
+            color: white !important;
+            font-weight: bold !important;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -42,7 +86,7 @@
                         <ul class="flex space-x-8 items-center">
                             <li><a href="@Url.Action("Index", "Home")" class="text-gray-700 hover:text-amber-600 transition">Trang chủ</a></li>
                             <li><a href="@Url.Action("Index", "Businesss")" class="text-gray-700 hover:text-amber-600 transition">Đăng Kí Nhà Hàng</a></li>
-                            <li><a @Html.Action("NotificationCount", "ThongBaoUser")
+                            <li><a @Html.Action("NotificationCount", "ThongBaoUser")></a></li>
                             @if (Session["user"] == null)
                             {
                                 <li><a href="@Url.Action("Login", "Account")" class="text-gray-700 hover:text-amber-600 transition">Login</a></li>
@@ -105,6 +149,9 @@
             <script>
                 const tudong_chatbox = new TuDongChat('ar5BUmAGM0506hTV-vGwk');
                 tudong_chatbox.initial();
+
+                // Tùy chỉnh (nếu API hỗ trợ, cần kiểm tra tài liệu)
+                // Ví dụ giả định: tudong_chatbox.setButtonColor('#ef4444');
             </script>
         }
     }
