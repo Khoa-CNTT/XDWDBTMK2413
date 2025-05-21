@@ -3,6 +3,8 @@
     var restaurant = Model.Restaurant;
     var menuItems = Model.MenuItems;
     ViewBag.Title = restaurant.name;
+    // Kiểm tra nếu có tham số showAll
+    bool showAll = string.Equals(ViewContext.HttpContext.Request.QueryString["showAll"], "true", StringComparison.OrdinalIgnoreCase);
 }
 
 <!DOCTYPE html>
@@ -12,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewBag.Title</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWixU2PqA1jN+AOzQZF4u6Z0o0O4kA8l0z8w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
     <style>
         body {
@@ -88,6 +90,27 @@
                 background-color: #f59e0b;
                 color: white;
             }
+
+        .star-rating input[type="radio"] {
+            display: none;
+        }
+
+        .star-rating label {
+            cursor: pointer;
+            color: #d1d5db;
+            transition: color 0.2s;
+            font-size: 1.5rem;
+        }
+
+        .star-rating input[type="radio"]:checked ~ label,
+        .star-rating input[type="radio"]:checked + label {
+            color: #f59e0b;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #f59e0b;
+        }
     </style>
 </head>
 
@@ -231,6 +254,108 @@
         </div>
     </section>
 
+    <!-- Section 5: Reviews -->
+    <section class="py-8">
+        <div class="container mx-auto px-4">
+            <div class="section-container max-w-4xl mx-auto p-6">
+                <h2 class="text-2xl font-semibold mb-4 heading text-center">Đánh Giá Nhà Hàng</h2>
+                <div class="divider"></div>
+
+                <!-- Success/Error Messages -->
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded">
+                        <p>@TempData["SuccessMessage"]</p>
+                    </div>
+                }
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
+                        <p>@TempData["ErrorMessage"]</p>
+                    </div>
+                }
+
+                <!-- Review Form -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-medium mb-4">Viết Đánh Giá Của Bạn</h3>
+                    @using (Html.BeginForm("SubmitReview", "DetailNhaHang", new { restaurantId = Model.Restaurant.restaurant_id }, FormMethod.Post, new { @class = "space-y-4" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Điểm đánh giá</label>
+                            <div class="star-rating flex space-x-1 mb-4">
+                                <input type="radio" id="rating5" name="rating" value="5" required />
+                                <label for="rating5"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="rating4" name="rating" value="4" />
+                                <label for="rating4"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="rating3" name="rating" value="3" />
+                                <label for="rating3"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="rating2" name="rating" value="2" />
+                                <label for="rating2"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="rating1" name="rating" value="1" />
+                                <label for="rating1"><i class="fas fa-star"></i></label>
+                            </div>
+                            @Html.ValidationMessage("rating", new { @class = "text-red-500 text-sm" })
+                        </div>
+                        <div>
+                            <label for="comment" class="block text-gray-700 font-medium mb-2">Bình luận</label>
+                            <textarea name="comment" id="comment" rows="4" class="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="Chia sẻ cảm nhận của bạn..."></textarea>
+                            @Html.ValidationMessage("comment", new { @class = "text-red-500 text-sm" })
+                        </div>
+                        <div class="flex justify-center">
+                            <button type="submit" class="bg-amber-500 text-white px-6 py-3 rounded-lg hover:bg-amber-600 transition">Gửi Đánh Giá</button>
+                        </div>
+                    }
+                </div>
+
+                <!-- Display Reviews -->
+                @if (Model.Reviews != null && Model.Reviews.Any())
+                {
+                    <h3 class="text-xl font-medium mb-4">Các Đánh Giá</h3>
+                    <div class="space-y-4">
+                        @{
+                            var reviewsToShow = showAll ? Model.Reviews.OrderByDescending(r => r.created_at).ToList() : Model.Reviews.OrderByDescending(r => r.created_at).Take(4).ToList();
+                        }
+                        @foreach (var review in reviewsToShow)
+                        {
+                            <div class="border-b pb-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center">
+                                        <div class="flex">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <i class="fas fa-star @(i <= review.rating ? "text-amber-500" : "text-gray-300")"></i>
+                                            }
+                                        </div>
+                                        <span class="ml-2 text-gray-700 font-medium">
+                                            @(review.User != null ? review.User.full_name : "Ẩn danh")
+                                        </span>
+                                    </div>
+                                    <span class="text-gray-500 text-sm">
+                                        @(review.created_at.HasValue ? review.created_at.Value.ToString("dd/MM/yyyy HH:mm") : "Không có ngày")
+                                    </span>
+                                </div>
+                                <p class="text-gray-600">@review.comment</p>
+                            </div>
+                        }
+                        @if (!showAll && Model.Reviews.Count > 4)
+                        {
+                            <div class="text-center mt-4">
+                                <a href="@Url.Action("AllReviews", "DetailNhaHang", new { id = restaurant.restaurant_id, showAll = "true" })" class="text-amber-500 hover:text-amber-600 underline">
+                                    Xem tất cả đánh giá
+                                </a>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-gray-500 text-center">Chưa có đánh giá nào cho nhà hàng này.</p>
+                }
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="bg-gray-800 text-white py-12">
         <div class="container mx-auto px-4">
@@ -265,11 +390,9 @@
             const items = document.querySelectorAll('#menuItems .menu-item');
             const buttons = document.querySelectorAll('.filter-btn');
 
-            // Update active button
             buttons.forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
 
-            // Filter items
             items.forEach(item => {
                 const itemCategory = item.getAttribute('data-category');
                 if (category === 'all' || itemCategory === category) {

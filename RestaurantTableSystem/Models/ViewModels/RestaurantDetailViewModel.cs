@@ -6,5 +6,6 @@ namespace RestaurantTableSystem.Models.ViewModels
     {
         public Restaurant Restaurant { get; set; }
         public List<MenuItem> MenuItems { get; set; }
+        public List<Review> Reviews { get; set; }
     }
 }

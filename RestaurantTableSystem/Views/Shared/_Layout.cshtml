@@ -7,62 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/layout.css" />
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @RenderSection("styles", required: false)
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-        }
 
-        .heading {
-            font-family: 'Playfair Display', serif;
-        }
-
-        /* Tùy chỉnh giao diện chatbot */
-        .tudong-chatbox-container {
-            bottom: 20px !important;
-            right: 20px !important; /* Quay lại góc phải để dễ nhận diện */
-            left: auto !important;
-        }
-
-        .tudong-chatbox-button {
-            width: 70px !important;
-            height: 70px !important;
-            background-color: #ef4444 !important; /* Màu đỏ nổi bật (red-500) */
-            border-radius: 50% !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important; /* Hiệu ứng bóng */
-        }
-
-            .tudong-chatbox-button:hover {
-                background-color: #dc2626 !important; /* Màu đỏ đậm hơn khi hover (red-600) */
-            }
-
-            .tudong-chatbox-button::before {
-                content: "\f075"; /* Icon chat từ Font Awesome */
-                font-family: "Font Awesome 6 Free" !important;
-                font-weight: 900 !important;
-                color: white !important;
-                font-size: 24px !important;
-            }
-
-        .tudong-chatbox-window {
-            width: 350px !important;
-            border-radius: 10px !important;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
-            border: 2px solid #ef4444 !important; /* Viền đỏ để nổi bật */
-        }
-
-        /* Tùy chỉnh nội dung cửa sổ (nếu có thể) */
-        .tudong-chatbox-header {
-            background-color: #ef4444 !important; /* Đầu cửa sổ màu đỏ */
-            color: white !important;
-            font-weight: bold !important;
-        }
-    </style>
 </head>
 <body class="bg-gray-50">
     @{
@@ -150,8 +99,42 @@
                 const tudong_chatbox = new TuDongChat('ar5BUmAGM0506hTV-vGwk');
                 tudong_chatbox.initial();
 
-                // Tùy chỉnh (nếu API hỗ trợ, cần kiểm tra tài liệu)
-                // Ví dụ giả định: tudong_chatbox.setButtonColor('#ef4444');
+                // Thêm thông báo "Click vào đây để chat" sau khi chatbot tải
+                window.addEventListener('load', function () {
+                    const chatButton = document.querySelector('.tudong-chatbox-button');
+                    if (chatButton) {
+                        console.log('Chat button found:', chatButton); // Debug
+                        const prompt = document.createElement('div');
+                        prompt.className = 'chat-prompt';
+                        prompt.textContent = 'Click vào đây để chat';
+                        chatButton.parentElement.appendChild(prompt);
+                        console.log('Chat prompt added:', prompt); // Debug
+
+                        // Ẩn thông báo khi cửa sổ chat mở
+                        const chatWindow = document.querySelector('.tudong-chatbox-window');
+                        if (chatWindow) {
+                            console.log('Chat window found:', chatWindow); // Debug
+                            const observer = new MutationObserver(function (mutations) {
+                                mutations.forEach(function (mutation) {
+                                    if (chatWindow.style.display !== 'none') {
+                                        prompt.style.display = 'none';
+                                    } else {
+                                        prompt.style.display = 'block';
+                                    }
+                                });
+                            });
+
+                            observer.observe(chatWindow, {
+                                attributes: true,
+                                attributeFilter: ['style']
+                            });
+                        } else {
+                            console.log('Chat window not found'); // Debug
+                        }
+                    } else {
+                        console.log('Chat button not found'); // Debug
+                    }
+                });
             </script>
         }
     }
