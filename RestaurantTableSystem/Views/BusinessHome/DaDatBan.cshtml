@@ -87,7 +87,7 @@
                             <th class="py-2 px-4">Số tiền thanh toán</th>
                             <th class="py-2 px-4">Trạng thái thanh toán</th>
                             <th class="py-2 px-4">Trạng thái đặt bàn</th>
-
+                            <th class="py-2 px-4">Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -95,7 +95,7 @@
                             var index = 1;
                             foreach (var booking in Model)
                             {
-                                <tr class="border-t">
+                                <tr class="border-t hover:bg-gray-50">
                                     <td class="py-2 px-4">@index</td>
                                     <td class="py-2 px-4">@booking.CustomerName</td>
                                     <td class="py-2 px-4">@booking.PhoneNumber</td>
@@ -135,7 +135,16 @@
                                             <span class="status-none">@booking.BookingStatus</span>
                                         }
                                     </td>
-
+                                    <td class="py-2 px-4">
+                                        @if (booking.BookingStatus != "Đã hủy")
+                                        {
+                                            <a href="@Url.Action("SendReminderEmail", "BusinessHome", new { bookingId = booking.BookingId })"
+                                               class="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105"
+                                               onclick="return confirm('Bạn có chắc chắn muốn gửi email nhắc nhở?');">
+                                                Gửi nhắc nhở
+                                            </a>
+                                        }
+                                    </td>
                                 </tr>
                                 index++;
                             }

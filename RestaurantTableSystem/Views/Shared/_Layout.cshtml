@@ -35,7 +35,7 @@
                         <ul class="flex space-x-8 items-center">
                             <li><a href="@Url.Action("Index", "Home")" class="text-gray-700 hover:text-amber-600 transition">Trang chủ</a></li>
                             <li><a href="@Url.Action("Index", "Businesss")" class="text-gray-700 hover:text-amber-600 transition">Đăng Kí Nhà Hàng</a></li>
-                            <li><a @Html.Action("NotificationCount", "ThongBaoUser")></a></li>
+                            <li><a @Html.Action("NotificationCount", "ThongBaoUser")
                             @if (Session["user"] == null)
                             {
                                 <li><a href="@Url.Action("Login", "Account")" class="text-gray-700 hover:text-amber-600 transition">Login</a></li>

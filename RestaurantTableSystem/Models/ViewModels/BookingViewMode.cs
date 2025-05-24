@@ -9,6 +9,7 @@
         public string RestaurantAddress { get; set; }
         public string CustomerName { get; set; }
         public string PhoneNumber { get; set; }
+        public string CustomerEmail { get; set; }
         public DateTime BookingTime { get; set; }
         public int NumberOfGuests { get; set; }
         public decimal? AmountPaid { get; set; }
